@@ -1,24 +1,59 @@
-// Edit this file to change product names, prices, models, colours and payment links.
-// paymentLink can be a Stripe Payment Link, Square link, or your own checkout URL.
+// mini school-project catalog — real MakerWorld/Bambu photos edition
+// Product photos below are hot-linked from the original MakerWorld CDN so the site shows
+// the same real photos seen on the Bambu/MakerWorld listings. Keep source/credit visible.
 window.MINI_PRODUCTS = [
-  {id:'SET-01',name:'mini Complete Set 01',type:'set',price:79,image:'assets/images/set.svg',colors:['pink','black','white'],tag:'Popular',desc:'A coordinated bathroom set with the essential everyday pieces in one clean look.',paymentLink:''},
-  {id:'SET-02',name:'mini Complete Set 02',type:'set',price:85,image:'assets/images/set.svg',colors:['black','white','beige'],tag:'New',desc:'A slightly bolder full-set configuration designed to keep the vanity looking consistent.',paymentLink:''},
-  {id:'SET-03',name:'mini Compact Set',type:'set',price:59,image:'assets/images/set.svg',colors:['pink','white'],tag:'',desc:'A smaller bundle for compact bathrooms, powder rooms and guest spaces.',paymentLink:''},
-  {id:'DSP-01',name:'mini Pump 01',type:'dispenser',price:24,image:'assets/images/dispenser.svg',colors:['pink','black','white'],tag:'Best seller',desc:'A simple refillable dispenser with a compact footprint and playful mini face detail.',paymentLink:''},
-  {id:'DSP-02',name:'mini Pump 02',type:'dispenser',price:26,image:'assets/images/dispenser.svg',colors:['black','white','beige'],tag:'',desc:'A clean-profile soap dispenser made to pair with the rest of the mini range.',paymentLink:''},
-  {id:'DSP-03',name:'mini Pump 03',type:'dispenser',price:29,image:'assets/images/dispenser.svg',colors:['pink','grey','white'],tag:'New',desc:'A taller dispenser option for customers who want a little more capacity.',paymentLink:''},
-  {id:'HLD-01',name:'mini Holder 01',type:'holder',price:19,image:'assets/images/holder.svg',colors:['pink','black','white'],tag:'',desc:'A toothbrush and vanity holder that keeps the everyday basics together.',paymentLink:''},
-  {id:'HLD-02',name:'mini Holder 02',type:'holder',price:21,image:'assets/images/holder.svg',colors:['black','white','beige'],tag:'',desc:'A minimal holder with a soft-edged shape that works across the mini collection.',paymentLink:''},
-  {id:'HLD-03',name:'mini Holder 03',type:'holder',price:22,image:'assets/images/holder.svg',colors:['pink','white','grey'],tag:'',desc:'A compact multi-use holder for brushes, toothpaste or small bathroom tools.',paymentLink:''},
-  {id:'TMB-01',name:'mini Tumbler 01',type:'tumbler',price:18,image:'assets/images/tumbler.svg',colors:['black','pink','white'],tag:'',desc:'A simple bathroom tumbler that works for rinsing, brushes or vanity storage.',paymentLink:''},
-  {id:'TMB-02',name:'mini Tumbler 02',type:'tumbler',price:20,image:'assets/images/tumbler.svg',colors:['white','beige','pink'],tag:'',desc:'A softer neutral tumbler variation made to mix easily with different finishes.',paymentLink:''},
-  {id:'TMB-03',name:'mini Tumbler 03',type:'tumbler',price:20,image:'assets/images/tumbler.svg',colors:['grey','black','pink'],tag:'',desc:'A darker tumbler option for modern bathrooms and monochrome styling.',paymentLink:''},
-  {id:'TRY-01',name:'mini Tray 01',type:'tray',price:22,image:'assets/images/tray.svg',colors:['pink','white','black'],tag:'Popular',desc:'A vanity tray for grouping smaller pieces without making the counter feel busy.',paymentLink:''},
-  {id:'TRY-02',name:'mini Tray 02',type:'tray',price:25,image:'assets/images/tray.svg',colors:['beige','white','pink'],tag:'',desc:'A longer tray option for dispensers, perfume, skincare or accessories.',paymentLink:''},
-  {id:'TRY-03',name:'mini Tray 03',type:'tray',price:27,image:'assets/images/tray.svg',colors:['black','grey','pink'],tag:'',desc:'A statement tray with the same rounded mini design language.',paymentLink:''},
-  {id:'BIN-01',name:'mini Bin 01',type:'bin',price:34,image:'assets/images/bin.svg',colors:['pink','black','white'],tag:'',desc:'A compact bathroom bin with a clean silhouette and easy-to-place proportions.',paymentLink:''},
-  {id:'BIN-02',name:'mini Bin 02',type:'bin',price:38,image:'assets/images/bin.svg',colors:['black','grey','white'],tag:'',desc:'A larger bin option for family bathrooms and higher-use spaces.',paymentLink:''},
-  {id:'BIN-03',name:'mini Bin 03',type:'bin',price:36,image:'assets/images/bin.svg',colors:['beige','white','pink'],tag:'',desc:'A softer neutral bin designed to sit quietly in lighter bathroom schemes.',paymentLink:''},
-  {id:'SET-04',name:'mini Duo Set',type:'set',price:42,image:'assets/images/set.svg',colors:['pink','black','white'],tag:'',desc:'A two-piece starter bundle for customers who want to keep things extra simple.',paymentLink:''},
-  {id:'DSP-04',name:'mini Pump Duo',type:'dispenser',price:45,image:'assets/images/dispenser.svg',colors:['pink','black','white'],tag:'Bundle',desc:'A matching two-dispenser bundle for hand wash, lotion or shampoo setups.',paymentLink:''}
+  {
+    id:'KEY-01', name:'Panda Heart', type:'keychain', size:'Medium · 49 × 35 mm',
+    grams:5.2, printTime:'≈ 17 min', estimatedCost:0.95, price:4.00,
+    image:'https://makerworld.bblmw.com/makerworld/model/US3c9373901c932c/design/2024-03-06_375ff7f26db4d.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp',
+    fallback:'assets/images/heart.svg', imagePosition:'center',
+    colors:['white','black','pink'], tag:'Cute pick',
+    desc:'A flat panda holding a heart. The original MakerWorld profile lists a 17 minute print and no supports.',
+    credit:'Nolan3D', source:'https://makerworld.com/en/models/233668-panda-holding-a-heart-keychain', paymentLink:''
+  },
+  {
+    id:'KEY-02', name:'Boba Cup', type:'keychain', size:'Medium · flat multicolour',
+    grams:4.5, printTime:'≈ 15–22 min each', estimatedCost:1.05, price:4.00,
+    image:'https://makerworld.bblmw.com/makerworld/model/DSM00000000435974/design/2024-04-20_8415f557c17ac8.jpeg?x-oss-process=image%2Fformat%2Cwebp',
+    fallback:'assets/images/smiley.svg', imagePosition:'center',
+    colors:['pink','white','black'], tag:'Best seller',
+    desc:'One of the flat Bubble Tea keychain styles from the MakerWorld set. Easy to batch print and visually strong for a school stall.',
+    credit:'Yokoprints3D', source:'https://makerworld.com/en/models/435974-keychains-bubble-tea-with-commercial-license', paymentLink:''
+  },
+  {
+    id:'KEY-03', name:'Boba Jar', type:'keychain', size:'Medium · flat multicolour',
+    grams:4.8, printTime:'≈ 16–24 min each', estimatedCost:1.10, price:4.00,
+    image:'https://makerworld.bblmw.com/makerworld/model/DSM00000000435974/design/2024-04-20_12031749d2656.jpeg?x-oss-process=image%2Fformat%2Cwebp',
+    fallback:'assets/images/star.svg', imagePosition:'center 58%',
+    colors:['pink','blue','white'], tag:'Popular',
+    desc:'A second Bubble Tea design from the same MakerWorld pack, shown using an original photo from the Bambu listing.',
+    credit:'Yokoprints3D', source:'https://makerworld.com/en/models/435974-keychains-bubble-tea-with-commercial-license', paymentLink:''
+  },
+  {
+    id:'KEY-04', name:'Tea Cup', type:'keychain', size:'Medium · flat multicolour',
+    grams:5.0, printTime:'≈ 18–25 min each', estimatedCost:1.15, price:4.50,
+    image:'https://makerworld.bblmw.com/makerworld/model/DSM00000000435974/design/2024-04-20_ae10532e594cd8.jpeg?x-oss-process=image%2Fformat%2Cwebp',
+    fallback:'assets/images/wave.svg', imagePosition:'center',
+    colors:['pink','brown','white'], tag:'Detailed',
+    desc:'A slightly more detailed Bubble Tea variation, priced a little higher to cover the extra colour and material allowance.',
+    credit:'Yokoprints3D', source:'https://makerworld.com/en/models/435974-keychains-bubble-tea-with-commercial-license', paymentLink:''
+  },
+  {
+    id:'KEY-05', name:'AU Trolley Key', type:'keychain', size:'Small · slim tool keychain',
+    grams:3.0, printTime:'≈ 13 min', estimatedCost:0.65, price:3.00,
+    image:'https://makerworld.bblmw.com/makerworld/model/US4b2009182b20da/design/2025-03-27_9eb8288ff7c3e.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp',
+    fallback:'assets/images/initial.svg', imagePosition:'center',
+    colors:['white','black','pink'], tag:'Low filament',
+    desc:'A very quick Australian trolley opener keychain. The MakerWorld profile lists a 13 minute print.',
+    credit:'Alyte_', source:'https://makerworld.com/en/models/1253156-1-au-trolley-opener', paymentLink:''
+  },
+  {
+    id:'KEY-06', name:'Hard Hat', type:'keychain', size:'Medium · flat safety helmet',
+    grams:4.2, printTime:'≈ 19 min', estimatedCost:0.90, price:3.50,
+    image:'https://makerworld.bblmw.com/makerworld/model/USb368d65c8bf0f0/design/2025-06-18_dea3a3886f6fb.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp',
+    fallback:'assets/images/helmet.svg', imagePosition:'center',
+    colors:['white','black','yellow'], tag:'Quick print',
+    desc:'A flat hard-hat keychain with room for simple custom text. The MakerWorld profile lists a 19 minute print.',
+    credit:'Jowitka', source:'https://makerworld.com/en/models/1529908-helmet-keychain', paymentLink:''
+  }
 ];

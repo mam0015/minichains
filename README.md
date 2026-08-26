@@ -1,66 +1,33 @@
-# mini NFC Catalog — GitHub Pages
+# mini — Keychain Drop v3 (Real MakerWorld/Bambu Photos)
 
-A static, mobile-first mini product catalog built for GitHub Pages and NFC/QR entry.
+This version replaces the fake SVG product mockups with the real photo URLs from the referenced MakerWorld/Bambu listings.
 
-## Run locally
-Open `index.html` in a browser, or run a small local server:
+## GitHub Pages
+1. Upload everything inside this folder to the root of your GitHub repo.
+2. GitHub → Settings → Pages.
+3. Deploy from your main branch, `/root`.
+4. Open the GitHub Pages URL after deployment.
 
-```bash
-python3 -m http.server 8000
-```
+No build step is needed.
 
-Then visit `http://localhost:8000`.
+## Important about the photos
+The product images are hot-linked from MakerWorld's image CDN so they stay identical to the Bambu/MakerWorld listing photos. Internet access is required for them to load. Local SVG fallbacks remain in the package if a remote image ever fails.
 
-## Deploy to GitHub Pages
-1. Create a GitHub repository.
-2. Upload **all files and folders inside this package** to the repository root.
-3. In GitHub, open **Settings → Pages**.
-4. Under **Build and deployment**, choose **Deploy from a branch**.
-5. Select your main branch and `/ (root)`.
-6. Save and wait for GitHub to publish the URL.
+## Model credits / licensing used in the catalog
+- Panda Heart — Nolan3D — MakerWorld model 233668. Creator states the designs can be printed and sold; CC Attribution is shown on MakerWorld.
+- Bubble Tea variants — Yokoprints3D — MakerWorld model 435974, listed as a commercial-license Bubble Tea keychain set; CC Attribution-NoDerivatives shown on MakerWorld.
+- AU Trolley Key — Alyte_ — MakerWorld model 1253156; CC Attribution-ShareAlike shown on MakerWorld.
+- Hard Hat — Jowitka — MakerWorld model 1529908; CC Attribution-ShareAlike shown on MakerWorld.
 
-## Edit products
-Edit `products.js`.
+Attribution links are shown directly under each product card. Do not remove them unless you have verified the license no longer requires attribution.
 
-Each product has:
-- `id` — model code
-- `name`
-- `type` — set / dispenser / holder / tumbler / tray / bin
-- `price`
-- `image`
-- `colors`
-- `tag`
-- `desc`
-- `paymentLink`
+## Pricing
+Prices are intentionally small school-project prices, not commercial-store pricing:
+- Quick/small: around A$3.00
+- Medium: A$3.50–A$4.00
+- More detailed/multicolour: A$4.50
 
-The 20 products and prices in this starter build are demo content until you replace them with the real mini range.
-
-## Replace product images
-Put your real product photos inside `assets/images/`, then change each product's `image` value in `products.js`.
-
-Example:
-
-```js
-image: 'assets/images/my-real-product.jpg'
-```
+The gram estimates are planning estimates. Slice the exact models/plate in Bambu Studio before printing the batch and update `grams` / `estimatedCost` in `products.js` using the slicer's actual filament estimate.
 
 ## Payments
-The design is ready for Stripe Payment Links or Square payment links. Never put a Stripe secret key in GitHub Pages JavaScript.
-
-For a single-product purchase, paste a hosted checkout URL into `paymentLink` in `products.js`.
-
-For a multi-item cart with dynamic checkout, use a small backend/serverless function (for example Supabase Edge Functions, Cloudflare Workers, or Vercel) to create the Stripe Checkout Session securely.
-
-## NFC links
-For one NFC tag that opens the catalog, write your GitHub Pages/custom-domain URL, for example:
-
-`https://your-domain.com/`
-
-For NFC tags tied to individual models, the next version can use URLs such as:
-
-`https://your-domain.com/?model=DSP-01`
-
-and automatically open that product.
-
-## Brand assets
-The supplied `mini` logo is included as `assets/images/mini-logo.png` with its outer black background removed while preserving the black face details.
+`paymentLink` is still blank. Add Stripe or Square links later if needed.

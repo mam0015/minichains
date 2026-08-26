@@ -3,147 +3,74 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#ffeff6" />
-  <meta name="description" content="mini — simple bathroom accessories with a playful pink touch." />
-  <title>mini — Shop the Collection</title>
+  <meta name="theme-color" content="#fff6fa" />
+  <meta name="description" content="mini — a small 3D printed keychain collection created for a school project." />
+  <title>mini — Keychain Drop</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="announcement" aria-label="Store benefits">
-    <span>Free shipping over A$100</span>
-    <span>Secure checkout</span>
-    <span>Australia-wide delivery</span>
+  <div class="announcement">
+    <span>School project</span><i></i><span>3D printed keychains</span><i></i><span>20 pieces · 6 designs</span>
   </div>
 
   <header class="site-header" id="top">
-    <a class="brand" href="#top" aria-label="mini home">
-      <img src="assets/images/mini-logo.png" alt="mini" />
-    </a>
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      <a href="#shop">Shop</a>
-      <a href="#collection">Collection</a>
-      <a href="#about">About</a>
-      <a href="#contact">Contact</a>
-    </nav>
+    <a class="brand" href="#top" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a></nav>
     <div class="header-actions">
-      <button class="icon-btn" id="searchToggle" aria-label="Search products">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
-      </button>
-      <button class="icon-btn bag-btn" id="cartToggle" aria-label="Open cart">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg>
-        <span class="cart-count" id="cartCount">0</span>
-      </button>
+      <button class="icon-btn" id="searchToggle" aria-label="Search keychains"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
+      <button class="icon-btn bag-btn" id="cartToggle" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></button>
       <button class="menu-btn" id="menuToggle" aria-label="Open menu"><span></span><span></span></button>
     </div>
   </header>
 
-  <div class="search-panel" id="searchPanel" aria-hidden="true">
-    <label for="siteSearch">Search mini</label>
-    <div class="search-row"><input id="siteSearch" type="search" placeholder="Search by product or model..." autocomplete="off"/><button id="searchClose" aria-label="Close search">×</button></div>
-  </div>
-
-  <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
-    <a href="#shop">Shop</a><a href="#collection">Collection</a><a href="#about">About</a><a href="#contact">Contact</a>
-  </nav>
+  <div class="search-panel" id="searchPanel" aria-hidden="true"><label for="siteSearch">Find a keychain</label><div class="search-row"><input id="siteSearch" type="search" placeholder="Panda, Boba, Trolley, Hard Hat..." autocomplete="off"><button id="searchClose" aria-label="Close search">×</button></div></div>
+  <nav class="mobile-nav" id="mobileNav"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a></nav>
 
   <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">WELCOME TO MINI</p>
-        <h1>Small details.<br><span>Big personality.</span></h1>
-        <p class="hero-text">A compact collection of everyday bathroom pieces designed to feel simple, useful and a little more fun.</p>
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#shop">Shop collection <span>↗</span></a>
-          <a class="btn btn-ghost" href="#collection">Explore all models</a>
-        </div>
-        <div class="hero-trust"><div class="mini-faces"><span>☺</span><span>☺</span><span>☺</span></div><p>Tap, browse and choose in seconds.</p></div>
+    <section class="hero-slider" aria-label="mini keychain highlights">
+      <div class="slides" id="heroSlides">
+        <article class="hero-slide active" data-slide="0">
+          <div class="hero-copy"><p class="eyebrow">MINI KEYCHAIN DROP</p><h1>Real prints.<br><span>Real photos.</span></h1><p>Six keychain designs using the actual MakerWorld/Bambu listing photos, not fake product renders.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Shop keychains <span>↗</span></a><a class="btn btn-ghost" href="#prices">See prices</a></div><div class="mini-note"><strong>From A$3.00</strong><span>·</span><span>Small school-project batch</span></div></div>
+          <div class="hero-art triple real-photo-stack"><img src="https://makerworld.bblmw.com/makerworld/model/US3c9373901c932c/design/2024-03-06_375ff7f26db4d.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/heart.svg'" alt="Panda heart keychain"><img src="https://makerworld.bblmw.com/makerworld/model/DSM00000000435974/design/2024-04-20_8415f557c17ac8.jpeg?x-oss-process=image%2Fformat%2Cwebp" onerror="this.src='assets/images/smiley.svg'" alt="Bubble tea keychains"><img src="https://makerworld.bblmw.com/makerworld/model/USb368d65c8bf0f0/design/2025-06-18_dea3a3886f6fb.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/helmet.svg'" alt="Hard hat keychain"></div>
+        </article>
+        <article class="hero-slide" data-slide="1">
+          <div class="hero-copy"><p class="eyebrow">BUBBLE TEA SERIES</p><h1>Cute enough<br><span>to actually sell.</span></h1><p>Three different boba-style keychains from one MakerWorld pack, perfect for a small colourful display.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">View boba designs <span>↗</span></a></div><div class="mini-note"><strong>A$4.00–A$4.50</strong><span>·</span><span>Flat multicolour prints</span></div></div>
+          <div class="hero-art single real-photo-single"><img src="https://makerworld.bblmw.com/makerworld/model/DSM00000000435974/design/2024-04-20_ae10532e594cd8.jpeg?x-oss-process=image%2Fformat%2Cwebp" onerror="this.src='assets/images/smiley.svg'" alt="Bubble tea keychains"></div>
+        </article>
+        <article class="hero-slide" data-slide="2">
+          <div class="hero-copy"><p class="eyebrow">QUICK + LOW MATERIAL</p><h1>Short prints.<br><span>Better margin.</span></h1><p>The trolley opener and hard-hat models have short listed print times, so they work well for a 20-piece school batch.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">See quick prints <span>↗</span></a></div><div class="mini-note"><strong>13–19 min</strong><span>·</span><span>Per listed print profile</span></div></div>
+          <div class="hero-art double real-photo-pair"><img src="https://makerworld.bblmw.com/makerworld/model/US4b2009182b20da/design/2025-03-27_9eb8288ff7c3e.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/initial.svg'" alt="Australian trolley opener keychain"><img src="https://makerworld.bblmw.com/makerworld/model/USb368d65c8bf0f0/design/2025-06-18_dea3a3886f6fb.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/helmet.svg'" alt="Hard hat keychain"></div>
+        </article>
       </div>
-      <div class="hero-visual" aria-label="mini bathroom accessories display">
-        <div class="hero-orb"></div>
-        <img class="hero-set" src="assets/images/set.svg" alt="mini bathroom accessory set illustration" />
-        <div class="float-card card-one"><b>6</b><span>product types</span></div>
-        <div class="float-card card-two"><b>20</b><span>models & variants</span></div>
-      </div>
+      <div class="slider-controls"><button id="prevSlide" aria-label="Previous slide">←</button><div class="dots" id="heroDots"><button class="active" data-slide-to="0" aria-label="Slide 1"></button><button data-slide-to="1" aria-label="Slide 2"></button><button data-slide-to="2" aria-label="Slide 3"></button></div><button id="nextSlide" aria-label="Next slide">→</button></div>
     </section>
 
-    <section class="category-strip" id="collection" aria-label="Product categories">
-      <a href="#shop" data-filter-link="set"><img src="assets/images/set.svg" alt=""/><span>Bathroom Sets</span></a>
-      <a href="#shop" data-filter-link="dispenser"><img src="assets/images/dispenser.svg" alt=""/><span>Dispensers</span></a>
-      <a href="#shop" data-filter-link="holder"><img src="assets/images/holder.svg" alt=""/><span>Holders</span></a>
-      <a href="#shop" data-filter-link="tumbler"><img src="assets/images/tumbler.svg" alt=""/><span>Tumblers</span></a>
-      <a href="#shop" data-filter-link="tray"><img src="assets/images/tray.svg" alt=""/><span>Trays</span></a>
-      <a href="#shop" data-filter-link="bin"><img src="assets/images/bin.svg" alt=""/><span>Bins</span></a>
+    <section class="quick-strip" id="prices">
+      <div><span>01</span><strong>Quick / Small</strong><b>A$3.00</b><small>≈ 3 g</small></div>
+      <div><span>02</span><strong>Medium</strong><b>A$3.50–4.00</b><small>≈ 4–5 g</small></div>
+      <div><span>03</span><strong>Detailed</strong><b>A$4.50</b><small>extra colour/detail</small></div>
     </section>
 
     <section class="shop-section" id="shop">
-      <div class="section-head">
-        <div><p class="eyebrow">THE COLLECTION</p><h2>Made to mix, match & smile.</h2></div>
-        <p class="section-note">A small range on purpose. Easier to browse, easier to choose.</p>
-      </div>
-      <div class="shop-toolbar">
-        <div class="filters" id="filters" aria-label="Filter products">
-          <button class="active" data-filter="all">All</button><button data-filter="set">Sets</button><button data-filter="dispenser">Dispensers</button><button data-filter="holder">Holders</button><button data-filter="tumbler">Tumblers</button><button data-filter="tray">Trays</button><button data-filter="bin">Bins</button>
-        </div>
-        <span id="productCount" class="product-count">20 items</span>
-      </div>
+      <div class="section-head"><div><p class="eyebrow">THE MINI DROP</p><h2>Pick your keychain.</h2></div><p class="section-note">Only six designs. Less scrolling, less nonsense.</p></div>
+      <div class="shop-toolbar"><div class="filters"><button class="active" data-sort="default">All 6</button><button data-sort="price-low">Lowest price</button><button data-sort="smallest">Least filament</button></div><span id="productCount" class="product-count">6 designs</span></div>
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
     </section>
 
-    <section class="nfc-section">
-      <div class="nfc-card">
-        <div class="nfc-icon">
-          <span></span><span></span><span></span>
-        </div>
-        <div><p class="eyebrow">BUILT FOR NFC</p><h2>See it. Tap it. Shop it.</h2><p>Each NFC tag can open the full mini catalog or link directly to one exact model. No app. No account. No hunting through menus like it’s 2009.</p></div>
-        <a class="text-link" href="#shop">Browse the collection →</a>
-      </div>
-    </section>
-
-    <section class="about-section" id="about">
-      <div class="about-copy">
-        <p class="eyebrow">WHY MINI</p>
-        <h2>Less clutter.<br>More character.</h2>
-        <p>mini keeps the range tight: a handful of useful product types, a curated set of models and a clean shopping experience that works beautifully from an NFC tap on mobile.</p>
-      </div>
-      <div class="benefit-grid">
-        <article><span>01</span><h3>Simple range</h3><p>Only the pieces people actually need.</p></article>
-        <article><span>02</span><h3>Mobile first</h3><p>Fast browsing from NFC, QR or a normal link.</p></article>
-        <article><span>03</span><h3>Secure checkout</h3><p>Ready to connect to Stripe or Square.</p></article>
-        <article><span>04</span><h3>Easy to update</h3><p>Edit one product file and GitHub updates the catalog.</p></article>
-      </div>
-    </section>
-
-    <section class="newsletter">
-      <div><p class="eyebrow">MINI UPDATES</p><h2>New colours, drops & restocks.</h2></div>
-      <form id="newsletterForm"><input type="email" required placeholder="Your email address" aria-label="Email address"><button class="btn btn-primary" type="submit">Keep me posted</button></form>
+    <section class="project-note">
+      <div class="note-smile">☺</div>
+      <div><p class="eyebrow">WHY THESE SIX?</p><h2>Fast prints. Low waste.</h2><p>We chose mostly flat keychains with short listed print times and modest material use. Prices are set to leave roughly A$1–A$3 gross profit per piece after a basic allowance for PLA, split ring and occasional print waste. Final margin should be checked in Bambu Studio after slicing your exact plate.</p></div>
     </section>
   </main>
 
-  <footer id="contact">
-    <div class="footer-brand"><img src="assets/images/mini-logo.png" alt="mini"><p>Small details. Big personality.</p></div>
-    <div><h4>Shop</h4><a href="#shop">All products</a><a href="#collection">Categories</a><a href="#shop">New models</a></div>
-    <div><h4>Info</h4><a href="#about">About</a><a href="#">Shipping & delivery</a><a href="#">Returns</a><a href="#">Privacy</a></div>
-    <div><h4>Contact</h4><a href="mailto:hello@example.com">hello@example.com</a><span>Melbourne, Australia</span><span>Instagram / TikTok</span></div>
-    <div class="footer-bottom"><span>© <span id="year"></span> mini</span><span>Apple Pay · Google Pay · Visa · Mastercard</span></div>
-  </footer>
+  <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="mini"></a><p>3D printed keychains · School project · 2026</p><a href="#top">Back to top ↑</a></footer>
 
-  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true">
-    <div class="drawer-head"><div><p class="eyebrow">YOUR BAG</p><h2>Cart</h2></div><button id="cartClose" aria-label="Close cart">×</button></div>
-    <div class="cart-items" id="cartItems"></div>
-    <div class="cart-empty" id="cartEmpty"><span>☺</span><h3>Your bag is empty.</h3><p>That’s easily fixable.</p></div>
-    <div class="cart-summary" id="cartSummary"><div><span>Subtotal</span><strong id="cartSubtotal">A$0.00</strong></div><p>Shipping and taxes calculated at checkout.</p><button class="btn btn-primary full" id="checkoutBtn">Secure checkout</button></div>
-  </aside>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">YOUR BAG</p><h2>Cart</h2></div><button id="cartClose" aria-label="Close cart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-empty" id="cartEmpty"><span>☺</span><h3>Your bag is empty.</h3><p>Six designs. Surely one can survive your standards.</p></div><div class="cart-summary" id="cartSummary"><div><span>Total</span><strong id="cartSubtotal">A$0.00</strong></div><button class="btn btn-primary full" id="checkoutBtn">Checkout</button><small>Payment link can be connected later.</small></div></aside>
   <div class="page-overlay" id="overlay"></div>
 
-  <dialog class="quick-view" id="quickView">
-    <button class="modal-close" id="quickClose" aria-label="Close">×</button>
-    <div class="quick-image"><img id="quickImage" src="" alt=""></div>
-    <div class="quick-copy"><p class="eyebrow" id="quickModel"></p><h2 id="quickName"></h2><p class="quick-price" id="quickPrice"></p><p id="quickDesc"></p><div class="swatches" id="quickSwatches"></div><button class="btn btn-primary full" id="quickAdd">Add to cart</button></div>
-  </dialog>
-
+  <dialog class="quick-view" id="quickView"><button class="modal-close" id="quickClose" aria-label="Close">×</button><div class="quick-image"><img id="quickImage" src="" alt=""></div><div class="quick-copy"><p class="eyebrow" id="quickModel"></p><h2 id="quickName"></h2><p class="quick-price" id="quickPrice"></p><div class="spec-pills"><span id="quickSize"></span><span id="quickWeight"></span><span id="quickTime"></span></div><p id="quickDesc"></p><div class="swatches" id="quickSwatches"></div><button class="btn btn-primary full" id="quickAdd">Add to bag</button></div></dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="products.js"></script>
-  <script src="app.js"></script>
+  <script src="products.js"></script><script src="app.js"></script>
 </body>
 </html>
