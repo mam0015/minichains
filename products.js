@@ -1,0 +1,24 @@
+// Edit this file to change product names, prices, models, colours and payment links.
+// paymentLink can be a Stripe Payment Link, Square link, or your own checkout URL.
+window.MINI_PRODUCTS = [
+  {id:'SET-01',name:'mini Complete Set 01',type:'set',price:79,image:'assets/images/set.svg',colors:['pink','black','white'],tag:'Popular',desc:'A coordinated bathroom set with the essential everyday pieces in one clean look.',paymentLink:''},
+  {id:'SET-02',name:'mini Complete Set 02',type:'set',price:85,image:'assets/images/set.svg',colors:['black','white','beige'],tag:'New',desc:'A slightly bolder full-set configuration designed to keep the vanity looking consistent.',paymentLink:''},
+  {id:'SET-03',name:'mini Compact Set',type:'set',price:59,image:'assets/images/set.svg',colors:['pink','white'],tag:'',desc:'A smaller bundle for compact bathrooms, powder rooms and guest spaces.',paymentLink:''},
+  {id:'DSP-01',name:'mini Pump 01',type:'dispenser',price:24,image:'assets/images/dispenser.svg',colors:['pink','black','white'],tag:'Best seller',desc:'A simple refillable dispenser with a compact footprint and playful mini face detail.',paymentLink:''},
+  {id:'DSP-02',name:'mini Pump 02',type:'dispenser',price:26,image:'assets/images/dispenser.svg',colors:['black','white','beige'],tag:'',desc:'A clean-profile soap dispenser made to pair with the rest of the mini range.',paymentLink:''},
+  {id:'DSP-03',name:'mini Pump 03',type:'dispenser',price:29,image:'assets/images/dispenser.svg',colors:['pink','grey','white'],tag:'New',desc:'A taller dispenser option for customers who want a little more capacity.',paymentLink:''},
+  {id:'HLD-01',name:'mini Holder 01',type:'holder',price:19,image:'assets/images/holder.svg',colors:['pink','black','white'],tag:'',desc:'A toothbrush and vanity holder that keeps the everyday basics together.',paymentLink:''},
+  {id:'HLD-02',name:'mini Holder 02',type:'holder',price:21,image:'assets/images/holder.svg',colors:['black','white','beige'],tag:'',desc:'A minimal holder with a soft-edged shape that works across the mini collection.',paymentLink:''},
+  {id:'HLD-03',name:'mini Holder 03',type:'holder',price:22,image:'assets/images/holder.svg',colors:['pink','white','grey'],tag:'',desc:'A compact multi-use holder for brushes, toothpaste or small bathroom tools.',paymentLink:''},
+  {id:'TMB-01',name:'mini Tumbler 01',type:'tumbler',price:18,image:'assets/images/tumbler.svg',colors:['black','pink','white'],tag:'',desc:'A simple bathroom tumbler that works for rinsing, brushes or vanity storage.',paymentLink:''},
+  {id:'TMB-02',name:'mini Tumbler 02',type:'tumbler',price:20,image:'assets/images/tumbler.svg',colors:['white','beige','pink'],tag:'',desc:'A softer neutral tumbler variation made to mix easily with different finishes.',paymentLink:''},
+  {id:'TMB-03',name:'mini Tumbler 03',type:'tumbler',price:20,image:'assets/images/tumbler.svg',colors:['grey','black','pink'],tag:'',desc:'A darker tumbler option for modern bathrooms and monochrome styling.',paymentLink:''},
+  {id:'TRY-01',name:'mini Tray 01',type:'tray',price:22,image:'assets/images/tray.svg',colors:['pink','white','black'],tag:'Popular',desc:'A vanity tray for grouping smaller pieces without making the counter feel busy.',paymentLink:''},
+  {id:'TRY-02',name:'mini Tray 02',type:'tray',price:25,image:'assets/images/tray.svg',colors:['beige','white','pink'],tag:'',desc:'A longer tray option for dispensers, perfume, skincare or accessories.',paymentLink:''},
+  {id:'TRY-03',name:'mini Tray 03',type:'tray',price:27,image:'assets/images/tray.svg',colors:['black','grey','pink'],tag:'',desc:'A statement tray with the same rounded mini design language.',paymentLink:''},
+  {id:'BIN-01',name:'mini Bin 01',type:'bin',price:34,image:'assets/images/bin.svg',colors:['pink','black','white'],tag:'',desc:'A compact bathroom bin with a clean silhouette and easy-to-place proportions.',paymentLink:''},
+  {id:'BIN-02',name:'mini Bin 02',type:'bin',price:38,image:'assets/images/bin.svg',colors:['black','grey','white'],tag:'',desc:'A larger bin option for family bathrooms and higher-use spaces.',paymentLink:''},
+  {id:'BIN-03',name:'mini Bin 03',type:'bin',price:36,image:'assets/images/bin.svg',colors:['beige','white','pink'],tag:'',desc:'A softer neutral bin designed to sit quietly in lighter bathroom schemes.',paymentLink:''},
+  {id:'SET-04',name:'mini Duo Set',type:'set',price:42,image:'assets/images/set.svg',colors:['pink','black','white'],tag:'',desc:'A two-piece starter bundle for customers who want to keep things extra simple.',paymentLink:''},
+  {id:'DSP-04',name:'mini Pump Duo',type:'dispenser',price:45,image:'assets/images/dispenser.svg',colors:['pink','black','white'],tag:'Bundle',desc:'A matching two-dispenser bundle for hand wash, lotion or shampoo setups.',paymentLink:''}
+];
