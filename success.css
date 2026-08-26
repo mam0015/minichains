@@ -103,3 +103,161 @@
     margin:auto;
   }
 }
+
+
+/* v8 — simplified prize wheel */
+.wheel-section{
+  padding:38px 28px 44px;
+  text-align:center;
+  overflow:hidden;
+}
+.wheel-copy{
+  max-width:620px;
+  margin:0 auto 18px;
+}
+.wheel-copy h2{
+  margin:4px 0 8px;
+  font-size:clamp(34px,5vw,56px);
+  letter-spacing:-.05em;
+}
+.wheel-copy p:not(.eyebrow){
+  margin:0;
+  color:var(--muted);
+  font-size:16px;
+}
+.wheel-stage{
+  width:min(560px,92vw);
+  aspect-ratio:1/1;
+  position:relative;
+  margin:24px auto 12px;
+  display:grid;
+  place-items:center;
+}
+.prize-wheel{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  position:relative;
+  box-shadow:
+    0 24px 70px rgba(44,11,28,.18),
+    inset 0 0 0 10px #fff,
+    inset 0 0 0 13px #ffd0e5;
+  background:
+    conic-gradient(
+      from -90deg,
+      #f7e1eb 0deg 90deg,
+      #ff9bc7 90deg 133.2deg,
+      #f1ebee 133.2deg 205.2deg,
+      #171117 205.2deg 241.2deg,
+      #ffe5f1 241.2deg 313.2deg,
+      #ff6aaf 313.2deg 342deg,
+      #ff2f8d 342deg 360deg
+    );
+  transition:transform 5.2s cubic-bezier(.14,.76,.16,1);
+  transform:rotate(0deg);
+}
+.prize-wheel::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  pointer-events:none;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.85);
+}
+.wheel-pointer{
+  width:0;
+  height:0;
+  border-left:18px solid transparent;
+  border-right:18px solid transparent;
+  border-top:34px solid var(--ink);
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:6;
+  filter:drop-shadow(0 5px 8px rgba(0,0,0,.12));
+}
+.wheel-center{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:132px;
+  height:132px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  border:10px solid #fff;
+  background:var(--pink);
+  color:#fff;
+  font-weight:950;
+  font-size:24px;
+  letter-spacing:.04em;
+  cursor:pointer;
+  z-index:5;
+  box-shadow:0 10px 26px rgba(255,90,165,.3);
+}
+.wheel-center:hover{ transform:translate(-50%,-50%) scale(1.035); }
+.wheel-center:disabled{ cursor:default; opacity:.88; }
+.wheel-label{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:112px;
+  margin-left:-56px;
+  margin-top:-12px;
+  font-size:12px;
+  font-weight:950;
+  line-height:1.15;
+  letter-spacing:.02em;
+  transform-origin:56px 12px;
+  text-align:center;
+  color:var(--ink);
+  pointer-events:none;
+  z-index:2;
+}
+.label-empty-1{ transform:rotate(-45deg) translateY(-195px) rotate(45deg); }
+.label-five{ transform:rotate(21.6deg) translateY(-195px) rotate(-21.6deg); }
+.label-empty-2{ transform:rotate(79.2deg) translateY(-195px) rotate(-79.2deg); }
+.label-free{
+  transform:rotate(133.2deg) translateY(-195px) rotate(-133.2deg);
+  color:#fff;
+  font-size:11px;
+}
+.label-empty-3{ transform:rotate(187.2deg) translateY(-195px) rotate(-187.2deg); }
+.label-ten{ transform:rotate(237.6deg) translateY(-195px) rotate(-237.6deg); }
+.label-twenty{
+  transform:rotate(252deg) translateY(-195px) rotate(-252deg);
+  color:#fff;
+}
+.spin-status{
+  margin:12px 0 0;
+  color:var(--muted);
+  font-size:12px;
+}
+.locked-wheel .prize-wheel{
+  filter:grayscale(.15);
+  opacity:.72;
+}
+.locked-wheel .wheel-center{ pointer-events:none; }
+
+@media(max-width:600px){
+  .wheel-section{padding-left:14px;padding-right:14px}
+  .wheel-center{
+    width:110px;
+    height:110px;
+    font-size:20px;
+    border-width:8px;
+  }
+  .wheel-label{
+    width:90px;
+    margin-left:-45px;
+    font-size:10px;
+    transform-origin:45px 10px;
+  }
+  .label-empty-1{ transform:rotate(-45deg) translateY(-36vw) rotate(45deg); }
+  .label-five{ transform:rotate(21.6deg) translateY(-36vw) rotate(-21.6deg); }
+  .label-empty-2{ transform:rotate(79.2deg) translateY(-36vw) rotate(-79.2deg); }
+  .label-free{ transform:rotate(133.2deg) translateY(-36vw) rotate(-133.2deg); font-size:9px; }
+  .label-empty-3{ transform:rotate(187.2deg) translateY(-36vw) rotate(-187.2deg); }
+  .label-ten{ transform:rotate(237.6deg) translateY(-36vw) rotate(-237.6deg); }
+  .label-twenty{ transform:rotate(252deg) translateY(-36vw) rotate(-252deg); }
+}

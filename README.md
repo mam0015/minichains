@@ -28,3 +28,21 @@ For production online card payments:
 - create/validate one-time promo codes server-side.
 
 See `SQUARE_SETUP.md` for the existing Square backend notes.
+
+
+## v8 — proper Spin & Win wheel
+
+The customer now sees:
+- a large circular wheel
+- a centre SPIN button
+- visible result slices only
+- 5% OFF
+- 10% OFF
+- 20% OFF
+- FREE KEYCHAIN
+- three EMPTY slices
+
+Customer-facing copy:
+"Try your luck. You might win a free keychain."
+
+No probability breakdown is shown on the page.

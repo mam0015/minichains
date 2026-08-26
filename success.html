@@ -56,37 +56,54 @@
       <div class="order-breakdown" id="orderBreakdown"></div>
     </section>
 
+    
     <section class="wheel-section" id="wheelSection">
       <div class="wheel-copy">
-        <p class="eyebrow">BUY 3 · SPIN ONCE</p>
-        <h2 id="wheelTitle">Your spin is unlocked.</h2>
-        <p id="wheelIntro">Because this order contains at least 3 items, you get one random spin. One spin per paid order.</p>
-        <div class="odds-card">
-          <div><strong>10%</strong><span>Free keychain</span></div>
-          <div><strong>25%</strong><span>Any discount</span></div>
-          <div><strong>65%</strong><span>No prize</span></div>
-        </div>
-        <p class="odds-note">Discount prizes are 5%, 10% or 20%. The wheel has three separate no-prize sections. Random draw uses the browser’s cryptographic random generator.</p>
+        <p class="eyebrow">SPIN & WIN</p>
+        <h2 id="wheelTitle">Try your luck.</h2>
+        <p id="wheelIntro">You might win a free keychain.</p>
       </div>
 
       <div class="wheel-stage">
-        <div class="wheel-pointer">▼</div>
-        <div class="wheel-shell" id="wheelShell">
-          <div class="prize-wheel" id="prizeWheel">
-            <div class="wheel-label" style="--a:45deg;--r:37%">NO PRIZE</div>
-            <div class="wheel-label" style="--a:111.6deg;--r:37%">5% OFF</div>
-            <div class="wheel-label" style="--a:169.2deg;--r:37%">NO PRIZE</div>
-            <div class="wheel-label" style="--a:223.2deg;--r:37%">FREE ITEM</div>
-            <div class="wheel-label" style="--a:277.2deg;--r:37%">NO PRIZE</div>
-            <div class="wheel-label" style="--a:327.6deg;--r:37%">10% OFF</div>
-            <div class="wheel-label" style="--a:351deg;--r:37%">20%</div>
-          </div>
-          <div class="wheel-center"><img src="assets/images/mini-logo.png" alt="mini"><span id="wheelCenterText">1 SPIN</span></div>
+        <div class="wheel-pointer" aria-hidden="true"></div>
+
+        <div class="prize-wheel" id="prizeWheel" aria-label="Prize wheel">
+          <div class="wheel-label label-empty-1">EMPTY</div>
+          <div class="wheel-label label-five">5% OFF</div>
+          <div class="wheel-label label-empty-2">EMPTY</div>
+          <div class="wheel-label label-free">FREE<br>KEYCHAIN</div>
+          <div class="wheel-label label-empty-3">EMPTY</div>
+          <div class="wheel-label label-ten">10% OFF</div>
+          <div class="wheel-label label-twenty">20% OFF</div>
+
+          <button class="wheel-center" id="spinBtn" type="button">
+            <span id="wheelCenterText">SPIN</span>
+          </button>
         </div>
-        <button class="btn btn-primary spin-btn" id="spinBtn">Spin the wheel</button>
-        <p class="spin-status" id="spinStatus">Your result is saved to this order after spinning.</p>
+      </div>
+
+      <p class="spin-status" id="spinStatus">One spin per eligible paid order.</p>
+
+      <div class="prize-result" id="prizeResult" hidden>
+        <p class="eyebrow">YOUR RESULT</p>
+        <h3 id="resultTitle"></h3>
+        <p id="resultText"></p>
+
+        <div class="promo-code-box" id="promoCodeBox" hidden>
+          <code id="promoCode"></code>
+          <button id="copyCode" type="button">Copy code</button>
+        </div>
+
+        <div class="free-item-box" id="freeItemBox" hidden>
+          <img id="freeItemImage" alt="">
+          <div>
+            <span>FREE ITEM</span>
+            <strong id="freeItemName"></strong>
+          </div>
+        </div>
       </div>
     </section>
+    
 
     <section class="prize-result" id="prizeResult" hidden>
       <div class="result-burst">★</div>

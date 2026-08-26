@@ -275,13 +275,13 @@ function showResult(spin) {
     text.textContent =
       order.paymentMethod === 'cash'
         ? `No wheel prize this time, but your ${order.cashDiscountPercent || 5}% cash discount was already applied to this order.`
-        : 'Your order is still confirmed. There are three no-prize sections so the wheel does not hand out prizes to half the school.';
+        : 'No prize this time. Your order is still confirmed.';
     wheelCenterText.textContent = 'NEXT TIME';
   }
 
   spinBtn.disabled = true;
   spinBtn.textContent = 'Spin already used';
-  spinStatus.textContent = 'This paid order has already used its one spin.';
+  spinStatus.textContent = 'This order has already used its spin.';
 }
 
 function renderWheelState() {
@@ -307,7 +307,7 @@ function renderWheelState() {
 
   document.querySelector('#wheelTitle').textContent = 'Your spin is unlocked.';
   document.querySelector('#wheelIntro').textContent =
-    'Because this paid order contains at least 3 items, you get one random spin. One spin per paid order.';
+    'You might win a free keychain.';
 
   const existing = getSpin();
   if (existing) {
@@ -317,7 +317,7 @@ function renderWheelState() {
   } else {
     spinBtn.disabled = false;
     spinBtn.textContent = 'Spin the wheel';
-    spinStatus.textContent = 'Your result is saved to this order after spinning.';
+    spinStatus.textContent = 'Tap SPIN and see what you get.';
   }
 }
 
