@@ -4,30 +4,54 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#fff6fa" />
-  <title>mini — Payment confirmed</title>
+  <title>mini — Order confirmation</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="success.css" />
 </head>
 <body class="success-body">
-  <div class="announcement"><span>School project</span><i></i><span>Payment confirmed</span><i></i><span>Collect from us</span></div>
+  <div class="announcement"><span>School project</span><i></i><span id="announcementStatus">Order confirmation</span><i></i><span>Collect from us</span></div>
   <header class="site-header success-header">
     <a class="brand" href="index.html" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
     <a class="back-shop" href="index.html#shop">← Back to keychains</a>
   </header>
 
   <main class="success-main">
-    <section class="paid-card">
-      <div class="paid-icon" aria-hidden="true">✓</div>
-      <p class="eyebrow">PAYMENT COMPLETE</p>
-      <h1>You’re all paid.</h1>
-      <p class="paid-lead">Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.</p>
-      <div class="order-reference"><span>ORDER REFERENCE</span><strong id="orderRef">MINI-DEMO</strong></div>
-      <div class="demo-warning" id="demoWarning" hidden>This is the demo checkout flow. Connect a verified payment gateway before treating this screen as proof of payment.</div>
+    <section class="paid-card" id="statusCard">
+      <div class="paid-icon" id="statusIcon" aria-hidden="true">✓</div>
+      <p class="eyebrow" id="statusEyebrow">PAYMENT COMPLETE</p>
+      <h1 id="statusTitle">You’re all paid.</h1>
+      <p class="paid-lead" id="statusLead">Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.</p>
+
+      <div class="payment-method-badge" id="paymentMethodBadge">CARD / ONLINE</div>
+
+      <div class="order-reference">
+        <span>ORDER REFERENCE</span>
+        <strong id="orderRef">MINI-DEMO</strong>
+      </div>
+
+      <div class="demo-warning" id="demoWarning" hidden>
+        This is the demo card flow. Connect and verify Square before treating this screen as proof of online payment.
+      </div>
+    </section>
+
+    <section class="cash-payment-card" id="cashPaymentCard" hidden>
+      <div>
+        <p class="eyebrow">CASH PAYMENT</p>
+        <h2>Collect this amount in cash.</h2>
+        <p>The 5% cash discount has already been applied automatically. Any existing promo code is stacked with it.</p>
+      </div>
+      <div class="cash-amount-box">
+        <span>AMOUNT TO COLLECT</span>
+        <strong id="cashDueAmount">A$0.00</strong>
+        <small>Rounded to the nearest 5¢ for cash.</small>
+      </div>
+      <button class="btn btn-primary" id="confirmCashBtn">Cash received</button>
+      <small class="cash-confirm-note">Tap this only after the cash has actually been handed over. This school-project version stores the confirmation on this device.</small>
     </section>
 
     <section class="order-card">
-      <div class="order-title"><div><p class="eyebrow">YOUR ORDER</p><h2>What you bought</h2></div><strong id="orderTotal">A$0.00</strong></div>
+      <div class="order-title"><div><p class="eyebrow">YOUR ORDER</p><h2>What you bought</h2></div><div class="order-total-wrap"><span id="orderPaymentMethod">CARD</span><strong id="orderTotal">A$0.00</strong></div></div>
       <div class="success-items" id="successItems"></div>
       <div class="order-breakdown" id="orderBreakdown"></div>
     </section>

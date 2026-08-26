@@ -1,36 +1,30 @@
-# mini keychains v4 — Payment Success + Spin & Win
+# mini keychains v7 — Card + Cash checkout
 
-Static GitHub Pages package for the mini school project.
+This release adds a two-method checkout flow for the school project.
 
-## New route
-- `success.html` — payment-success / collection page.
-- Shows the purchased items, paid total and order reference.
-- Tells the customer to speak to the mini team and show the page to collect the items.
-- Orders with 3+ units unlock exactly one prize-wheel spin.
+## What changed
 
-## Wheel odds
-The wheel is intentionally NOT equal-probability:
-- Free keychain: 10%
-- Any discount: 25% total
-  - 5% off: 12%
-  - 10% off: 8%
-  - 20% off: 5%
-- No prize: 65% total across three separate no-prize sections.
+- Card / Online: keeps the Square checkout flow.
+- Cash: automatically gives 5% off.
+- Cash totals are rounded to the nearest 5 cents.
+- Existing one-time promo codes stack additively with the 5% cash discount.
+  Example: 10% promo + 5% cash = 15% off before cash rounding.
+- Cash orders open on the order confirmation page as **Cash Due**.
+- After the money is physically received, tap **Cash received**.
+- Only then is the order marked paid and the 3+ item Spin & Win unlocks.
+- Payment method and every discount are shown on the confirmation page.
+- Wheel discount prizes are still one-time codes for a future order.
+- Free-item wheel prizes still choose one of the six current keychains randomly.
 
-The browser uses `crypto.getRandomValues()` for the draw. If Free Item wins, one of the six catalog keychains is selected randomly and shown by name/photo.
+## Important security note
 
-## One-time codes
-The current GitHub-only demo stores issued discount codes in `localStorage` and marks a code used after demo checkout. This makes it one-use **on the same browser**, which is enough for a classroom prototype but NOT enough to stop deliberate abuse across devices or cleared browser storage.
+GitHub Pages is a static site.
 
-For a live payment system, issue/redeem codes on a backend (e.g. Supabase Edge Function) and verify the Stripe/Square payment server-side before creating a prize claim. Do not trust `success.html`, URL parameters or browser localStorage as proof of payment.
+The local cash confirmation and one-time promo enforcement are suitable for the school-project workflow on your own device, but they are not tamper-proof.
 
-## Demo flow
-1. Open `index.html`.
-2. Add 3 or more items.
-3. Open cart and click Checkout.
-4. The demo stores an order and opens `success.html?demo=1&order=...`.
-5. Spin once.
-6. Refresh/reopen the order: the same result remains and the spin cannot be repeated on that browser.
+For production online card payments:
+- keep Square secret keys in a private backend only;
+- verify the Square payment server-side;
+- create/validate one-time promo codes server-side.
 
-## GitHub Pages
-Upload every file/folder in this package to the repository root. `index.html` and `success.html` must stay next to each other.
+See `SQUARE_SETUP.md` for the existing Square backend notes.
