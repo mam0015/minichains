@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#fff6fa" />
+  <title>mini — Payment confirmed</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="success.css" />
+</head>
+<body class="success-body">
+  <div class="announcement"><span>School project</span><i></i><span>Payment confirmed</span><i></i><span>Collect from us</span></div>
+  <header class="site-header success-header">
+    <a class="brand" href="index.html" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
+    <a class="back-shop" href="index.html#shop">← Back to keychains</a>
+  </header>
+
+  <main class="success-main">
+    <section class="paid-card">
+      <div class="paid-icon" aria-hidden="true">✓</div>
+      <p class="eyebrow">PAYMENT COMPLETE</p>
+      <h1>You’re all paid.</h1>
+      <p class="paid-lead">Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.</p>
+      <div class="order-reference"><span>ORDER REFERENCE</span><strong id="orderRef">MINI-DEMO</strong></div>
+      <div class="demo-warning" id="demoWarning" hidden>This is the demo checkout flow. Connect a verified payment gateway before treating this screen as proof of payment.</div>
+    </section>
+
+    <section class="order-card">
+      <div class="order-title"><div><p class="eyebrow">YOUR ORDER</p><h2>What you bought</h2></div><strong id="orderTotal">A$0.00</strong></div>
+      <div class="success-items" id="successItems"></div>
+      <div class="order-breakdown" id="orderBreakdown"></div>
+    </section>
+
+    <section class="wheel-section" id="wheelSection">
+      <div class="wheel-copy">
+        <p class="eyebrow">BUY 3 · SPIN ONCE</p>
+        <h2 id="wheelTitle">Your spin is unlocked.</h2>
+        <p id="wheelIntro">Because this order contains at least 3 items, you get one random spin. One spin per paid order.</p>
+        <div class="odds-card">
+          <div><strong>10%</strong><span>Free keychain</span></div>
+          <div><strong>25%</strong><span>Any discount</span></div>
+          <div><strong>65%</strong><span>No prize</span></div>
+        </div>
+        <p class="odds-note">Discount prizes are 5%, 10% or 20%. The wheel has three separate no-prize sections. Random draw uses the browser’s cryptographic random generator.</p>
+      </div>
+
+      <div class="wheel-stage">
+        <div class="wheel-pointer">▼</div>
+        <div class="wheel-shell" id="wheelShell">
+          <div class="prize-wheel" id="prizeWheel">
+            <div class="wheel-label" style="--a:45deg;--r:37%">NO PRIZE</div>
+            <div class="wheel-label" style="--a:111.6deg;--r:37%">5% OFF</div>
+            <div class="wheel-label" style="--a:169.2deg;--r:37%">NO PRIZE</div>
+            <div class="wheel-label" style="--a:223.2deg;--r:37%">FREE ITEM</div>
+            <div class="wheel-label" style="--a:277.2deg;--r:37%">NO PRIZE</div>
+            <div class="wheel-label" style="--a:327.6deg;--r:37%">10% OFF</div>
+            <div class="wheel-label" style="--a:351deg;--r:37%">20%</div>
+          </div>
+          <div class="wheel-center"><img src="assets/images/mini-logo.png" alt="mini"><span id="wheelCenterText">1 SPIN</span></div>
+        </div>
+        <button class="btn btn-primary spin-btn" id="spinBtn">Spin the wheel</button>
+        <p class="spin-status" id="spinStatus">Your result is saved to this order after spinning.</p>
+      </div>
+    </section>
+
+    <section class="prize-result" id="prizeResult" hidden>
+      <div class="result-burst">★</div>
+      <div>
+        <p class="eyebrow" id="resultEyebrow">YOUR RESULT</p>
+        <h2 id="resultTitle"></h2>
+        <p id="resultText"></p>
+        <div class="promo-code-box" id="promoCodeBox" hidden><span>ONE-TIME DISCOUNT CODE</span><div><strong id="promoCode"></strong><button id="copyCode">Copy</button></div><small>Use this code on a future order. In this static demo it is enforced once per browser; production one-time enforcement must be server-side.</small></div>
+        <div class="free-item-box" id="freeItemBox" hidden><img id="freeItemImage" alt=""><div><span>YOUR FREE ITEM</span><strong id="freeItemName"></strong><small>Show this result to us when collecting.</small></div></div>
+      </div>
+    </section>
+
+    <section class="collect-card">
+      <div><span>01</span><strong>Keep this page</strong><small>It has your order reference.</small></div>
+      <div><span>02</span><strong>Come speak to us</strong><small>Show the paid order screen.</small></div>
+      <div><span>03</span><strong>Collect your items</strong><small>And any prize you won.</small></div>
+    </section>
+  </main>
+
+  <footer><a class="footer-brand" href="index.html"><img src="assets/images/mini-logo.png" alt="mini"></a><p>3D printed keychains · School project · 2026</p><a href="index.html#shop">Shop again ↑</a></footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="products.js"></script>
+  <script src="success.js"></script>
+</body>
+</html>

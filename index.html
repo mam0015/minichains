@@ -16,7 +16,7 @@
 
   <header class="site-header" id="top">
     <a class="brand" href="#top" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
-    <nav class="desktop-nav" aria-label="Primary navigation"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a></nav>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a><a href="#spin">3+ Spin</a></nav>
     <div class="header-actions">
       <button class="icon-btn" id="searchToggle" aria-label="Search keychains"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg></button>
       <button class="icon-btn bag-btn" id="cartToggle" aria-label="Open cart"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></button>
@@ -25,7 +25,7 @@
   </header>
 
   <div class="search-panel" id="searchPanel" aria-hidden="true"><label for="siteSearch">Find a keychain</label><div class="search-row"><input id="siteSearch" type="search" placeholder="Panda, Boba, Trolley, Hard Hat..." autocomplete="off"><button id="searchClose" aria-label="Close search">×</button></div></div>
-  <nav class="mobile-nav" id="mobileNav"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a></nav>
+  <nav class="mobile-nav" id="mobileNav"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#prices">Prices</a><a href="#spin">3+ Spin</a></nav>
 
   <main>
     <section class="hero-slider" aria-label="mini keychain highlights">
@@ -58,6 +58,11 @@
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
     </section>
 
+    <section class="spin-promo" id="spin">
+      <div class="spin-promo-copy"><p class="eyebrow">BUY 3 · SPIN AFTER PAYMENT</p><h2>Three keychains unlock one spin.</h2><p>Buy any 3 items in the same order. After payment, your confirmation page unlocks one random prize-wheel spin.</p><div class="promo-odds"><span><b>10%</b> Free keychain</span><span><b>25%</b> Any discount</span><span><b>65%</b> No prize</span></div><small>Discount prizes are 5%, 10% or 20%. Free keychain is selected randomly from the six designs. One spin per paid order.</small></div>
+      <div class="mini-wheel-preview" aria-label="Prize wheel preview"><div>NO<br>PRIZE</div><div>5%</div><div>NO<br>PRIZE</div><div>FREE</div><div>NO<br>PRIZE</div><div>10%</div><div>20%</div><strong>SPIN</strong></div>
+    </section>
+
     <section class="project-note">
       <div class="note-smile">☺</div>
       <div><p class="eyebrow">WHY THESE SIX?</p><h2>Fast prints. Low waste.</h2><p>We chose mostly flat keychains with short listed print times and modest material use. Prices are set to leave roughly A$1–A$3 gross profit per piece after a basic allowance for PLA, split ring and occasional print waste. Final margin should be checked in Bambu Studio after slicing your exact plate.</p></div>
@@ -66,7 +71,7 @@
 
   <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="mini"></a><p>3D printed keychains · School project · 2026</p><a href="#top">Back to top ↑</a></footer>
 
-  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">YOUR BAG</p><h2>Cart</h2></div><button id="cartClose" aria-label="Close cart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-empty" id="cartEmpty"><span>☺</span><h3>Your bag is empty.</h3><p>Six designs. Surely one can survive your standards.</p></div><div class="cart-summary" id="cartSummary"><div><span>Total</span><strong id="cartSubtotal">A$0.00</strong></div><button class="btn btn-primary full" id="checkoutBtn">Checkout</button><small>Payment link can be connected later.</small></div></aside>
+  <aside class="cart-drawer" id="cartDrawer" aria-hidden="true"><div class="drawer-head"><div><p class="eyebrow">YOUR BAG</p><h2>Cart</h2></div><button id="cartClose" aria-label="Close cart">×</button></div><div class="cart-items" id="cartItems"></div><div class="cart-empty" id="cartEmpty"><span>☺</span><h3>Your bag is empty.</h3><p>Six designs. Surely one can survive your standards.</p></div><div class="cart-summary" id="cartSummary"><div><span>Total</span><strong id="cartSubtotal">A$0.00</strong></div><div class="promo-entry"><label for="promoInput">One-time discount code</label><div><input id="promoInput" placeholder="MINI10-XXXXXX" autocomplete="off"><button id="applyPromo" type="button">Apply</button></div><small id="promoMessage"></small></div><div class="cart-discount" id="cartDiscountRow" hidden><span>Discount</span><strong id="cartDiscount">−A$0.00</strong></div><button class="btn btn-primary full" id="checkoutBtn">Checkout</button><small id="checkoutNote">Demo checkout currently opens the paid-order route. Connect a verified payment gateway before live use.</small></div></aside>
   <div class="page-overlay" id="overlay"></div>
 
   <dialog class="quick-view" id="quickView"><button class="modal-close" id="quickClose" aria-label="Close">×</button><div class="quick-image"><img id="quickImage" src="" alt=""></div><div class="quick-copy"><p class="eyebrow" id="quickModel"></p><h2 id="quickName"></h2><p class="quick-price" id="quickPrice"></p><div class="spec-pills"><span id="quickSize"></span><span id="quickWeight"></span><span id="quickTime"></span></div><p id="quickDesc"></p><div class="swatches" id="quickSwatches"></div><button class="btn btn-primary full" id="quickAdd">Add to bag</button></div></dialog>
