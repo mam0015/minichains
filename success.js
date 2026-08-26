@@ -160,13 +160,13 @@ const spinStatus = document.querySelector('#spinStatus');
 const result = document.querySelector('#prizeResult');
 
 const segments = [
-  { key:'empty-a', label:'No prize', type:'empty', weight:25, start:0, end:25 },
-  { key:'off-5', label:'5% off', type:'discount', percent:5, weight:12, start:25, end:37 },
-  { key:'empty-b', label:'No prize', type:'empty', weight:20, start:37, end:57 },
-  { key:'free', label:'Free item', type:'free', weight:10, start:57, end:67 },
-  { key:'empty-c', label:'No prize', type:'empty', weight:20, start:67, end:87 },
-  { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, start:87, end:95 },
-  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, start:95, end:100 }
+  { key:'empty-a', label:'Empty', type:'empty', weight:25, visualIndex:0 },
+  { key:'off-5', label:'5% off', type:'discount', percent:5, weight:12, visualIndex:1 },
+  { key:'empty-b', label:'Empty', type:'empty', weight:20, visualIndex:2 },
+  { key:'free', label:'Free keychain', type:'free', weight:10, visualIndex:3 },
+  { key:'empty-c', label:'Empty', type:'empty', weight:20, visualIndex:4 },
+  { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, visualIndex:5 },
+  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:6 }
 ];
 
 function cryptoFloat() {
@@ -190,13 +190,19 @@ function randomProduct() {
 }
 
 function chooseSegment() {
-  const n = cryptoFloat() * 100;
-  return segments.find(s => n >= s.start && n < s.end) || segments[0];
+  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
+  let n = cryptoFloat() * totalWeight;
+
+  for (const seg of segments) {
+    if (n < seg.weight) return seg;
+    n -= seg.weight;
+  }
+  return segments[0];
 }
 
 function targetRotation(seg) {
-  const centerPercent = (seg.start + seg.end) / 2;
-  const centerDeg = centerPercent * 3.6;
+  const visualSlice = 360 / segments.length;
+  const centerDeg = (seg.visualIndex * visualSlice) + (visualSlice / 2);
   return 360 * 7 + (360 - centerDeg);
 }
 

@@ -46,3 +46,16 @@ Customer-facing copy:
 "Try your luck. You might win a free keychain."
 
 No probability breakdown is shown on the page.
+
+
+## v9 — probability text removed everywhere in the customer UI
+
+Homepage and success wheel now show only the visible outcomes:
+EMPTY, 5% OFF, 10% OFF, 20% OFF, FREE KEYCHAIN.
+
+Customer-facing copy:
+Try your luck.
+You might win a free keychain.
+
+No odds percentages or chance breakdown are displayed.
+All visible wheel slices are equal-sized.

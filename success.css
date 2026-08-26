@@ -261,3 +261,36 @@
   .label-ten{ transform:rotate(237.6deg) translateY(-36vw) rotate(-237.6deg); }
   .label-twenty{ transform:rotate(252deg) translateY(-36vw) rotate(-252deg); }
 }
+
+
+/* v9: equal visual slices so the UI does not imply internal odds */
+.prize-wheel{
+  background:
+    conic-gradient(
+      from -90deg,
+      #f7e1eb 0deg 51.4286deg,
+      #ff9bc7 51.4286deg 102.8572deg,
+      #f1ebee 102.8572deg 154.2858deg,
+      #171117 154.2858deg 205.7144deg,
+      #ffe5f1 205.7144deg 257.143deg,
+      #ff6aaf 257.143deg 308.5716deg,
+      #ff2f8d 308.5716deg 360deg
+    )!important;
+}
+.label-empty-1{transform:rotate(25.714deg) translateY(-195px) rotate(-25.714deg)!important}
+.label-five{transform:rotate(77.143deg) translateY(-195px) rotate(-77.143deg)!important}
+.label-empty-2{transform:rotate(128.571deg) translateY(-195px) rotate(-128.571deg)!important}
+.label-free{transform:rotate(180deg) translateY(-195px) rotate(-180deg)!important}
+.label-empty-3{transform:rotate(231.429deg) translateY(-195px) rotate(-231.429deg)!important}
+.label-ten{transform:rotate(282.857deg) translateY(-195px) rotate(-282.857deg)!important}
+.label-twenty{transform:rotate(334.286deg) translateY(-195px) rotate(-334.286deg)!important}
+
+@media(max-width:600px){
+  .label-empty-1{transform:rotate(25.714deg) translateY(-36vw) rotate(-25.714deg)!important}
+  .label-five{transform:rotate(77.143deg) translateY(-36vw) rotate(-77.143deg)!important}
+  .label-empty-2{transform:rotate(128.571deg) translateY(-36vw) rotate(-128.571deg)!important}
+  .label-free{transform:rotate(180deg) translateY(-36vw) rotate(-180deg)!important}
+  .label-empty-3{transform:rotate(231.429deg) translateY(-36vw) rotate(-231.429deg)!important}
+  .label-ten{transform:rotate(282.857deg) translateY(-36vw) rotate(-282.857deg)!important}
+  .label-twenty{transform:rotate(334.286deg) translateY(-36vw) rotate(-334.286deg)!important}
+}
