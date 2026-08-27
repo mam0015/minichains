@@ -33,6 +33,12 @@
       <div class="demo-warning" id="demoWarning" hidden>
         This is the demo card flow. Connect and verify Square before treating this screen as proof of online payment.
       </div>
+    
+      <div class="receipt-customer" id="receiptCustomer" hidden>
+        <span>OPTIONAL SURVEY</span>
+        <strong id="receiptCustomerName"></strong>
+        <small id="receiptCustomerMeta"></small>
+      </div>
     </section>
 
     <section class="cash-payment-card" id="cashPaymentCard" hidden>
@@ -51,57 +57,17 @@
     </section>
 
     <section class="order-card">
-      <div class="order-title"><div><p class="eyebrow">YOUR ORDER</p><h2>What you bought</h2></div><div class="order-total-wrap"><span id="orderPaymentMethod">CARD</span><strong id="orderTotal">A$0.00</strong></div></div>
+      <div class="order-title"><div><p class="eyebrow">ORDER / RECEIPT</p><h2>Your items</h2></div><div class="order-total-wrap"><span id="orderPaymentMethod">CARD</span><strong id="orderTotal">A$0.00</strong></div></div>
       <div class="success-items" id="successItems"></div>
+      
+      <div class="receipt-prize" id="receiptPrize" hidden>
+        <span>PRIZE</span>
+        <strong id="receiptPrizeName"></strong>
+        <small>Free from Spin & Win</small>
+      </div>
+
       <div class="order-breakdown" id="orderBreakdown"></div>
-    </section>
-
     
-    <section class="wheel-section" id="wheelSection">
-      <div class="wheel-copy">
-        <p class="eyebrow">SPIN & WIN</p>
-        <h2 id="wheelTitle">Try your luck.</h2>
-        <p id="wheelIntro">You might win a free keychain.</p>
-      </div>
-
-      <div class="wheel-stage">
-        <div class="wheel-pointer" aria-hidden="true"></div>
-
-        <div class="prize-wheel" id="prizeWheel" aria-label="Prize wheel">
-          <div class="wheel-label label-empty-1">EMPTY</div>
-          <div class="wheel-label label-five">5% OFF</div>
-          <div class="wheel-label label-empty-2">EMPTY</div>
-          <div class="wheel-label label-free">FREE<br>KEYCHAIN</div>
-          <div class="wheel-label label-empty-3">EMPTY</div>
-          <div class="wheel-label label-ten">10% OFF</div>
-          <div class="wheel-label label-twenty">20% OFF</div>
-
-          <button class="wheel-center" id="spinBtn" type="button">
-            <span id="wheelCenterText">SPIN</span>
-          </button>
-        </div>
-      </div>
-
-      <p class="spin-status" id="spinStatus">One spin per eligible paid order.</p>
-
-      <div class="prize-result" id="prizeResult" hidden>
-        <p class="eyebrow">YOUR RESULT</p>
-        <h3 id="resultTitle"></h3>
-        <p id="resultText"></p>
-
-        <div class="promo-code-box" id="promoCodeBox" hidden>
-          <code id="promoCode"></code>
-          <button id="copyCode" type="button">Copy code</button>
-        </div>
-
-        <div class="free-item-box" id="freeItemBox" hidden>
-          <img id="freeItemImage" alt="">
-          <div>
-            <span>FREE ITEM</span>
-            <strong id="freeItemName"></strong>
-          </div>
-        </div>
-      </div>
     </section>
     
 

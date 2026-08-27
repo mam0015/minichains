@@ -1,0 +1,2 @@
+[functions.rapid-handler]
+verify_jwt = false

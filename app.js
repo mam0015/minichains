@@ -25,12 +25,55 @@ function round2(v) {
   return Math.round((Number(v) + Number.EPSILON) * 100) / 100;
 }
 
+
+
+function customerSurveyPayload() {
+  return {
+    firstName: (document.querySelector('#surveyFirstName')?.value || '').trim(),
+    level: (document.querySelector('#surveyLevel')?.value || '').trim(),
+    comment: (document.querySelector('#surveyComment')?.value || '').trim()
+  };
+}
+
+async function submitSurvey(orderId, paymentMethod) {
+  const payload = customerSurveyPayload();
+  const hasAny = payload.firstName || payload.level || payload.comment;
+  if (!hasAny) return;
+
+  const record = {
+    id: `FB-${Date.now().toString(36).toUpperCase()}`,
+    orderId,
+    paymentMethod,
+    ...payload,
+    createdAt: new Date().toISOString()
+  };
+
+  // Always keep a local copy for the current device/demo.
+  const local = read('mini-feedback-v1', []);
+  local.push(record);
+  write('mini-feedback-v1', local);
+
+  const endpoint = window.MINI_FEEDBACK?.endpoint?.trim();
+  if (!endpoint) return;
+
+  try {
+    await fetch(endpoint, {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(record)
+    });
+  } catch (err) {
+    console.warn('Feedback endpoint failed; local copy kept.', err);
+  }
+}
+
+
 function roundCash(v) {
   return Math.round((Number(v) + Number.EPSILON) * 20) / 20;
 }
 
 function productCard(p) {
-  const cashPrice = round2(p.price * 0.95);
+  const cashPrice = Math.floor(p.price * (1 - CASH_DISCOUNT_PERCENT / 100));
   const tag = p.tag ? `<span class="tag">${p.tag}</span>` : '';
   return `
     <article class="product-card">
@@ -97,6 +140,7 @@ function removeFromCart(id) {
 
 function saveCart() {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  window.requestAnimationFrame(() => window.innerWidth <= 760 && renderMobileCartBar());
 }
 
 function cartRows() {
@@ -108,42 +152,46 @@ function subtotal() {
 }
 
 function promoPercent() {
-  return Number(activePromo?.percent || 0);
+  return activePromo?.type === 'discount' ? Number(activePromo.percent || 0) : 0;
 }
 
 function cartTotals() {
-  const sub = subtotal();
+  const rows = cartRows();
+  const sub = round2(rows.reduce((s, r) => s + r.p.price * r.qty, 0));
   const promoPct = promoPercent();
-  const cashPct = paymentMethod === 'cash' ? CASH_DISCOUNT_PERCENT : 0;
 
-  // User requested cash + promo percentages to stack additively.
-  const combinedPct = Math.min(100, promoPct + cashPct);
-  const promoDiscount = round2(sub * (promoPct / 100));
-  const cashDiscount = round2(sub * (cashPct / 100));
+  let promoDiscount = 0;
+  let cashDiscount = 0;
+  let cashBase = sub;
+  let total = sub;
 
-  // Use the exact combined percentage against the original subtotal.
-  const rawDiscountedTotal = Math.max(0, sub * (1 - combinedPct / 100));
-  const beforeRounding = round2(rawDiscountedTotal);
+  if (paymentMethod === 'card') {
+    // Card / online: listed price, then prize/promo discount only.
+    promoDiscount = round2(sub * (promoPct / 100));
+    total = round2(Math.max(0, sub - promoDiscount));
+  } else {
+    // Cash rule:
+    // 1) calculate the full basket subtotal including quantities
+    // 2) apply the 5% cash discount to the WHOLE basket
+    // 3) apply any prize/promo discount
+    // 4) round the final cash amount DOWN to the nearest whole dollar
+    const afterCashDiscount = round2(sub * (1 - CASH_DISCOUNT_PERCENT / 100));
+    cashDiscount = round2(sub - afterCashDiscount);
 
-  let finalTotal = beforeRounding;
-  let cashRounding = 0;
+    promoDiscount = round2(afterCashDiscount * (promoPct / 100));
+    cashBase = round2(Math.max(0, afterCashDiscount - promoDiscount));
 
-  // Australian cash totals are rounded to the nearest 5 cents.
-  if (paymentMethod === 'cash') {
-    finalTotal = roundCash(rawDiscountedTotal);
-    cashRounding = round2(finalTotal - beforeRounding);
+    total = Math.max(0, Math.floor(cashBase));
   }
 
   return {
     sub,
     promoPct,
-    cashPct,
-    combinedPct,
     promoDiscount,
+    cashDiscountPercent: paymentMethod === 'cash' ? CASH_DISCOUNT_PERCENT : 0,
     cashDiscount,
-    beforeRounding,
-    cashRounding,
-    total: round2(finalTotal)
+    cashBase,
+    total: round2(total)
   };
 }
 
@@ -158,9 +206,21 @@ function renderCart() {
 
   document.querySelector('#cartItems').innerHTML = rows.map(({ p, qty }) => `
     <div class="cart-item">
-      <img src="${p.image}" onerror="this.onerror=null;this.src='${p.fallback || 'assets/images/smiley.svg'}'" alt="">
-      <div><h4>${p.name}</h4><p>${money(p.price)} · Qty ${qty}</p></div>
-      <button data-remove="${p.id}">×</button>
+      <img src="${p.image}" onerror="this.onerror=null;this.src='${p.fallback || 'assets/images/smiley.svg'}'" alt="${p.name}">
+      <div class="cart-item-main">
+        <h4>${p.name}</h4>
+        <p>${money(p.price)} each</p>
+
+        <div class="qty-control" aria-label="Quantity for ${p.name}">
+          <button type="button" class="qty-btn" data-qty-minus="${p.id}" aria-label="Decrease ${p.name} quantity">−</button>
+          <span class="qty-number">${qty}</span>
+          <button type="button" class="qty-btn" data-qty-plus="${p.id}" aria-label="Increase ${p.name} quantity">+</button>
+        </div>
+      </div>
+      <div class="cart-item-side">
+        <strong>${money(p.price * qty)}</strong>
+        <button class="remove-item" type="button" data-remove="${p.id}" aria-label="Remove ${p.name}">×</button>
+      </div>
     </div>`).join('');
 
   document.querySelector('#cartSubtotal').textContent = money(t.sub);
@@ -174,18 +234,25 @@ function renderCart() {
     promoRow.hidden = true;
   }
 
-  const cashRow = document.querySelector('#cartCashDiscountRow');
+  
+  const freePrizeRow = document.querySelector('#cartFreePrizeRow');
+  if (freePrizeRow) {
+    if (activePromo?.type === 'free') {
+      const p = products.find(x => x.id === activePromo.freeProductId);
+      freePrizeRow.hidden = false;
+      document.querySelector('#cartFreePrizeLabel').textContent = `Free prize · ${p?.name || 'Keychain'}`;
+      document.querySelector('#cartFreePrize').textContent = 'A$0.00';
+    } else {
+      freePrizeRow.hidden = true;
+    }
+  }
+
+const cashRow = document.querySelector('#cartCashDiscountRow');
   cashRow.hidden = paymentMethod !== 'cash';
   document.querySelector('#cartCashDiscount').textContent = `−${money(t.cashDiscount)}`;
 
   const roundingRow = document.querySelector('#cashRoundingRow');
-  if (paymentMethod === 'cash' && Math.abs(t.cashRounding) >= 0.001) {
-    roundingRow.hidden = false;
-    const sign = t.cashRounding > 0 ? '+' : '−';
-    document.querySelector('#cashRounding').textContent = `${sign}${money(Math.abs(t.cashRounding))}`;
-  } else {
-    roundingRow.hidden = true;
-  }
+  roundingRow.hidden = true;
 
   document.querySelector('#cartTotal').textContent = money(t.total);
   document.querySelector('#cartTotalLabel').textContent =
@@ -211,16 +278,64 @@ function renderCart() {
   if (paymentMethod === 'cash') {
     const discountText = activePromo
       ? `Cash 5% + promo ${t.promoPct}% = ${t.combinedPct}% off before cash rounding.`
-      : 'Cash gets 5% off automatically.';
+      : 'Cash gets 5% off the full basket, then the final amount is rounded down to a whole dollar.';
     note.textContent = `${discountText} ${spinText}`;
   } else {
     note.textContent = `Card/online payment uses Square. ${spinText}`;
   }
 }
 
+
+function renderMobileCartBar() {
+  const bar = document.querySelector('#mobileCartBar');
+  if (!bar) return;
+
+  const rows = cartRows();
+  const qty = rows.reduce((sum, row) => sum + row.qty, 0);
+  const total = cartTotals().total;
+
+  document.querySelector('#mobileCartSummary').textContent =
+    qty ? `${qty} item${qty === 1 ? '' : 's'} · ${money(total)}` : '0 items';
+
+  bar.classList.toggle('show', qty > 0 && window.innerWidth <= 760);
+}
+
+window.addEventListener('resize', renderMobileCartBar);
+document.querySelector('#mobileCartOpen')?.addEventListener('click', openCart);
+
+
+function changeCartQuantity(id, delta) {
+  const row = cart.find(x => x.id === id);
+  if (!row) return;
+
+  row.qty += delta;
+
+  if (row.qty <= 0) {
+    cart = cart.filter(x => x.id !== id);
+  }
+
+  saveCart();
+  renderCart();
+}
+
 document.querySelector('#cartItems').addEventListener('click', e => {
-  const b = e.target.closest('[data-remove]');
-  if (b) removeFromCart(b.dataset.remove);
+  const plus = e.target.closest('[data-qty-plus]');
+  const minus = e.target.closest('[data-qty-minus]');
+  const remove = e.target.closest('[data-remove]');
+
+  if (plus) {
+    changeCartQuantity(plus.dataset.qtyPlus, 1);
+    return;
+  }
+
+  if (minus) {
+    changeCartQuantity(minus.dataset.qtyMinus, -1);
+    return;
+  }
+
+  if (remove) {
+    removeFromCart(remove.dataset.remove);
+  }
 });
 
 document.querySelectorAll('[data-payment]').forEach(btn => {
@@ -261,6 +376,7 @@ function applyPromoCode() {
     renderCart();
     return;
   }
+
   if (promo.used) {
     activePromo = null;
     message.textContent = 'This one-time code has already been used.';
@@ -269,8 +385,23 @@ function applyPromoCode() {
     return;
   }
 
+  if (promo.type === 'empty') {
+    activePromo = null;
+    message.textContent = 'This spin code has no prize value.';
+    message.style.color = '#756871';
+    renderCart();
+    return;
+  }
+
   activePromo = promo;
-  message.textContent = `${promo.percent}% discount applied.${paymentMethod === 'cash' ? ` With cash, total discount becomes ${promo.percent + CASH_DISCOUNT_PERCENT}%.` : ''}`;
+
+  if (promo.type === 'free') {
+    const p = products.find(x => x.id === promo.freeProductId);
+    message.textContent = `Free prize applied: ${p?.name || 'keychain'}.`;
+  } else {
+    message.textContent = `${promo.percent}% discount applied.${paymentMethod === 'cash' ? ' Cash whole-dollar pricing is also active.' : ''}`;
+  }
+
   message.style.color = '#24804a';
   renderCart();
 }
@@ -314,11 +445,10 @@ function saveLocalOrder({ method, status, demo = false }) {
     promoCode: activePromo?.code || null,
     promoPercent: t.promoPct,
     promoDiscount: t.promoDiscount,
-    cashDiscountPercent: t.cashPct,
+    freePrizeProductId: activePromo?.type === 'free' ? activePromo.freeProductId : null,
+    cashDiscountPercent: t.cashDiscountPercent,
     cashDiscount: t.cashDiscount,
-    combinedDiscountPercent: t.combinedPct,
-    beforeCashRounding: t.beforeRounding,
-    cashRounding: t.cashRounding,
+    cashBase: t.cashBase,
     total: t.total
   };
 
@@ -347,7 +477,10 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
       status: 'cash_due',
       demo: false
     });
-    if (order) location.href = `success.html?order=${encodeURIComponent(order.id)}`;
+    if (order) {
+      await submitSurvey(order.id, 'cash');
+      location.href = `success.html?order=${encodeURIComponent(order.id)}`;
+    }
     return;
   }
 
@@ -361,7 +494,10 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
       status: 'paid_demo',
       demo: true
     });
-    if (order) location.href = `success.html?demo=1&order=${encodeURIComponent(order.id)}`;
+    if (order) {
+      await submitSurvey(order.id, 'card');
+      location.href = `success.html?demo=1&order=${encodeURIComponent(order.id)}`;
+    }
     return;
   }
 
@@ -376,7 +512,8 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
       body: JSON.stringify({
         paymentMethod: 'card',
         items: rows.map(r => ({ id: r.id, qty: r.qty })),
-        promoCode: activePromo?.code || null
+        promoCode: activePromo?.code || null,
+        survey: customerSurveyPayload()
       })
     });
 
@@ -404,7 +541,7 @@ function openQuick(id) {
   document.querySelector('#quickName').textContent = p.name;
   document.querySelector('#quickModel').textContent = `MODEL ${p.id}`;
   document.querySelector('#quickPrice').textContent = money(p.price);
-  document.querySelector('#quickCashPrice').textContent = money(round2(p.price * 0.95));
+  document.querySelector('#quickCashPrice').textContent = money(Math.floor(p.price * (1 - CASH_DISCOUNT_PERCENT / 100)));
   document.querySelector('#quickSize').textContent = p.size;
   document.querySelector('#quickWeight').textContent = `≈ ${p.grams} g`;
   quick.showModal();
@@ -454,4 +591,211 @@ dots.forEach(d => d.addEventListener('click', () => showSlide(+d.dataset.slideTo
 
 renderProducts();
 renderCart();
+renderMobileCartBar();
 restartSlider();
+
+
+/* =========================================================
+   FIRST-LOAD SPIN & WIN
+   ========================================================= */
+const SPIN_OPENED_KEY = 'mini-entry-spin-opened-v1';
+const SPIN_RESULT_KEY = 'mini-entry-spin-result-v1';
+
+const entrySegments = [
+  { key:'empty-a', type:'empty', weight:25, visualIndex:0 },
+  { key:'off-5', type:'discount', percent:5, weight:12, visualIndex:1 },
+  { key:'empty-b', type:'empty', weight:20, visualIndex:2 },
+  { key:'free', type:'free', weight:10, visualIndex:3 },
+  { key:'empty-c', type:'empty', weight:20, visualIndex:4 },
+  { key:'off-10', type:'discount', percent:10, weight:8, visualIndex:5 },
+  { key:'off-20', type:'discount', percent:20, weight:5, visualIndex:6 }
+];
+
+function entryCryptoFloat() {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return a[0] / 4294967296;
+}
+
+function chooseEntrySegment() {
+  const total = entrySegments.reduce((s, x) => s + x.weight, 0);
+  let n = entryCryptoFloat() * total;
+  for (const seg of entrySegments) {
+    if (n < seg.weight) return seg;
+    n -= seg.weight;
+  }
+  return entrySegments[0];
+}
+
+function spinTargetRotation(seg) {
+  const visualSlice = 360 / entrySegments.length;
+  const centerDeg = seg.visualIndex * visualSlice + visualSlice / 2;
+  return 360 * 8 + (360 - centerDeg);
+}
+
+function prizeCode(prefix='WIN') {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const a = new Uint32Array(7);
+  crypto.getRandomValues(a);
+  return `MINI-${prefix}-${[...a].map(n => chars[n % chars.length]).join('')}`;
+}
+
+function storePromoPrize(prize) {
+  const promos = read(PROMOS_KEY, []);
+  promos.push(prize);
+  write(PROMOS_KEY, promos);
+}
+
+function launchConfetti() {
+  const layer = document.querySelector('#confettiLayer');
+  if (!layer) return;
+  layer.innerHTML = '';
+  const chars = ['✦','●','◆','★','♥'];
+  for (let i=0;i<70;i++) {
+    const span = document.createElement('span');
+    span.textContent = chars[Math.floor(Math.random()*chars.length)];
+    span.style.left = `${Math.random()*100}%`;
+    span.style.animationDelay = `${Math.random()*.8}s`;
+    span.style.animationDuration = `${1.7 + Math.random()*1.4}s`;
+    span.style.fontSize = `${10 + Math.random()*14}px`;
+    layer.appendChild(span);
+  }
+}
+
+function openEntrySpin() {
+  const modal = document.querySelector('#spinLaunch');
+  if (!modal) return;
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden','false');
+  document.body.classList.add('locked');
+  localStorage.setItem(SPIN_OPENED_KEY, '1');
+
+  const existing = read(SPIN_RESULT_KEY, null);
+  if (existing) renderEntrySpinResult(existing, false);
+}
+
+function closeEntrySpin() {
+  const modal = document.querySelector('#spinLaunch');
+  modal?.classList.remove('show');
+  modal?.setAttribute('aria-hidden','true');
+  document.body.classList.remove('locked');
+}
+
+function renderEntrySpinResult(result, celebrate=true) {
+  const box = document.querySelector('#launchResult');
+  const title = document.querySelector('#launchResultTitle');
+  const text = document.querySelector('#launchResultText');
+  const code = document.querySelector('#launchPrizeCode');
+  const spinBtn = document.querySelector('#launchSpinBtn');
+
+  box.hidden = false;
+  spinBtn.disabled = true;
+  spinBtn.textContent = 'DONE';
+
+  if (result.type === 'discount') {
+    title.textContent = `${result.percent}% OFF`;
+    text.textContent = 'Use this one-time code at checkout.';
+    code.textContent = result.code;
+  } else if (result.type === 'free') {
+    const p = products.find(x => x.id === result.freeProductId);
+    title.textContent = 'FREE KEYCHAIN';
+    text.textContent = `You won ${p?.name || 'a free keychain'}. Enter the code at checkout and it will appear on your order.`;
+    code.textContent = result.code;
+  } else {
+    title.textContent = 'NO PRIZE';
+    text.textContent = 'No prize this time. You can still shop the mini drop.';
+    code.textContent = result.code;
+  }
+
+  if (celebrate && result.type !== 'empty') launchConfetti();
+}
+
+document.querySelector('#spinLaunchClose')?.addEventListener('click', closeEntrySpin);
+document.querySelector('#launchContinue')?.addEventListener('click', closeEntrySpin);
+
+document.querySelector('#launchCopyCode')?.addEventListener('click', async () => {
+  const code = document.querySelector('#launchPrizeCode').textContent.trim();
+  if (!code) return;
+  try {
+    await navigator.clipboard.writeText(code);
+    toastMsg('Prize code copied');
+  } catch {
+    toastMsg(code);
+  }
+});
+
+document.querySelector('#launchSpinBtn')?.addEventListener('click', () => {
+  const existing = read(SPIN_RESULT_KEY, null);
+  if (existing) {
+    renderEntrySpinResult(existing, false);
+    return;
+  }
+
+  const seg = chooseEntrySegment();
+  const wheel = document.querySelector('#launchWheel');
+  const btn = document.querySelector('#launchSpinBtn');
+
+  btn.disabled = true;
+  btn.textContent = '...';
+  wheel.style.transform = `rotate(${spinTargetRotation(seg)}deg)`;
+
+  const result = {
+    type: seg.type,
+    createdAt: new Date().toISOString()
+  };
+
+  if (seg.type === 'discount') {
+    result.percent = seg.percent;
+    result.code = prizeCode(`${seg.percent}OFF`);
+    storePromoPrize({
+      code: result.code,
+      percent: result.percent,
+      type:'discount',
+      source:'entry-spin',
+      used:false,
+      createdAt:result.createdAt
+    });
+  } else if (seg.type === 'free') {
+    const freeProduct = products[Math.floor(entryCryptoFloat()*products.length)];
+    result.freeProductId = freeProduct.id;
+    result.code = prizeCode('FREE');
+    storePromoPrize({
+      code: result.code,
+      percent:0,
+      type:'free',
+      freeProductId:freeProduct.id,
+      source:'entry-spin',
+      used:false,
+      createdAt:result.createdAt
+    });
+  } else {
+    // Empty still gets a code receipt, but it carries no checkout value.
+    result.code = prizeCode('EMPTY');
+    storePromoPrize({
+      code: result.code,
+      percent:0,
+      type:'empty',
+      source:'entry-spin',
+      used:false,
+      createdAt:result.createdAt
+    });
+  }
+
+  write(SPIN_RESULT_KEY, result);
+
+  setTimeout(() => {
+    renderEntrySpinResult(result, true);
+  }, 5300);
+});
+
+// Show the spin when the site first opens.
+// If the user has already spun on this device, do not force it again.
+window.addEventListener('load', () => {
+  const hasResult = read(SPIN_RESULT_KEY, null);
+  const opened = localStorage.getItem(SPIN_OPENED_KEY);
+
+  if (!opened && !hasResult) {
+    setTimeout(openEntrySpin, 450);
+  }
+});
+

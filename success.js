@@ -36,11 +36,9 @@ if (!order) {
     promoPercent: 0,
     promoDiscount: 0,
     cashDiscountPercent: 5,
-    cashDiscount: 0.66,
-    combinedDiscountPercent: 5,
-    beforeCashRounding: 12.63,
-    cashRounding: 0.02,
-    total: 12.65
+    cashDiscount: 3.29,
+    cashBase: 10.00,
+    total: 10.00
   };
 }
 
@@ -65,6 +63,28 @@ const detailRows = order.items
 
 const itemQty = detailRows.reduce((sum, r) => sum + Number(r.qty || 0), 0);
 
+const freePrizeId = order.freePrizeProductId || null;
+if (freePrizeId) {
+  const p = products.find(x => x.id === freePrizeId);
+  const box = document.querySelector('#receiptPrize');
+  if (box && p) {
+    box.hidden = false;
+    document.querySelector('#receiptPrizeName').textContent = p.name;
+  }
+}
+
+const feedback = read('mini-feedback-v1', []).find(x => x.orderId === order.id);
+if (feedback) {
+  const box = document.querySelector('#receiptCustomer');
+  box.hidden = false;
+  document.querySelector('#receiptCustomerName').textContent = feedback.firstName || 'Anonymous';
+  const bits = [];
+  if (feedback.level) bits.push(feedback.level);
+  if (feedback.comment) bits.push(feedback.comment);
+  document.querySelector('#receiptCustomerMeta').textContent = bits.join(' · ');
+}
+
+
 document.querySelector('#orderRef').textContent = order.id;
 document.querySelector('#successItems').innerHTML = detailRows.map(({ product:p, qty, price }) => `
   <article class="success-item">
@@ -85,22 +105,8 @@ function renderOrderBreakdown() {
 
   if (order.paymentMethod === 'cash') {
     breakdown.push(
-      `<div class="discount-line"><span>Cash discount · ${order.cashDiscountPercent || 5}%</span><span>−${money(order.cashDiscount)}</span></div>`
+      `<div class="discount-line"><span>Cash saving · 5% + whole-dollar basket rounding</span><span>−${money(order.cashDiscount)}</span></div>`
     );
-
-    if (Math.abs(Number(order.cashRounding || 0)) >= 0.001) {
-      const r = Number(order.cashRounding);
-      const sign = r > 0 ? '+' : '−';
-      breakdown.push(
-        `<div><span>Cash rounding</span><span>${sign}${money(Math.abs(r))}</span></div>`
-      );
-    }
-
-    if (Number(order.combinedDiscountPercent || 0) > 0) {
-      breakdown.push(
-        `<div class="combined-discount"><span>Total discount rate</span><span>${order.combinedDiscountPercent}%</span></div>`
-      );
-    }
   }
 
   const totalLabel = isPaid()
@@ -291,6 +297,7 @@ function showResult(spin) {
 }
 
 function renderWheelState() {
+  if (!wheelSection) return;
   wheelSection.classList.remove('locked-wheel');
 
   if (!isPaid()) {
@@ -341,7 +348,7 @@ confirmCashBtn.addEventListener('click', () => {
   document.querySelector('#statusCard').scrollIntoView({ behavior:'smooth', block:'start' });
 });
 
-spinBtn.addEventListener('click', () => {
+spinBtn?.addEventListener('click', () => {
   if (!isPaid() || itemQty < 3 || getSpin()) return;
 
   spinBtn.disabled = true;
@@ -373,7 +380,7 @@ spinBtn.addEventListener('click', () => {
   }, 5350);
 });
 
-document.querySelector('#copyCode').addEventListener('click', async () => {
+document.querySelector('#copyCode')?.addEventListener('click', async () => {
   const code = document.querySelector('#promoCode').textContent;
   if (!code) return;
   try {
@@ -386,3 +393,5 @@ document.querySelector('#copyCode').addEventListener('click', async () => {
 
 renderPaymentState();
 renderWheelState();
+
+window.addEventListener('DOMContentLoaded',()=>{document.querySelector('#wheelSection')?.setAttribute('hidden','');});

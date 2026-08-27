@@ -294,3 +294,85 @@
   .label-ten{transform:rotate(282.857deg) translateY(-36vw) rotate(-282.857deg)!important}
   .label-twenty{transform:rotate(334.286deg) translateY(-36vw) rotate(-334.286deg)!important}
 }
+
+
+/* v11 — mobile payment-success experience */
+@media(max-width:760px){
+  body{overflow-x:hidden}
+  .success-wrap,main{width:100%;max-width:100%}
+  .success-header{padding:10px 12px}
+  .paid-card,.order-card,.cash-payment-card,.wheel-section,.prize-result{
+    margin-left:10px!important;margin-right:10px!important;border-radius:24px!important
+  }
+  .paid-card{padding:30px 18px!important}
+  .paid-card h1{font-size:40px!important;letter-spacing:-.05em}
+  .paid-lead{font-size:13px;line-height:1.65}
+  .payment-method-badge{margin-top:6px}
+  .order-reference{width:100%;max-width:310px}
+
+  .cash-payment-card{
+    grid-template-columns:1fr!important;gap:14px!important;padding:24px 18px!important;text-align:left!important
+  }
+  .cash-payment-card h2{font-size:31px!important}
+  .cash-amount-box{width:100%!important;min-width:0!important;margin:0!important}
+  .cash-payment-card .btn{width:100%!important;min-height:54px}
+
+  .order-card{padding:22px 14px!important}
+  .order-title{align-items:flex-end;gap:10px}
+  .order-title h2{font-size:30px!important}
+  .success-item{grid-template-columns:58px 1fr auto!important;gap:9px!important;padding:10px!important}
+  .success-item img{width:58px!important;height:58px!important;border-radius:13px!important}
+  .success-item h3{font-size:13px!important}
+  .success-item p{font-size:9px!important}
+  .success-item>strong{font-size:12px!important}
+  .order-breakdown{font-size:12px}
+
+  .wheel-section{padding:30px 12px 34px!important}
+  .wheel-copy h2{font-size:39px!important}
+  .wheel-copy p:not(.eyebrow){font-size:14px!important}
+  .wheel-stage{width:min(90vw,390px)!important}
+  .wheel-center{width:96px!important;height:96px!important;font-size:18px!important}
+
+  .prize-result{padding:24px 16px!important}
+  .promo-code-box{grid-template-columns:1fr!important}
+  .promo-code-box code{overflow-wrap:anywhere;font-size:13px}
+  .promo-code-box button{min-height:48px}
+  .free-item-box{grid-template-columns:70px 1fr!important}
+  .free-item-box img{width:70px!important;height:70px!important}
+}
+
+
+/* v12 receipt additions */
+.receipt-prize,
+.receipt-customer{
+  margin:14px 0;
+  padding:14px 16px;
+  border-radius:16px;
+  display:grid;
+  gap:4px;
+}
+.receipt-prize{
+  background:#fff8e9;
+  border:1px solid #f4e0b0;
+}
+.receipt-customer{
+  background:#faf7f9;
+  border:1px solid var(--line);
+}
+.receipt-prize span,
+.receipt-customer span{
+  font-size:8px;
+  font-weight:950;
+  letter-spacing:.1em;
+  color:var(--pink);
+}
+.receipt-prize strong,
+.receipt-customer strong{
+  font-size:15px;
+}
+.receipt-prize small,
+.receipt-customer small{
+  color:var(--muted);
+  font-size:10px;
+  line-height:1.45;
+}

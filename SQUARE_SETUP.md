@@ -86,3 +86,25 @@ Cash orders do **not** call Square. They are calculated locally:
 - final cash total is rounded to the nearest $0.05
 
 For a real production backend, never trust prices sent by the browser. Recalculate product prices and promo validity server-side.
+
+
+## v13 cash pricing rule
+
+Card / online:
+- uses the listed product prices
+- quantities multiply normally
+- no cash discount is applied
+
+Cash:
+- calculate the FULL basket subtotal first, including quantities
+- apply 5% cash discount to the whole basket
+- apply any valid prize/promo discount after that
+- round the FINAL cash amount DOWN to a whole dollar
+
+Example:
+- two A$4.09 items = A$8.18 subtotal
+- 5% cash discount => A$7.77
+- final cash amount => A$7.00
+
+This is basket-level rounding, not per-item rounding.
+

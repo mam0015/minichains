@@ -72,3 +72,68 @@ All visible wheel slices are equal-sized.
 - Details modal shows only size + PLA, plus card/cash prices.
 - Header, hero, payment guide, product cards and modal redesigned.
 - Exact new MakerWorld/Bambu product designs can be swapped in later through products.js.
+
+
+## v11 — mobile-first release
+
+The storefront is now intentionally designed around phone customers first (360–430 px).
+
+Mobile improvements:
+- compact floating header and hamburger navigation
+- single-column hero with larger readable copy
+- full-width mobile CTAs
+- stacked payment explanation cards
+- one-column product catalog
+- 46–54 px touch targets
+- full-screen cart
+- full-screen product details
+- floating bag shortcut after adding a product
+- responsive cash/card checkout
+- mobile-sized Spin & Win
+- mobile payment-success and cash-confirmation screens
+- safe-area spacing for modern phones
+- horizontal overflow prevention
+
+
+## v12 — entry spin, cash floor pricing, invoice and survey
+
+- removed Spin & Win from top navigation
+- removed the old homepage spin section
+- new full-screen Spin & Win appears on first site open
+- animated premium wheel with confetti
+- every spin generates a unique code receipt
+- discount prize codes work in checkout
+- free-keychain codes show the won item and add it to the receipt as a free prize
+- one spin per device in the static-school-project version
+- card / online uses the listed price with no cash discount
+- cash gets 5% off each unit, then every cash unit price is rounded DOWN to a whole dollar
+- cash invoice shows items, free prize, method and amount to collect
+- optional checkout survey: First name / Level / Comment
+- local survey storage works immediately
+- optional shared feedback endpoint supported through `feedback-config.js`
+- see `FEEDBACK_STORAGE.md`
+
+
+## v13 — basket cash rounding + quantity controls
+
+Cash:
+- subtotal first, including all quantities
+- 5% cash discount applied to the whole basket
+- any promo discount then applies
+- final cash total is rounded DOWN to a whole dollar
+
+Quantity:
+- every cart line now has `−  quantity  +`
+- plus increases quantity
+- minus decreases quantity
+- minus from 1 removes the item
+- line price, subtotal, discounts and receipt totals update automatically
+
+
+## v14 — Supabase feedback endpoint connected
+
+The checkout feedback form now POSTs to:
+
+`https://hkjgitxovfiamibgpoan.supabase.co/functions/v1/rapid-handler`
+
+The package includes matching `rapid-handler` Edge Function code and SQL migration.
