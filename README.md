@@ -137,3 +137,18 @@ The checkout feedback form now POSTs to:
 `https://hkjgitxovfiamibgpoan.supabase.co/functions/v1/rapid-handler`
 
 The package includes matching `rapid-handler` Edge Function code and SQL migration.
+
+
+## v15 — checkout scroll / Safari fix
+
+The cart architecture was changed so the entire checkout drawer is the scroll container.
+
+Fixes:
+- no nested scroll trap
+- cart, discounts, payment method, survey and checkout button can all be reached
+- sticky cart header
+- sticky checkout button without covering content
+- Safari momentum scrolling
+- mobile safe-area support
+- laptop / short-screen layout tuning
+- separate desktop and mobile spacing
