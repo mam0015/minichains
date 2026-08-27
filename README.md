@@ -59,3 +59,16 @@ You might win a free keychain.
 
 No odds percentages or chance breakdown are displayed.
 All visible wheel slices are equal-sized.
+
+
+## v10 — premium homepage / UX cleanup
+
+- Search removed.
+- Colour dots removed.
+- Customer-facing print time removed.
+- Entry / Standard / Premium removed.
+- Added Card / Online vs Cash 5% off guide.
+- Product cards show size + PLA only.
+- Details modal shows only size + PLA, plus card/cash prices.
+- Header, hero, payment guide, product cards and modal redesigned.
+- Exact new MakerWorld/Bambu product designs can be swapped in later through products.js.

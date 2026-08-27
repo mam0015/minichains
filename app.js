@@ -9,7 +9,6 @@ const ORDERS_KEY = 'mini-orders-v2';
 const CART_KEY = 'mini-keychain-cart-v2';
 const CASH_DISCOUNT_PERCENT = 5;
 
-let searchTerm = '';
 let sortMode = 'default';
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 let quickProduct = null;
@@ -31,40 +30,38 @@ function roundCash(v) {
 }
 
 function productCard(p) {
+  const cashPrice = round2(p.price * 0.95);
   const tag = p.tag ? `<span class="tag">${p.tag}</span>` : '';
-  const colors = p.colors.map(c => `<span class="swatch ${c}" title="${c}"></span>`).join('');
   return `
     <article class="product-card">
       <button class="product-image" data-view="${p.id}" aria-label="View ${p.name}">
         <img src="${p.image}" alt="${p.name}" loading="lazy" referrerpolicy="no-referrer"
           style="object-position:${p.imagePosition || 'center'}"
           onerror="this.onerror=null;this.src='${p.fallback || 'assets/images/smiley.svg'}'">
-        ${tag}<span class="wish">♡</span>
+        ${tag}
+        <span class="detail-corner" aria-hidden="true">↗</span>
       </button>
       <div class="product-info">
-        <div class="product-meta">
-          <div><h3 class="product-name">${p.name}</h3><div class="model">MODEL ${p.id}</div></div>
+        <div class="product-topline">
+          <div><div class="model">MODEL ${p.id}</div><h3 class="product-name">${p.name}</h3></div>
           <span class="price">${money(p.price)}</span>
         </div>
-        <div class="spec-row"><span>${p.size}</span><span>≈ ${p.grams} g</span><span>${p.printTime}</span></div>
-        <div class="colour-row"><div class="swatches">${colors}</div><span class="stock">Small batch</span></div>
+        <div class="product-specs"><span>${p.size}</span><span>≈ ${p.grams} g PLA</span></div>
+        <div class="cash-line"><span>Cash price</span><strong>${money(cashPrice)}</strong><small>5% off</small></div>
         <div class="product-actions">
           <button class="add-btn" data-add="${p.id}">Add to bag</button>
-          <button class="view-btn" data-view="${p.id}" aria-label="Quick view">↗</button>
+          <button class="view-btn" data-view="${p.id}" aria-label="View product details">Details <span>↗</span></button>
         </div>
-        <p class="model-credit">Model photo/source: <a href="${p.source}" target="_blank" rel="noopener">${p.credit}</a></p>
+        <p class="model-credit">Design source: <a href="${p.source}" target="_blank" rel="noopener">${p.credit}</a></p>
       </div>
     </article>`;
 }
 
 function renderProducts() {
-  let rows = products.filter(p =>
-    `${p.name} ${p.id} ${p.tag || ''}`.toLowerCase().includes(searchTerm)
-  );
+  let rows = [...products];
   if (sortMode === 'price-low') rows.sort((a, b) => a.price - b.price);
   if (sortMode === 'smallest') rows.sort((a, b) => a.grams - b.grams);
-  grid.innerHTML = rows.map(productCard).join('') ||
-    `<div style="grid-column:1/-1;padding:60px;text-align:center">No keychains found.</div>`;
+  grid.innerHTML = rows.map(productCard).join('');
   count.textContent = `${rows.length} design${rows.length === 1 ? '' : 's'}`;
 }
 
@@ -399,24 +396,17 @@ function openQuick(id) {
   const p = products.find(x => x.id === id);
   if (!p) return;
   quickProduct = p;
-
   const qi = document.querySelector('#quickImage');
   qi.src = p.image;
   qi.referrerPolicy = 'no-referrer';
   qi.style.objectPosition = p.imagePosition || 'center';
-  qi.onerror = () => {
-    qi.onerror = null;
-    qi.src = p.fallback || 'assets/images/smiley.svg';
-  };
-
+  qi.onerror = () => { qi.onerror = null; qi.src = p.fallback || 'assets/images/smiley.svg'; };
   document.querySelector('#quickName').textContent = p.name;
   document.querySelector('#quickModel').textContent = `MODEL ${p.id}`;
   document.querySelector('#quickPrice').textContent = money(p.price);
+  document.querySelector('#quickCashPrice').textContent = money(round2(p.price * 0.95));
   document.querySelector('#quickSize').textContent = p.size;
-  document.querySelector('#quickWeight').textContent = `≈ ${p.grams} g PLA`;
-  document.querySelector('#quickTime').textContent = p.printTime;
-  document.querySelector('#quickDesc').textContent = p.desc;
-  document.querySelector('#quickSwatches').innerHTML = p.colors.map(c => `<span class="swatch ${c}"></span>`).join('');
+  document.querySelector('#quickWeight').textContent = `≈ ${p.grams} g`;
   quick.showModal();
 }
 
@@ -429,19 +419,6 @@ document.querySelector('#quickAdd').addEventListener('click', () => {
   }
 });
 
-const searchPanel = document.querySelector('#searchPanel');
-const search = document.querySelector('#siteSearch');
-
-document.querySelector('#searchToggle').addEventListener('click', () => {
-  searchPanel.classList.add('open');
-  setTimeout(() => search.focus(), 100);
-});
-document.querySelector('#searchClose').addEventListener('click', () => searchPanel.classList.remove('open'));
-search.addEventListener('input', e => {
-  searchTerm = e.target.value.trim().toLowerCase();
-  renderProducts();
-  if (searchTerm) location.hash = 'shop';
-});
 
 const mobile = document.querySelector('#mobileNav');
 document.querySelector('#menuToggle').addEventListener('click', () => mobile.classList.toggle('open'));
