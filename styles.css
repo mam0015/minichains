@@ -894,7 +894,6 @@ button,.btn,.add-btn,.view-btn,.payment-method{min-height:46px;touch-action:mani
 /* Lock the page behind overlays, but let the active panel scroll itself. */
 body.locked{
   overflow:hidden!important;
-  touch-action:none;
 }
 
 /* The whole checkout drawer is now the scroll container.
@@ -1164,5 +1163,317 @@ body.locked{
   }
   .checkout-survey{
     margin-top:16px!important;
+  }
+}
+
+
+/* =========================================================
+   v16 — SAFARI CART REBUILD
+   One scroll container. No nested scrolling. No touch lock.
+   ========================================================= */
+
+/* Critical Safari fix:
+   NEVER block pan gestures on body while a child overlay needs to scroll. */
+body.locked{
+  overflow:hidden!important;
+  touch-action:auto!important;
+}
+
+/* Drawer becomes a two-row app shell:
+   row 1 = header
+   row 2 = the ONLY scrollable checkout area */
+.cart-drawer{
+  position:fixed!important;
+  inset:0 0 0 auto!important;
+  width:min(520px,96vw)!important;
+  height:100vh!important;
+  height:100svh!important;
+  height:100dvh!important;
+  max-height:none!important;
+
+  display:grid!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+
+  padding:0!important;
+  overflow:hidden!important;
+
+  background:#fff!important;
+  z-index:80!important;
+  transform:translateX(105%);
+  transition:transform .28s ease;
+  box-shadow:-24px 0 70px rgba(35,10,22,.17);
+  overscroll-behavior:none;
+}
+
+.cart-drawer.open{
+  transform:translateX(0)!important;
+}
+
+/* Header is outside the scroll region, so Safari doesn't need sticky tricks. */
+.cart-drawer .drawer-head{
+  position:relative!important;
+  top:auto!important;
+  z-index:5!important;
+
+  display:flex!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+
+  margin:0!important;
+  padding:
+    calc(20px + env(safe-area-inset-top))
+    24px
+    16px!important;
+
+  background:rgba(255,255,255,.97)!important;
+  border-bottom:1px solid var(--line)!important;
+  backdrop-filter:blur(16px);
+  -webkit-backdrop-filter:blur(16px);
+}
+
+.cart-drawer .drawer-head h2{
+  margin:0!important;
+  line-height:1!important;
+}
+
+/* This is the ONE and only scrollable element. */
+.cart-scroll{
+  min-height:0!important;
+  height:auto!important;
+
+  overflow-y:scroll!important;
+  overflow-x:hidden!important;
+
+  -webkit-overflow-scrolling:touch!important;
+  touch-action:pan-y!important;
+  overscroll-behavior-y:contain;
+
+  padding:
+    16px
+    24px
+    calc(40px + env(safe-area-inset-bottom))!important;
+
+  scrollbar-width:thin;
+}
+
+/* Old nested scrolling must stay dead. */
+.cart-scroll .cart-items{
+  overflow:visible!important;
+  max-height:none!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  display:grid!important;
+  gap:11px!important;
+}
+
+.cart-scroll .cart-empty{
+  margin:70px auto!important;
+}
+
+/* Summary is ordinary document flow. */
+.cart-scroll .cart-summary{
+  display:block;
+  margin:24px 0 0!important;
+  padding:22px 0 20px!important;
+  border-top:1px solid var(--line)!important;
+}
+
+/* IMPORTANT:
+   Neutralise the ancient `.cart-summary > div { display:flex }`
+   rule that was crushing the checkout sections. */
+.cart-summary > .promo-entry{
+  display:block!important;
+  width:100%!important;
+  margin:12px 0 18px!important;
+}
+.cart-summary > .payment-choice{
+  display:block!important;
+  width:100%!important;
+  margin:18px 0 0!important;
+}
+.cart-summary > .discount-stack{
+  display:grid!important;
+  width:100%!important;
+  gap:8px!important;
+  margin:18px 0 0!important;
+}
+.cart-summary > .summary-row{
+  display:flex!important;
+  width:100%!important;
+  margin:0!important;
+}
+.cart-summary > .summary-total{
+  display:flex!important;
+  width:100%!important;
+  margin:18px 0 0!important;
+}
+.cart-summary > .cash-saving-note{
+  display:block!important;
+  width:100%!important;
+  margin:12px 0 0!important;
+}
+.cart-summary > .cash-saving-note[hidden]{
+  display:none!important;
+}
+
+/* Promo input stays inside viewport */
+.promo-entry > div{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 86px!important;
+  gap:8px!important;
+  width:100%!important;
+}
+.promo-entry input{
+  width:100%!important;
+  min-width:0!important;
+}
+
+/* Payment buttons */
+.payment-methods{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:9px!important;
+  width:100%!important;
+}
+.payment-method{
+  width:100%!important;
+  min-width:0!important;
+}
+
+/* Quantity cart rows */
+.cart-item{
+  width:100%!important;
+  min-width:0!important;
+  grid-template-columns:70px minmax(0,1fr) auto!important;
+}
+.cart-item-main{
+  min-width:0!important;
+}
+.cart-item-main h4{
+  overflow-wrap:anywhere;
+}
+.cart-item-side{
+  min-width:58px;
+}
+
+/* Do NOT use sticky checkout button inside Safari's scroll container.
+   Static button is more reliable and will always be reachable by scrolling. */
+#checkoutBtn{
+  position:static!important;
+  bottom:auto!important;
+  width:100%!important;
+  min-height:56px!important;
+  margin:20px 0 0!important;
+  box-shadow:0 12px 28px rgba(255,79,160,.20)!important;
+}
+
+/* Give the very bottom breathing room so the last content is never hidden. */
+#checkoutNote{
+  display:block!important;
+  margin:12px 4px 0!important;
+  padding:0 0 12px!important;
+  text-align:center!important;
+  line-height:1.5!important;
+}
+
+/* Laptop / desktop */
+@media(min-width:761px){
+  .cart-drawer{
+    width:min(520px,46vw)!important;
+  }
+
+  .cart-scroll{
+    padding-left:28px!important;
+    padding-right:28px!important;
+  }
+
+  .cart-item{
+    grid-template-columns:74px minmax(0,1fr) auto!important;
+  }
+
+  .cart-item img{
+    width:74px!important;
+    height:70px!important;
+  }
+}
+
+/* Mobile */
+@media(max-width:760px){
+  .cart-drawer{
+    inset:0!important;
+    width:100vw!important;
+    max-width:none!important;
+    height:100vh!important;
+    height:100svh!important;
+    height:100dvh!important;
+    border-radius:0!important;
+  }
+
+  .cart-drawer .drawer-head{
+    padding:
+      calc(12px + env(safe-area-inset-top))
+      14px
+      12px!important;
+  }
+
+  .cart-drawer .drawer-head h2{
+    font-size:30px!important;
+  }
+
+  .cart-scroll{
+    padding:
+      12px
+      14px
+      calc(34px + env(safe-area-inset-bottom))!important;
+  }
+
+  .cart-item{
+    grid-template-columns:60px minmax(0,1fr) auto!important;
+    gap:9px!important;
+    padding:9px!important;
+  }
+
+  .cart-item img{
+    width:60px!important;
+    height:60px!important;
+  }
+
+  .payment-methods{
+    grid-template-columns:1fr!important;
+  }
+
+  .payment-method{
+    min-height:68px!important;
+  }
+
+  .checkout-survey{
+    margin-top:18px!important;
+  }
+
+  .promo-entry > div{
+    grid-template-columns:minmax(0,1fr) 78px!important;
+  }
+}
+
+/* Very small phones */
+@media(max-width:370px){
+  .cart-scroll{
+    padding-left:10px!important;
+    padding-right:10px!important;
+  }
+
+  .cart-item{
+    grid-template-columns:54px minmax(0,1fr) auto!important;
+  }
+
+  .cart-item img{
+    width:54px!important;
+    height:54px!important;
+  }
+
+  .qty-control{
+    grid-template-columns:34px 36px 34px!important;
   }
 }

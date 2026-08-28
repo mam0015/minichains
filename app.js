@@ -350,11 +350,21 @@ const overlay = document.querySelector('#overlay');
 
 function openCart() {
   drawer.classList.add('open');
+  drawer.setAttribute('aria-hidden', 'false');
   overlay.classList.add('show');
   document.body.classList.add('locked');
+
+  const scroller = document.querySelector('#cartScroll');
+  if (scroller) {
+    requestAnimationFrame(() => {
+      scroller.scrollTop = 0;
+    });
+  }
 }
+
 function closeCart() {
   drawer.classList.remove('open');
+  drawer.setAttribute('aria-hidden', 'true');
   overlay.classList.remove('show');
   document.body.classList.remove('locked');
 }
@@ -362,6 +372,12 @@ function closeCart() {
 document.querySelector('#cartToggle').addEventListener('click', openCart);
 document.querySelector('#cartClose').addEventListener('click', closeCart);
 overlay.addEventListener('click', closeCart);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && drawer.classList.contains('open')) {
+    closeCart();
+  }
+});
 
 function applyPromoCode() {
   const input = document.querySelector('#promoInput');

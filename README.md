@@ -152,3 +152,23 @@ Fixes:
 - mobile safe-area support
 - laptop / short-screen layout tuning
 - separate desktop and mobile spacing
+
+
+## v16 — Safari cart rebuild
+
+This version fixes the root checkout scrolling issue.
+
+Architecture:
+- cart drawer = fixed app shell
+- drawer header = non-scrolling row
+- `#cartScroll` = the only vertical scroll container
+- cart items, payment method, promo, survey and checkout all live in that one scroll flow
+
+Critical fixes:
+- removed `touch-action:none` from locked body
+- added `touch-action:pan-y` to the actual cart scroller
+- removed nested cart-item scrolling
+- neutralised legacy `.cart-summary > div { display:flex }` layout corruption
+- checkout button is no longer sticky inside Safari scroll region
+- added `100svh` / `100dvh` support
+- mobile and laptop layouts remain separate
