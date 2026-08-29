@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#fff6fa" />
+  <title>mini — Order confirmation</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="success.css" />
+</head>
+<body class="success-body">
+  <div class="announcement"><span>School project</span><i></i><span id="announcementStatus">Order confirmation</span><i></i><span>Collect from us</span></div>
+  <header class="site-header success-header">
+    <a class="brand" href="index.html" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
+    <a class="back-shop" href="index.html#shop">← Back to keychains</a>
+  </header>
+
+  <main class="success-main">
+    <section class="paid-card" id="statusCard">
+      <div class="paid-icon" id="statusIcon" aria-hidden="true">✓</div>
+      <p class="eyebrow" id="statusEyebrow">PAYMENT COMPLETE</p>
+      <h1 id="statusTitle">You’re all paid.</h1>
+      <p class="paid-lead" id="statusLead">Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.</p>
+
+      <div class="payment-method-badge" id="paymentMethodBadge">CARD / ONLINE</div>
+
+      <div class="order-reference">
+        <span>ORDER REFERENCE</span>
+        <strong id="orderRef">MINI-DEMO</strong>
+      </div>
+
+      <div class="demo-warning" id="demoWarning" hidden>
+        This is the demo card flow. Connect and verify Square before treating this screen as proof of online payment.
+      </div>
+    </section>
+
+    <section class="cash-payment-card" id="cashPaymentCard" hidden>
+      <div>
+        <p class="eyebrow">CASH PAYMENT</p>
+        <h2>Collect this amount in cash.</h2>
+        <p>The 5% cash discount has already been applied automatically. Any existing promo code is stacked with it.</p>
+      </div>
+      <div class="cash-amount-box">
+        <span>AMOUNT TO COLLECT</span>
+        <strong id="cashDueAmount">A$0.00</strong>
+        <small>Rounded down to the nearest whole dollar.</small>
+      </div>
+      <button class="btn btn-primary" id="confirmCashBtn">Cash received</button>
+      <small class="cash-confirm-note">Tap this only after the cash has actually been handed over. This school-project version stores the confirmation on this device.</small>
+    </section>
+
+    <section class="order-card">
+      <div class="order-title"><div><p class="eyebrow">ORDER / RECEIPT</p><h2>Your items</h2></div><div class="order-total-wrap"><span id="orderPaymentMethod">CARD</span><strong id="orderTotal">A$0.00</strong></div></div>
+      <div class="success-items" id="successItems"></div>
+      
+      <div class="receipt-prize" id="receiptPrize" hidden>
+        <span>PRIZE</span>
+        <strong id="receiptPrizeName"></strong>
+        <small>Free from Spin & Win</small>
+      </div>
+
+      <div class="order-breakdown" id="orderBreakdown"></div>
+
+    </section>
+
+    <section class="survey-card" id="surveyCard" hidden>
+      <p class="eyebrow">OPTIONAL SURVEY</p>
+      <h2>Help our school project</h2>
+      <p>Your feedback helps us understand what students actually like.</p>
+
+      <form id="surveyForm" class="checkout-survey">
+        <label>
+          <span>First name</span>
+          <input id="surveyFirstName" maxlength="40" placeholder="First name">
+        </label>
+        <label>
+          <span>Your level</span>
+          <input id="surveyLevel" maxlength="30" placeholder="e.g. Year 11">
+        </label>
+        <label>
+          <span>Your comment</span>
+          <textarea id="surveyComment" maxlength="500" rows="3" placeholder="What did you think?"></textarea>
+        </label>
+        <small>Optional. Leave anything blank if you'd rather not say.</small>
+        <button class="btn btn-primary full" type="submit" id="surveySubmitBtn">Submit feedback</button>
+      </form>
+
+      <div class="survey-done" id="surveyDone" hidden>
+        <span class="survey-tick" aria-hidden="true">✓</span>
+        <div>
+          <strong>Thanks for your feedback!</strong>
+          <small id="surveyDoneMeta"></small>
+        </div>
+      </div>
+    </section>
+
+
+    <section class="prize-result" id="prizeResult" hidden>
+      <div class="result-burst">★</div>
+      <div>
+        <p class="eyebrow" id="resultEyebrow">YOUR RESULT</p>
+        <h2 id="resultTitle"></h2>
+        <p id="resultText"></p>
+        <div class="promo-code-box" id="promoCodeBox" hidden><span>ONE-TIME DISCOUNT CODE</span><div><strong id="promoCode"></strong><button id="copyCode">Copy</button></div><small>Use this code on a future order. In this static demo it is enforced once per browser; production one-time enforcement must be server-side.</small></div>
+        <div class="free-item-box" id="freeItemBox" hidden><img id="freeItemImage" alt=""><div><span>YOUR FREE ITEM</span><strong id="freeItemName"></strong><small>Show this result to us when collecting.</small></div></div>
+      </div>
+    </section>
+
+    <section class="collect-card">
+      <div><span>01</span><strong>Keep this page</strong><small>It has your order reference.</small></div>
+      <div><span>02</span><strong>Come speak to us</strong><small>Show the paid order screen.</small></div>
+      <div><span>03</span><strong>Collect your items</strong><small>And any prize you won.</small></div>
+    </section>
+  </main>
+
+  <footer><a class="footer-brand" href="index.html"><img src="assets/images/mini-logo.png" alt="mini"></a><p>3D printed keychains · School project · 2026</p><a href="index.html#shop">Shop again ↑</a></footer>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="products.js"></script>
+  <script src="success.js"></script>
+</body>
+</html>

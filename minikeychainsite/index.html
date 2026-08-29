@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#fff6fa" />
+  <meta name="description" content="mini — a small 3D printed keychain collection created for a school project." />
+  <title>Mini Keychain</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="announcement">
+    <span>School project</span><i></i><span>3D printed keychains</span><i></i><span>20 pieces · 6 designs</span>
+  </div>
+
+  <header class="site-header" id="top">
+    <a class="brand" href="#top" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
+    <nav class="desktop-nav" aria-label="Primary navigation"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#pay">Pay</a></nav>
+    <div class="header-actions">
+      <a class="icon-btn bag-btn" id="cartToggle" href="checkout.html" aria-label="View bag"><svg viewBox="0 0 24 24"><path d="M6 8h12l1 12H5L6 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></a>
+      <button class="menu-btn" id="menuToggle" aria-label="Open menu"><span></span><span></span></button>
+    </div>
+  </header>
+  <nav class="mobile-nav" id="mobileNav"><a href="#top">Home</a><a href="#shop">Keychains</a><a href="#pay">Pay</a></nav>
+
+  <main>
+    <section class="hero-slider" aria-label="mini keychain highlights">
+      <div class="slides" id="heroSlides">
+        <article class="hero-slide active" data-slide="0">
+          <div class="hero-copy"><p class="eyebrow">MINI KEYCHAIN DROP</p><h1>Tiny prints.<br><span>Big personality.</span></h1><p>A small collection of cute 3D-printed keychains, chosen from student feedback and made in limited batches.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Shop keychains <span>↗</span></a><a class="btn btn-ghost" href="#pay">How to pay</a></div><div class="mini-note"><strong>From A$3.07</strong><span>·</span><span>20-piece school batch</span></div></div>
+          <div class="hero-art triple real-photo-stack"><img src="https://makerworld.bblmw.com/makerworld/model/US3c9373901c932c/design/2024-03-06_375ff7f26db4d.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/panda.svg'" alt="Cute panda keychain"><img src="https://makerworld.bblmw.com/makerworld/model/US7b142a7fa870c3/design/2025-10-28_899e3360f846a8.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/cinnamon.svg'" alt="Cinnamon roll keychain"><img src="https://makerworld.bblmw.com/makerworld/model/USbe672abb4a0ea3/design/83cd52af245f6651.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/daisy.svg'" alt="Daisy flower keychain"></div>
+        </article>
+        <article class="hero-slide" data-slide="1">
+          <div class="hero-copy"><p class="eyebrow">CUTE PICKS</p><h1>Made small.<br><span>Made to keep.</span></h1><p>Simple, playful designs made to look good on keys, bags and pencil cases.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Browse the drop <span>↗</span></a></div><div class="mini-note"><strong>A$3.07–A$4.60</strong><span>·</span><span>Small-batch 3D prints</span></div></div>
+          <div class="hero-art double real-photo-pair"><img src="https://makerworld.bblmw.com/makerworld/model/USbe672abb4a0ea3/design/83cd52af245f6651.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/daisy.svg'" alt="Daisy flower keychain"><img src="https://makerworld.bblmw.com/makerworld/model/USfc345859d417cc/design/2024-02-09_3ff57ddc72145.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/cassette.svg'" alt="Retro music cassette keychain"></div>
+        </article>
+        <article class="hero-slide" data-slide="2">
+          <div class="hero-copy"><p class="eyebrow">MORE PERSONALITY</p><h1>Pick the one<br><span>that feels like you.</span></h1><p>From sport to memes, the collection is intentionally small so every design feels different.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">See all six <span>↗</span></a></div><div class="mini-note"><strong>A$4.09–A$5.11</strong><span>·</span><span>Limited school-project drop</span></div></div>
+          <div class="hero-art double real-photo-pair"><img src="https://makerworld.bblmw.com/makerworld/model/USe42e055ddc0436/design/9b08211b705719ac.jpeg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/soccer.svg'" alt="Soccer ball keychain"><img src="https://makerworld.bblmw.com/makerworld/model/USedfb4d8194c6b0/design/2025-05-04_b39eead8bd7b6.jpg?x-oss-process=image%2Fresize%2Cw_1000%2Fformat%2Cwebp" onerror="this.src='assets/images/tung.svg'" alt="Tung Tung Sahur keychain"></div>
+        </article>
+      </div>
+      <div class="slider-controls"><button id="prevSlide" aria-label="Previous slide">←</button><div class="dots" id="heroDots"><button class="active" data-slide-to="0" aria-label="Slide 1"></button><button data-slide-to="1" aria-label="Slide 2"></button><button data-slide-to="2" aria-label="Slide 3"></button></div><button id="nextSlide" aria-label="Next slide">→</button></div>
+    </section>
+<section class="payment-guide" id="pay">
+      <div class="payment-guide-head">
+        <div><p class="eyebrow">PAY YOUR WAY</p><h2>Card or cash. Your choice.</h2></div>
+        <p>The price shown on each product is the card / online price. Choose cash at checkout and we automatically take 5% off.</p>
+      </div>
+      <div class="payment-guide-grid">
+        <article class="pay-card card-pay"><div class="pay-icon">▣</div><div><span>Card / Online</span><strong>Listed price</strong><small>Secure online checkout through Square.</small></div></article>
+        <article class="pay-card cash-pay"><div class="pay-icon">A$</div><div><span>Cash</span><strong>5% OFF</strong><small>Cash gets 5% off the full basket, then the final amount is rounded down to a whole dollar.</small></div></article>
+        <button type="button" class="pay-card spin-pay" id="spinAgainCard"><div class="pay-icon">✦</div><div><span>Spin &amp; win</span><strong>Missed it?</strong><small>It pops up once when you first open mini — tap this card to see it again.</small></div></button>
+      </div>
+    </section>
+
+    <section class="shop-section" id="shop">
+      <div class="section-head"><div><p class="eyebrow">KEYCHAINS</p><h2>Choose your favourite.</h2></div><p class="section-note">A small collection, made to be easy to browse.</p></div>
+      <div class="shop-toolbar"><div class="filters"><button class="active" data-sort="default">All 6</button><button data-sort="price-low">Lowest price</button><button data-sort="smallest">Least filament</button></div><span id="productCount" class="product-count">6 designs</span></div>
+      <div class="product-grid" id="productGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="project-note">
+      <div class="note-smile">☺</div>
+      <div><p class="eyebrow">SMALL PRINTS · BIG PERSONALITY</p><h2>Made to stand out.</h2><p>A limited collection of 3D-printed keychains designed around what students actually like. Fun, affordable and made in small batches with efficient material use.</p></div>
+    </section>
+  </main>
+
+  <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="mini"></a><p>3D printed keychains · School project · 2026</p><a href="#top">Back to top ↑</a></footer>
+
+  <div class="spin-launch" id="spinLaunch" aria-hidden="true">
+    <div class="spin-launch-backdrop"></div>
+
+    <section class="spin-launch-card" role="dialog" aria-modal="true" aria-labelledby="spinLaunchTitle">
+      <button class="spin-launch-close" id="spinLaunchClose" type="button" aria-label="Close">×</button>
+
+      <div class="spin-launch-copy">
+        <p class="eyebrow">SPIN & WIN</p>
+        <h2 id="spinLaunchTitle">Try your luck.</h2>
+        <p>You might win a free keychain or a one-time discount code.</p>
+      </div>
+
+      <div class="launch-wheel-stage">
+        <div class="launch-wheel-pointer"></div>
+
+        <div class="launch-wheel" id="launchWheel">
+          <span class="launch-label l-empty-1">EMPTY</span>
+          <span class="launch-label l-five">5% OFF</span>
+          <span class="launch-label l-empty-2">EMPTY</span>
+          <span class="launch-label l-free">FREE<br>KEYCHAIN</span>
+          <span class="launch-label l-empty-3">EMPTY</span>
+          <span class="launch-label l-ten">10% OFF</span>
+          <span class="launch-label l-twenty">20% OFF</span>
+
+          <button class="launch-spin-button" id="launchSpinBtn" type="button">SPIN</button>
+        </div>
+      </div>
+
+      <div class="launch-result" id="launchResult" hidden>
+        <p class="eyebrow">YOUR PRIZE</p>
+        <h3 id="launchResultTitle"></h3>
+        <p id="launchResultText"></p>
+
+        <div class="launch-code-row">
+          <code id="launchPrizeCode"></code>
+          <button id="launchCopyCode" type="button">Copy code</button>
+        </div>
+
+        <button class="btn btn-primary full" id="launchContinue" type="button">Start shopping</button>
+      </div>
+
+      <small class="spin-launch-foot">One spin per device for this school-project version.</small>
+    </section>
+
+    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  </div>
+
+
+  <!-- Cart/checkout is a dedicated page now: checkout.html -->
+<dialog class="quick-view" id="quickView">
+    <button class="modal-close" id="quickClose" aria-label="Close">×</button>
+    <div class="quick-image"><img id="quickImage" src="" alt=""></div>
+    <div class="quick-copy">
+      <p class="eyebrow" id="quickModel"></p>
+      <h2 id="quickName"></h2>
+      <div class="quick-price-row">
+        <div><span>Card / online</span><strong id="quickPrice"></strong></div>
+        <div class="cash-price"><span>Cash · 5% off</span><strong id="quickCashPrice"></strong></div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-cell"><span>SIZE</span><strong id="quickSize"></strong></div>
+        <div class="detail-cell"><span>PLA USED</span><strong id="quickWeight"></strong></div>
+      </div>
+      <button class="btn btn-primary full" id="quickAdd">Add to bag</button>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="mobile-cart-bar" id="mobileCartBar" aria-live="polite">
+    <div>
+      <small>Your bag</small>
+      <strong id="mobileCartSummary">0 items</strong>
+    </div>
+    <a id="mobileCartOpen" href="checkout.html">View bag</a>
+  </div>
+
+  <script src="products.js"></script><script src="square-config.js"></script><script src="feedback-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
