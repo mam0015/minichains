@@ -33,12 +33,6 @@
       <div class="demo-warning" id="demoWarning" hidden>
         This is the demo card flow. Connect and verify Square before treating this screen as proof of online payment.
       </div>
-    
-      <div class="receipt-customer" id="receiptCustomer" hidden>
-        <span>OPTIONAL SURVEY</span>
-        <strong id="receiptCustomerName"></strong>
-        <small id="receiptCustomerMeta"></small>
-      </div>
     </section>
 
     <section class="cash-payment-card" id="cashPaymentCard" hidden>
@@ -50,7 +44,7 @@
       <div class="cash-amount-box">
         <span>AMOUNT TO COLLECT</span>
         <strong id="cashDueAmount">A$0.00</strong>
-        <small>Rounded to the nearest 5¢ for cash.</small>
+        <small>Rounded down to the nearest whole dollar.</small>
       </div>
       <button class="btn btn-primary" id="confirmCashBtn">Cash received</button>
       <small class="cash-confirm-note">Tap this only after the cash has actually been handed over. This school-project version stores the confirmation on this device.</small>
@@ -67,9 +61,40 @@
       </div>
 
       <div class="order-breakdown" id="orderBreakdown"></div>
-    
+
     </section>
-    
+
+    <section class="survey-card" id="surveyCard" hidden>
+      <p class="eyebrow">OPTIONAL SURVEY</p>
+      <h2>Help our school project</h2>
+      <p>Your feedback helps us understand what students actually like.</p>
+
+      <form id="surveyForm" class="checkout-survey">
+        <label>
+          <span>First name</span>
+          <input id="surveyFirstName" maxlength="40" placeholder="First name">
+        </label>
+        <label>
+          <span>Your level</span>
+          <input id="surveyLevel" maxlength="30" placeholder="e.g. Year 11">
+        </label>
+        <label>
+          <span>Your comment</span>
+          <textarea id="surveyComment" maxlength="500" rows="3" placeholder="What did you think?"></textarea>
+        </label>
+        <small>Optional. Leave anything blank if you'd rather not say.</small>
+        <button class="btn btn-primary full" type="submit" id="surveySubmitBtn">Submit feedback</button>
+      </form>
+
+      <div class="survey-done" id="surveyDone" hidden>
+        <span class="survey-tick" aria-hidden="true">✓</span>
+        <div>
+          <strong>Thanks for your feedback!</strong>
+          <small id="surveyDoneMeta"></small>
+        </div>
+      </div>
+    </section>
+
 
     <section class="prize-result" id="prizeResult" hidden>
       <div class="result-burst">★</div>

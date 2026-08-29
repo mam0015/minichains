@@ -73,16 +73,74 @@ if (freePrizeId) {
   }
 }
 
-const feedback = read('mini-feedback-v1', []).find(x => x.orderId === order.id);
-if (feedback) {
-  const box = document.querySelector('#receiptCustomer');
-  box.hidden = false;
-  document.querySelector('#receiptCustomerName').textContent = feedback.firstName || 'Anonymous';
-  const bits = [];
-  if (feedback.level) bits.push(feedback.level);
-  if (feedback.comment) bits.push(feedback.comment);
-  document.querySelector('#receiptCustomerMeta').textContent = bits.join(' · ');
+function findFeedback() {
+  return read('mini-feedback-v1', []).find(x => x.orderId === order.id);
 }
+
+function showSurveySubmitted(feedback) {
+  document.querySelector('#surveyForm').hidden = true;
+  const done = document.querySelector('#surveyDone');
+  done.hidden = false;
+  const bits = [feedback.firstName || 'Anonymous'];
+  if (feedback.level) bits.push(feedback.level);
+  if (feedback.comment) bits.push(`“${feedback.comment}”`);
+  document.querySelector('#surveyDoneMeta').textContent = bits.join(' · ');
+}
+
+function renderSurveyCard() {
+  const card = document.querySelector('#surveyCard');
+  if (!card || order.id === 'MINI-PREVIEW') return;
+  card.hidden = false;
+
+  const feedback = findFeedback();
+  if (feedback) showSurveySubmitted(feedback);
+}
+
+async function submitSurveyForm(e) {
+  e.preventDefault();
+  const payload = {
+    firstName: document.querySelector('#surveyFirstName').value.trim(),
+    level: document.querySelector('#surveyLevel').value.trim(),
+    comment: document.querySelector('#surveyComment').value.trim()
+  };
+  if (!payload.firstName && !payload.level && !payload.comment) {
+    toast('Fill in at least one field, or just skip it.');
+    return;
+  }
+
+  const record = {
+    id: `FB-${Date.now().toString(36).toUpperCase()}`,
+    orderId: order.id,
+    paymentMethod: order.paymentMethod,
+    ...payload,
+    createdAt: new Date().toISOString()
+  };
+
+  const local = read('mini-feedback-v1', []);
+  local.push(record);
+  write('mini-feedback-v1', local);
+
+  const btn = document.querySelector('#surveySubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
+
+  const endpoint = window.MINI_FEEDBACK?.endpoint?.trim();
+  if (endpoint) {
+    try {
+      await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      });
+    } catch (err) {
+      console.warn('Feedback endpoint failed; local copy kept.', err);
+    }
+  }
+
+  showSurveySubmitted(record);
+}
+
+document.querySelector('#surveyForm')?.addEventListener('submit', submitSurveyForm);
 
 
 document.querySelector('#orderRef').textContent = order.id;
@@ -393,5 +451,6 @@ document.querySelector('#copyCode')?.addEventListener('click', async () => {
 
 renderPaymentState();
 renderWheelState();
+renderSurveyCard();
 
 window.addEventListener('DOMContentLoaded',()=>{document.querySelector('#wheelSection')?.setAttribute('hidden','');});
