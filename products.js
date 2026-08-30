@@ -28,7 +28,7 @@ window.MINI_PRODUCTS = [
   {
     id:'KEY-03', name:'Cute Mini Cat Keychain', type:'keychain', size:'Small · figure',
     grams:7.0, printTime:'≈ 30 min', estimatedCost:0.26, price:4.09,
-    image:'https://makerworld.bblmw.com/makerworld/model/USe5b035dfb3cfe/design/2025-08-06_c64e803e6cafa8.jpg?x-oss-process=image/resize,w_1000/format,webp',
+    image:'assets/images/mini-cat.jpg',
     fallback:'assets/images/mini-cat.jpg', imagePosition:'center',
     colors:['orange','purple','teal'], tag:'Lowest cost',
     desc:'A tiny sitting kitten figure, printed no-supports. The entry-price item in this batch.',
@@ -37,8 +37,8 @@ window.MINI_PRODUCTS = [
   {
     id:'KEY-04', name:'Animal Keychain Collection', type:'keychain', size:'Small · random animal design',
     grams:6.0, printTime:'≈ 25 min', estimatedCost:0.22, price:4.09,
-    image:'https://makerworld.bblmw.com/makerworld/model/USe87a443210ba22/design/7cc5d5aded3a75e1.png?x-oss-process=image/resize,w_1000/format,webp',
-    fallback:'assets/images/animal-collection.jpg', imagePosition:'center',
+    image:'assets/images/animal-collection-clean.jpg',
+    fallback:'assets/images/animal-collection-clean.jpg', imagePosition:'center',
     colors:['assorted'], tag:'Surprise pick',
     desc:'One design pulled from a 25-animal keychain collection — lion, cat, frog, bear and more. Which one you get is a surprise.',
     credit:'Katkad3d', source:'https://makerworld.com/en/models/2928490-keychain-collection-all-in-one-25-packs', paymentLink:''
