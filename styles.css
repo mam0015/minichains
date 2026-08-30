@@ -502,6 +502,15 @@ button,.btn,.add-btn,.view-btn,.payment-method{min-height:46px;touch-action:mani
   color:var(--muted);
   line-height:1.6;
 }
+.launch-terms{
+  margin-top:10px!important;
+  font-size:12px;
+  line-height:1.55;
+  background:var(--soft);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:10px 14px;
+}
 .launch-wheel-stage{
   width:min(480px,78vw);
   aspect-ratio:1/1;
@@ -514,14 +523,15 @@ button,.btn,.add-btn,.view-btn,.payment-method{min-height:46px;touch-action:mani
   border-radius:50%;
   background:
     conic-gradient(
-      from -90deg,
-      #ffd6e7 0deg 51.4286deg,
-      #ff8ec1 51.4286deg 102.8572deg,
-      #f3e9ee 102.8572deg 154.2858deg,
-      #151015 154.2858deg 205.7144deg,
-      #ffe5f0 205.7144deg 257.143deg,
-      #ff5ea9 257.143deg 308.5716deg,
-      #ff258c 308.5716deg 360deg
+      #ffd6e7 0deg 40deg,
+      #ff8ec1 40deg 80deg,
+      #f3e9ee 80deg 120deg,
+      #151015 120deg 160deg,
+      #ffe5f0 160deg 200deg,
+      #ff5ea9 200deg 240deg,
+      #ffd6e7 240deg 280deg,
+      #ff258c 280deg 320deg,
+      #f3e9ee 320deg 360deg
     );
   box-shadow:
     0 28px 70px rgba(93,16,53,.25),
@@ -584,13 +594,15 @@ button,.btn,.add-btn,.view-btn,.payment-method{min-height:46px;touch-action:mani
   transform-origin:44px 8px;
   z-index:2;
 }
-.l-empty-1{transform:rotate(25.714deg) translateY(-168px) rotate(-25.714deg)}
-.l-five{transform:rotate(77.143deg) translateY(-168px) rotate(-77.143deg)}
-.l-empty-2{transform:rotate(128.571deg) translateY(-168px) rotate(-128.571deg)}
-.l-free{transform:rotate(180deg) translateY(-168px) rotate(-180deg);color:#fff;font-size:9px}
-.l-empty-3{transform:rotate(231.429deg) translateY(-168px) rotate(-231.429deg)}
-.l-ten{transform:rotate(282.857deg) translateY(-168px) rotate(-282.857deg)}
-.l-twenty{transform:rotate(334.286deg) translateY(-168px) rotate(-334.286deg);color:#fff}
+.l-empty-1{transform:rotate(20deg) translateY(-168px) rotate(-20deg)}
+.l-five{transform:rotate(60deg) translateY(-168px) rotate(-60deg)}
+.l-empty-2{transform:rotate(100deg) translateY(-168px) rotate(-100deg)}
+.l-free{transform:rotate(140deg) translateY(-168px) rotate(-140deg);color:#fff;font-size:9px}
+.l-empty-3{transform:rotate(180deg) translateY(-168px) rotate(-180deg)}
+.l-ten{transform:rotate(220deg) translateY(-168px) rotate(-220deg)}
+.l-empty-4{transform:rotate(260deg) translateY(-168px) rotate(-260deg)}
+.l-twenty{transform:rotate(300deg) translateY(-168px) rotate(-300deg);color:#fff}
+.l-empty-5{transform:rotate(340deg) translateY(-168px) rotate(-340deg)}
 
 .launch-result{
   margin:20px auto 0;
@@ -757,13 +769,15 @@ button,.btn,.add-btn,.view-btn,.payment-method{min-height:46px;touch-action:mani
     font-size:8px;
     transform-origin:36px 7px;
   }
-  .l-empty-1{transform:rotate(25.714deg) translateY(-30vw) rotate(-25.714deg)}
-  .l-five{transform:rotate(77.143deg) translateY(-30vw) rotate(-77.143deg)}
-  .l-empty-2{transform:rotate(128.571deg) translateY(-30vw) rotate(-128.571deg)}
-  .l-free{transform:rotate(180deg) translateY(-30vw) rotate(-180deg);font-size:7px}
-  .l-empty-3{transform:rotate(231.429deg) translateY(-30vw) rotate(-231.429deg)}
-  .l-ten{transform:rotate(282.857deg) translateY(-30vw) rotate(-282.857deg)}
-  .l-twenty{transform:rotate(334.286deg) translateY(-30vw) rotate(-334.286deg)}
+  .l-empty-1{transform:rotate(20deg) translateY(-30vw) rotate(-20deg)}
+  .l-five{transform:rotate(60deg) translateY(-30vw) rotate(-60deg)}
+  .l-empty-2{transform:rotate(100deg) translateY(-30vw) rotate(-100deg)}
+  .l-free{transform:rotate(140deg) translateY(-30vw) rotate(-140deg);font-size:7px}
+  .l-empty-3{transform:rotate(180deg) translateY(-30vw) rotate(-180deg)}
+  .l-ten{transform:rotate(220deg) translateY(-30vw) rotate(-220deg)}
+  .l-empty-4{transform:rotate(260deg) translateY(-30vw) rotate(-260deg)}
+  .l-twenty{transform:rotate(300deg) translateY(-30vw) rotate(-300deg)}
+  .l-empty-5{transform:rotate(340deg) translateY(-30vw) rotate(-340deg)}
   .launch-result{padding:18px;margin-top:14px}
   .launch-code-row{grid-template-columns:1fr}
   .launch-code-row button{min-height:46px}

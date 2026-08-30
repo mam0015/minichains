@@ -199,14 +199,19 @@ restartSlider();
 const SPIN_OPENED_KEY = 'mini-entry-spin-opened-v1';
 const SPIN_RESULT_KEY = 'mini-entry-spin-result-v1';
 
+// Weights sum to 100 and are unchanged from the original 3-empty layout —
+// the 65 combined "empty" weight is just spread across 5 slices instead of
+// 3 (13 each) so the odds of winning a discount or free item never move.
 const entrySegments = [
-  { key:'empty-a', type:'empty', weight:25, visualIndex:0 },
+  { key:'empty-a', type:'empty', weight:13, visualIndex:0 },
   { key:'off-5', type:'discount', percent:5, weight:12, visualIndex:1 },
-  { key:'empty-b', type:'empty', weight:20, visualIndex:2 },
+  { key:'empty-b', type:'empty', weight:13, visualIndex:2 },
   { key:'free', type:'free', weight:10, visualIndex:3 },
-  { key:'empty-c', type:'empty', weight:20, visualIndex:4 },
+  { key:'empty-c', type:'empty', weight:13, visualIndex:4 },
   { key:'off-10', type:'discount', percent:10, weight:8, visualIndex:5 },
-  { key:'off-20', type:'discount', percent:20, weight:5, visualIndex:6 }
+  { key:'empty-d', type:'empty', weight:13, visualIndex:6 },
+  { key:'off-20', type:'discount', percent:20, weight:5, visualIndex:7 },
+  { key:'empty-e', type:'empty', weight:13, visualIndex:8 }
 ];
 
 function entryCryptoFloat() {
@@ -242,6 +247,28 @@ function storePromoPrize(prize) {
   const promos = read(PROMOS_KEY, []);
   promos.push(prize);
   write(PROMOS_KEY, promos);
+  reportPrizeToServer(prize);
+}
+
+// Tells the server a code was legitimately issued by a real spin, so
+// create-square-checkout can trust it instead of any code someone could
+// otherwise fabricate straight in localStorage. Best-effort: if this fails
+// (offline, endpoint not deployed yet), the code still works for Cash —
+// only card redemption depends on the server actually knowing about it.
+function reportPrizeToServer(prize) {
+  if (prize.type !== 'discount' && prize.type !== 'free') return;
+  const endpoint = window.MINI_SQUARE?.recordPrizeEndpoint?.trim();
+  if (!endpoint) return;
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      code: prize.code,
+      type: prize.type,
+      percent: prize.percent || 0,
+      freeProductId: prize.freeProductId || null
+    })
+  }).catch(() => {});
 }
 
 function launchConfetti() {
@@ -292,12 +319,12 @@ function renderEntrySpinResult(result, celebrate=true) {
 
   if (result.type === 'discount') {
     title.textContent = `${result.percent}% OFF`;
-    text.textContent = 'Use this one-time code at checkout.';
+    text.textContent = 'Use this one-time code at checkout. Applies to Card / Online payment only — cash already has its own 5% discount.';
     code.textContent = result.code;
   } else if (result.type === 'free') {
     const p = products.find(x => x.id === result.freeProductId);
     title.textContent = 'FREE KEYCHAIN';
-    text.textContent = `You won ${p?.name || 'a free keychain'}. Enter the code at checkout and it will appear on your order.`;
+    text.textContent = `You won ${p?.name || 'a free keychain'}, chosen completely at random. Enter the code at checkout and it will appear on your order — works with Cash or Card.`;
     code.textContent = result.code;
   } else {
     title.textContent = 'NO PRIZE';

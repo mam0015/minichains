@@ -2,6 +2,17 @@
 
 Everything code-side is done. What's left are manual steps in the Supabase and Square dashboards — nothing here involves editing code.
 
+## Update — Spin & Win discount codes now work on Card (2026-08-30)
+
+This section covers a second round of changes: discount codes now securely apply to Card payments (previously blocked entirely), while Cash keeps only its own 5% discount (no more stacking). New pieces to deploy:
+
+1. Run the new migration: `supabase/migrations/20260830_create_mini_promo_codes.sql` — creates `mini_promo_codes`, the server-side record of every code a real spin actually issued.
+2. Deploy the new function `record-prize` (`supabase/functions/record-prize/index.ts`) — the wheel calls this the moment someone wins, so the server has something to check a code against later. Turn its **JWT verification off**, same as the other four functions.
+3. Redeploy `create-square-checkout` — it now validates any submitted promo code against `mini_promo_codes`, applies a real order-level discount on Square for a `discount` code, adds the won item as a free ($0) line for a `free` code, and marks the code used the moment it's claimed (so it can't be reused or shared).
+4. Re-upload the changed frontend files to GitHub Pages: `app.js`, `checkout.js`, `success.js`, `index.html`, `styles.css`, `success.html`, `square-config.js` (adds the new `recordPrizeEndpoint` URL).
+
+No new secrets needed for this part.
+
 ## 1. Supabase Secrets
 
 Supabase Dashboard → Project Settings → Edge Functions → Secrets. Add:
@@ -57,4 +68,4 @@ Expected flow: MINI checkout page → `create-square-checkout` (creates a `pendi
 
 Spin & Win promo codes are still generated and checked in the browser (`localStorage`), so they're forgeable. Rather than trust an unverifiable code against a real payment, `create-square-checkout` currently **refuses** a card checkout that has an active promo code (with a clear error message). Cash checkout still accepts promo codes normally, since cash is confirmed in person. Making promo codes safe for card checkout would mean issuing and validating them server-side — a reasonable next step, not done in this pass since it wasn't required to fix the payment bug.
 
-Cash checkout is completely unchanged: full basket subtotal → 5% cash discount → promo if any → floor to the nearest whole dollar.
+Cash checkout (updated 2026-08-30): each item's cash price is its own listed price minus 5%, floored to a whole dollar, per unit — not a basket-level discount. Promo % codes never apply to cash; a free-item prize applies to both Cash and Card.

@@ -43,7 +43,11 @@ function promoPercent() {
 function cartTotals() {
   const rows = cartRows();
   const sub = round2(rows.reduce((s, r) => s + r.p.price * r.qty, 0));
-  const promoPct = promoPercent();
+  // Spin & Win % discount codes apply to Card/online only — cash already
+  // gets its own separate 5% + whole-dollar rounding discount below, and
+  // the two are never stacked. A free-item prize is unaffected by this:
+  // it has no percent value and is handled separately either way.
+  const promoPct = paymentMethod === 'card' ? promoPercent() : 0;
 
   let promoDiscount = 0;
   let cashDiscount = 0;
@@ -55,18 +59,16 @@ function cartTotals() {
     promoDiscount = round2(sub * (promoPct / 100));
     total = round2(Math.max(0, sub - promoDiscount));
   } else {
-    // Cash rule:
-    // 1) calculate the full basket subtotal including quantities
-    // 2) apply the 5% cash discount to the WHOLE basket
-    // 3) apply any prize/promo discount
-    // 4) round the final cash amount DOWN to the nearest whole dollar
-    const afterCashDiscount = round2(sub * (1 - CASH_DISCOUNT_PERCENT / 100));
-    cashDiscount = round2(sub - afterCashDiscount);
-
-    promoDiscount = round2(afterCashDiscount * (promoPct / 100));
-    cashBase = round2(Math.max(0, afterCashDiscount - promoDiscount));
-
-    total = Math.max(0, Math.floor(cashBase));
+    // Cash rule: each item's cash price is its own listed price minus 5%,
+    // rounded DOWN to a whole dollar, per unit — so a cash payment never
+    // needs coins. This is a per-item rule (not a basket-level discount),
+    // and promo % codes never apply to cash (see promoPct above).
+    cashBase = rows.reduce((s, r) => {
+      const unitCash = Math.max(0, Math.floor(r.p.price * (1 - CASH_DISCOUNT_PERCENT / 100)));
+      return s + unitCash * r.qty;
+    }, 0);
+    cashDiscount = round2(sub - cashBase);
+    total = cashBase;
   }
 
   return {
@@ -181,9 +183,9 @@ function renderCart() {
     : qty ? `Add ${3 - qty} more item${3 - qty === 1 ? '' : 's'} to unlock one Spin & Win.` : '';
 
   if (paymentMethod === 'cash') {
-    const discountText = activePromo
-      ? `Cash 5% + promo ${t.promoPct}% off before cash rounding.`
-      : 'Cash gets 5% off the full basket, then the final amount is rounded down to a whole dollar.';
+    const discountText = activePromo?.type === 'free'
+      ? 'Each cash item is 5% off, rounded down to a whole dollar so no coins are needed — plus your free item. Promo % codes don’t apply to cash.'
+      : 'Each cash item is 5% off its listed price, rounded down to a whole dollar — no coins needed.';
     note.textContent = `${discountText} ${spinText}`;
   } else {
     note.textContent = `Card/online payment uses Square. ${spinText}`;
@@ -241,9 +243,9 @@ function applyPromoCode() {
 
   if (promo.type === 'free') {
     const p = products.find(x => x.id === promo.freeProductId);
-    message.textContent = `Free prize applied: ${p?.name || 'keychain'}.`;
+    message.textContent = `Free prize applied: ${p?.name || 'keychain'}. Works with Cash or Card.`;
   } else {
-    message.textContent = `${promo.percent}% discount applied.${paymentMethod === 'cash' ? ' Cash whole-dollar pricing is also active.' : ''}`;
+    message.textContent = `${promo.percent}% discount ready. Applies automatically if you pay by Card — Cash keeps its own 5% discount instead, the two don't stack.`;
   }
 
   message.style.color = '#24804a';

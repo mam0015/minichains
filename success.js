@@ -27,9 +27,9 @@ if (!order) {
     paymentMethod: 'cash',
     paymentStatus: 'paid',
     items: [
-      { id:'KEY-01', qty:1, price:4.09 },
-      { id:'KEY-05', qty:1, price:4.09 },
-      { id:'KEY-06', qty:1, price:5.11 }
+      { id:'KEY-01', qty:1, price:5.11 },
+      { id:'KEY-03', qty:1, price:4.09 },
+      { id:'KEY-04', qty:1, price:4.09 }
     ],
     subtotal: 13.29,
     promoCode: null,
@@ -163,7 +163,7 @@ function renderOrderBreakdown() {
 
   if (order.paymentMethod === 'cash') {
     breakdown.push(
-      `<div class="discount-line"><span>Cash saving · 5% + whole-dollar basket rounding</span><span>−${money(order.cashDiscount)}</span></div>`
+      `<div class="discount-line"><span>Cash saving · 5% per item, rounded down</span><span>−${money(order.cashDiscount)}</span></div>`
     );
   }
 
@@ -281,14 +281,19 @@ const wheelCenterText = document.querySelector('#wheelCenterText');
 const spinStatus = document.querySelector('#spinStatus');
 const result = document.querySelector('#prizeResult');
 
+// Kept in sync with app.js's entrySegments (same 5-empty-slice layout,
+// same total odds) even though this wheel's markup isn't wired into
+// success.html yet — see the note left for the user about that.
 const segments = [
-  { key:'empty-a', label:'Empty', type:'empty', weight:25, visualIndex:0 },
+  { key:'empty-a', label:'Empty', type:'empty', weight:13, visualIndex:0 },
   { key:'off-5', label:'5% off', type:'discount', percent:5, weight:12, visualIndex:1 },
-  { key:'empty-b', label:'Empty', type:'empty', weight:20, visualIndex:2 },
+  { key:'empty-b', label:'Empty', type:'empty', weight:13, visualIndex:2 },
   { key:'free', label:'Free keychain', type:'free', weight:10, visualIndex:3 },
-  { key:'empty-c', label:'Empty', type:'empty', weight:20, visualIndex:4 },
+  { key:'empty-c', label:'Empty', type:'empty', weight:13, visualIndex:4 },
   { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, visualIndex:5 },
-  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:6 }
+  { key:'empty-d', label:'Empty', type:'empty', weight:13, visualIndex:6 },
+  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:7 },
+  { key:'empty-e', label:'Empty', type:'empty', weight:13, visualIndex:8 }
 ];
 
 function cryptoFloat() {
@@ -357,7 +362,25 @@ function issuePromo(percent, orderId) {
     createdAt: new Date().toISOString()
   });
   write(PROMOS_KEY, promos);
+  reportPrizeToServer({ code, type: 'discount', percent });
   return code;
+}
+
+// Same server-side record as app.js's entry spin — see reportPrizeToServer
+// there for why this matters for card redemption.
+function reportPrizeToServer(prize) {
+  const endpoint = window.MINI_SQUARE?.recordPrizeEndpoint?.trim();
+  if (!endpoint) return;
+  fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      code: prize.code,
+      type: prize.type,
+      percent: prize.percent || 0,
+      freeProductId: prize.freeProductId || null
+    })
+  }).catch(() => {});
 }
 
 function rewardStackText(spin) {
@@ -485,6 +508,19 @@ spinBtn?.addEventListener('click', () => {
   }
   if (seg.type === 'free') {
     spin.freeProductId = randomProduct().id;
+    spin.code = randomCode('FREE');
+    const promos = read(PROMOS_KEY, []);
+    promos.push({
+      code: spin.code,
+      percent: 0,
+      type: 'free',
+      freeProductId: spin.freeProductId,
+      orderId: order.id,
+      used: false,
+      createdAt: new Date().toISOString()
+    });
+    write(PROMOS_KEY, promos);
+    reportPrizeToServer({ code: spin.code, type: 'free', freeProductId: spin.freeProductId });
   }
 
   saveSpin(spin);

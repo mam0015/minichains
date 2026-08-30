@@ -8,13 +8,16 @@ const SQUARE_VERSION = "2026-08-19";
 const SQUARE_ENDPOINT = "https://connect.squareup.com/v2/online-checkout/payment-links";
 
 const PRODUCTS: Record<string, { name: string; cents: number }> = {
-  "KEY-01": { name: "Cute Panda Heart", cents: 409 },
-  "KEY-02": { name: "Cinnamon Roll Tray", cents: 460 },
-  "KEY-03": { name: "Daisy Flower", cents: 307 },
-  "KEY-04": { name: "Retro Music Cassette", cents: 358 },
-  "KEY-05": { name: "Soccer Ball", cents: 409 },
-  "KEY-06": { name: "Tung Tung Sahur", cents: 511 },
+  "KEY-01": { name: "Mini Eiffel Tower Keychain", cents: 511 },
+  "KEY-02": { name: "Adorable Cupcake Keychain", cents: 511 },
+  "KEY-03": { name: "Cute Mini Cat Keychain", cents: 409 },
+  "KEY-04": { name: "Animal Keychain Collection", cents: 409 },
 };
+
+// Must match the wheel's real segments (app.js / success.js) — this is a
+// second line of defense on top of record-prize already rejecting
+// anything outside these values.
+const ALLOWED_PERCENTS = new Set([5, 10, 20]);
 
 const ALLOWED_ORIGINS = new Set([
   "https://mam0015.github.io",
@@ -87,6 +90,9 @@ Deno.serve(async (req) => {
     return json({ error: "Origin not allowed." }, 403, origin);
   }
 
+  let admin: ReturnType<typeof createClient> | null = null;
+  let claimedPromoCode: string | null = null;
+
   try {
     const accessToken = Deno.env.get("SQUARE_ACCESS_TOKEN");
     const locationId = Deno.env.get("SQUARE_LOCATION_ID");
@@ -153,25 +159,95 @@ Deno.serve(async (req) => {
       return json({ error: "Your bag is empty." }, 400, origin);
     }
 
-    // IMPORTANT:
-    // Spin & Win prize codes are still generated only in browser localStorage.
-    // They are not secure enough to validate for real-money checkout yet.
-    // We therefore refuse a promo-bearing card checkout instead of trusting
-    // a forgeable browser discount. The promo system should be moved
-    // server-side before enabling it for production card payments.
-    const promoCode = String(body.promoCode || "").trim();
-    if (promoCode) {
-      return json({
-        error: "Prize-code card checkout is being secured. Remove the promo code for this payment."
-      }, 409, origin);
+    const supabaseUrl = Deno.env.get("SUPABASE_URL");
+    const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+      return json({ error: "Server configuration error." }, 500, origin);
+    }
+    admin = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false, autoRefreshToken: false },
+    });
+
+    // Spin & Win prize codes: validated and claimed against the
+    // server-side record-prize table (never trusted from the browser).
+    // A code is "claimed" (marked used) here, before we ever call Square,
+    // so two simultaneous requests can't both redeem it — if the Square
+    // call subsequently fails for an unrelated reason, the claim is
+    // rolled back in the catch block below.
+    const promoCodeInput = String(body.promoCode || "").trim().toUpperCase();
+    let promoPercent = 0;
+    let promoDiscountCents = 0;
+    let freeProductId: string | null = null;
+    const discounts: { name: string; percentage: string; scope: string }[] = [];
+
+    if (promoCodeInput) {
+      const { data: promo, error: promoErr } = await admin
+        .from("mini_promo_codes")
+        .select("code, type, percent, free_product_id, used")
+        .eq("code", promoCodeInput)
+        .maybeSingle();
+
+      if (promoErr) {
+        console.error("mini_promo_codes lookup failed", promoErr);
+        return json({ error: "Could not verify promo code." }, 500, origin);
+      }
+      if (!promo) {
+        return json({ error: "This promo code isn't recognised by our server yet — try again in a moment, or remove it." }, 400, origin);
+      }
+      if (promo.used) {
+        return json({ error: "This one-time code has already been used." }, 409, origin);
+      }
+
+      const { data: claimed, error: claimErr } = await admin
+        .from("mini_promo_codes")
+        .update({ used: true, used_at: new Date().toISOString(), used_for_order: orderId })
+        .eq("code", promoCodeInput)
+        .eq("used", false)
+        .select("code");
+
+      if (claimErr) {
+        console.error("mini_promo_codes claim failed", claimErr);
+        return json({ error: "Could not verify promo code." }, 500, origin);
+      }
+      if (!claimed || claimed.length === 0) {
+        return json({ error: "This one-time code has already been used." }, 409, origin);
+      }
+      claimedPromoCode = promoCodeInput;
+
+      if (promo.type === "discount") {
+        const pct = Number(promo.percent);
+        if (!ALLOWED_PERCENTS.has(pct)) {
+          throw new Error("Recorded promo code has an invalid percent.");
+        }
+        promoPercent = pct;
+        promoDiscountCents = Math.round(subtotalCents * pct / 100);
+        discounts.push({
+          name: `Spin & Win ${pct}% off`,
+          percentage: String(pct),
+          scope: "ORDER",
+        });
+      } else if (promo.type === "free") {
+        const freeProduct = promo.free_product_id ? PRODUCTS[promo.free_product_id] : null;
+        if (!freeProduct) {
+          throw new Error("Recorded promo code has an unknown free product.");
+        }
+        freeProductId = promo.free_product_id as string;
+        lineItems.push({
+          name: `${freeProduct.name} (free — Spin & Win)`,
+          quantity: "1",
+          base_price_money: { amount: 0, currency: "AUD" },
+        });
+      }
     }
 
-    const squareBody = {
+    const squareBody: Record<string, unknown> = {
       idempotency_key: crypto.randomUUID(),
       description: "MINI Keychains online order",
       order: {
         location_id: locationId,
         line_items: lineItems,
+        ...(discounts.length ? { discounts } : {}),
       },
       checkout_options: {
         redirect_url: redirectUrl,
@@ -199,13 +275,13 @@ Deno.serve(async (req) => {
         squareData?.errors?.[0]?.detail ||
         squareData?.errors?.[0]?.code ||
         "Square could not create the checkout.";
-      return json({ error: detail }, 502, origin);
+      throw new Error(detail);
     }
 
     const paymentLink = squareData?.payment_link;
     if (!paymentLink?.url) {
       console.error("Square response missing payment_link.url:", squareData);
-      return json({ error: "Square returned an invalid checkout response." }, 502, origin);
+      throw new Error("Square returned an invalid checkout response.");
     }
 
     // Record the order as pending. This is what the webhook later flips to
@@ -214,27 +290,22 @@ Deno.serve(async (req) => {
     // customer from paying; it just means this order won't be trackable
     // server-side, so we still return the Square URL.
     try {
-      const supabaseUrl = Deno.env.get("SUPABASE_URL");
-      const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-      if (supabaseUrl && serviceRoleKey) {
-        const admin = createClient(supabaseUrl, serviceRoleKey, {
-          auth: { persistSession: false, autoRefreshToken: false },
-        });
-        const { error } = await admin.from("mini_orders").insert({
-          id: orderId,
-          payment_method: "card",
-          status: "pending",
-          items: orderItems,
-          subtotal: subtotalCents / 100,
-          total: subtotalCents / 100,
-          square_payment_link_id: paymentLink.id || null,
-          square_order_id: paymentLink.order_id || null,
-          survey: body.survey && typeof body.survey === "object" ? body.survey : null,
-        });
-        if (error) console.error("mini_orders insert failed", error);
-      } else {
-        console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
-      }
+      const { error } = await admin.from("mini_orders").insert({
+        id: orderId,
+        payment_method: "card",
+        status: "pending",
+        items: orderItems,
+        subtotal: subtotalCents / 100,
+        promo_code: claimedPromoCode,
+        promo_percent: promoPercent,
+        promo_discount: promoDiscountCents / 100,
+        free_prize_product_id: freeProductId,
+        total: (subtotalCents - promoDiscountCents) / 100,
+        square_payment_link_id: paymentLink.id || null,
+        square_order_id: paymentLink.order_id || null,
+        survey: body.survey && typeof body.survey === "object" ? body.survey : null,
+      });
+      if (error) console.error("mini_orders insert failed", error);
     } catch (dbErr) {
       console.error("mini_orders insert threw", dbErr);
     }
@@ -247,6 +318,16 @@ Deno.serve(async (req) => {
     }, 200, origin);
 
   } catch (error) {
+    // A promo code was claimed but the checkout didn't actually go
+    // through (Square rejected it, etc.) — give it back rather than
+    // burning a real prize for nothing.
+    if (admin && claimedPromoCode) {
+      const { error: revertErr } = await admin
+        .from("mini_promo_codes")
+        .update({ used: false, used_at: null, used_for_order: null })
+        .eq("code", claimedPromoCode);
+      if (revertErr) console.error("Could not revert promo claim", revertErr);
+    }
     console.error(error);
     return json({
       error: error instanceof Error ? error.message : "Checkout failed."
