@@ -9,7 +9,7 @@
 window.MINI_PRODUCTS = [
   {
     id:'KEY-01', name:'Mini Eiffel Tower Keychain', type:'keychain', size:'Small · detailed tower charm',
-    grams:6.5, printTime:'≈ 35 min', estimatedCost:0.24, price:5.11,
+    grams:6.5, printTime:'≈ 35 min', estimatedCost:0.24, price:5.10,
     image:'https://makerworld.bblmw.com/makerworld/model/USb9d7b65bb140d5/design/0bc37a373b76adbb.webp?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/eiffel-tower.jpg', imagePosition:'center',
     colors:['white','black','silver'], tag:'Souvenir pick',
@@ -18,7 +18,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-02', name:'Adorable Cupcake Keychain', type:'keychain', size:'Small · flat charm',
-    grams:5.5, printTime:'≈ 25 min', estimatedCost:0.20, price:5.11,
+    grams:5.5, printTime:'≈ 25 min', estimatedCost:0.20, price:5.10,
     image:'https://makerworld.bblmw.com/makerworld/model/USe99c09efcdbc78/design/206c53efbdd0711d.png?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/cupcake.jpg', imagePosition:'center',
     colors:['pink','white','red'], tag:'Cute pick',
@@ -27,7 +27,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-03', name:'Cute Mini Cat Keychain', type:'keychain', size:'Small · figure',
-    grams:7.0, printTime:'≈ 30 min', estimatedCost:0.26, price:4.09,
+    grams:7.0, printTime:'≈ 30 min', estimatedCost:0.26, price:4.08,
     image:'assets/images/mini-cat.jpg',
     fallback:'assets/images/mini-cat.jpg', imagePosition:'center',
     colors:['orange','purple','teal'], tag:'Lowest cost',
@@ -36,7 +36,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-04', name:'Animal Keychain Collection', type:'keychain', size:'Small · random animal design',
-    grams:6.0, printTime:'≈ 25 min', estimatedCost:0.22, price:4.09,
+    grams:6.0, printTime:'≈ 25 min', estimatedCost:0.22, price:4.08,
     image:'assets/images/animal-collection-clean.jpg',
     fallback:'assets/images/animal-collection-clean.jpg', imagePosition:'center',
     colors:['assorted'], tag:'Surprise pick',
@@ -45,7 +45,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-05', name:'Mecha Mandalorian Keychain', type:'keychain', size:'Small · armoured figure',
-    grams:6.0, printTime:'≈ 30 min', estimatedCost:0.22, price:5.00,
+    grams:6.0, printTime:'≈ 30 min', estimatedCost:0.22, price:5.10,
     image:'https://makerworld.bblmw.com/makerworld/model/US5fda13bfe5dab8/design/2025-07-28_722457b3973cf8.jpg?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/mandalorian.jpg', imagePosition:'center',
     colors:['white','black'], tag:'Sci-fi pick',
@@ -54,7 +54,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-06', name:'Spiderman Keychain', type:'keychain', size:'Small · flat silhouette',
-    grams:4.0, printTime:'≈ 20 min', estimatedCost:0.15, price:3.00,
+    grams:4.0, printTime:'≈ 20 min', estimatedCost:0.15, price:3.06,
     image:'https://makerworld.bblmw.com/makerworld/model/US4181a6f29e27/design/2025-02-19_3a25bfbb52fc.webp?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/spiderman.jpg', imagePosition:'center',
     colors:['black','white'], tag:'Lowest cost',
@@ -63,7 +63,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-07', name:'Weight Plate Keychain', type:'keychain', size:'Small · round plate charm',
-    grams:5.0, printTime:'≈ 25 min', estimatedCost:0.18, price:4.00,
+    grams:5.0, printTime:'≈ 25 min', estimatedCost:0.18, price:4.08,
     image:'https://makerworld.bblmw.com/makerworld/model/US3278d2b909ddbe/design/2025-11-19_ddbedcfbd3ab8.png?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/weight-plate.jpg', imagePosition:'center',
     colors:['navy','black'], tag:'Gym pick',
@@ -72,7 +72,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-08', name:'Puffer Letters Keychain', type:'keychain', size:'Small · single letter, A–Z',
-    grams:3.0, printTime:'≈ 15 min', estimatedCost:0.11, price:2.50,
+    grams:3.0, printTime:'≈ 15 min', estimatedCost:0.11, price:2.55,
     image:'https://makerworld.bblmw.com/makerworld/model/US8791c061658b1e/design/2025-05-15_7293f7d175291.jpg?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/puffer-letters.jpg', imagePosition:'center',
     colors:['assorted'], tag:'Initial pick',
@@ -81,7 +81,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'KEY-09', name:'iPhone Keyring', type:'keychain', size:'Small · phone charm',
-    grams:5.0, printTime:'≈ 25 min', estimatedCost:0.18, price:3.00,
+    grams:5.0, printTime:'≈ 25 min', estimatedCost:0.18, price:3.06,
     image:'https://makerworld.bblmw.com/makerworld/model/USc5cc82c68ad8b2/design/2025-10-05_9981c002d65d58.png?x-oss-process=image/resize,w_1000/format,webp',
     fallback:'assets/images/iphone-keyring.jpg', imagePosition:'center',
     colors:['assorted'], tag:'Trendy pick',
