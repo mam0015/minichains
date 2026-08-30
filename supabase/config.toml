@@ -1,2 +1,5 @@
 [functions.rapid-handler]
 verify_jwt = false
+
+[functions.create-square-checkout]
+verify_jwt = false

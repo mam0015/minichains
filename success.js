@@ -189,7 +189,6 @@ function renderPaymentState() {
   const statusTitle = document.querySelector('#statusTitle');
   const statusLead = document.querySelector('#statusLead');
   const paymentBadge = document.querySelector('#paymentMethodBadge');
-  const announcementStatus = document.querySelector('#announcementStatus');
   const cashCard = document.querySelector('#cashPaymentCard');
 
   paymentBadge.textContent = method === 'cash' ? 'CASH' : 'CARD / ONLINE';
@@ -200,7 +199,6 @@ function renderPaymentState() {
     statusTitle.textContent = 'Cash payment is due.';
     statusLead.innerHTML =
       `Collect <strong>${money(order.total)}</strong> in cash, then tap <strong>Cash received</strong>. After that, this page becomes the paid confirmation and the Spin & Win unlocks if the order has 3+ items.`;
-    announcementStatus.textContent = 'Cash payment due';
     cashCard.hidden = false;
     document.querySelector('#cashDueAmount').textContent = money(order.total);
   } else {
@@ -209,7 +207,6 @@ function renderPaymentState() {
     statusTitle.textContent = 'You’re all paid.';
     statusLead.innerHTML =
       `Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.`;
-    announcementStatus.textContent = 'Payment confirmed';
     cashCard.hidden = true;
   }
 

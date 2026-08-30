@@ -310,12 +310,12 @@ function markPromoUsed(orderId) {
   write(PROMOS_KEY, promos);
 }
 
-function saveLocalOrder({ method, status, demo = false }) {
+function saveLocalOrder({ method, status, demo = false, id }) {
   const rows = cartRows();
   if (!rows.length) return null;
 
   const t = cartTotals();
-  const id = makeOrderId();
+  id = id || makeOrderId();
 
   const order = {
     id,
@@ -380,6 +380,11 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
   btn.disabled = true;
   btn.textContent = 'Opening Square…';
 
+  // Reserved now so the redirect Square sends the customer back to can find
+  // this exact order. Nothing is written to the cart/orders yet — that only
+  // happens once Square confirms it created the checkout, below.
+  const pendingId = makeOrderId();
+
   try {
     const res = await fetch(endpoint, {
       method: 'POST',
@@ -388,12 +393,21 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
         paymentMethod: 'card',
         items: rows.map(r => ({ id: r.id, qty: r.qty })),
         promoCode: activePromo?.code || null,
-        survey: customerSurveyPayload()
+        survey: customerSurveyPayload(),
+        redirectUrl: new URL(`success.html?order=${encodeURIComponent(pendingId)}`, window.location.href).href
       })
     });
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.url) throw new Error(data.error || 'Could not create Square checkout.');
+
+    // Square only redirects to redirectUrl once checkout completes, so it's
+    // reasonable to record this as paid now. That said, this is the redirect
+    // signal, not a server-verified webhook — see SQUARE_PRODUCTION_STEPS.md
+    // for the webhook step that makes this tamper-proof.
+    const order = saveLocalOrder({ method: 'card', status: 'paid', demo: false, id: pendingId });
+    if (order) await submitSurvey(order.id, 'card');
+
     location.href = data.url;
   } catch (err) {
     toastMsg(err.message || 'Checkout failed. Please try again.');

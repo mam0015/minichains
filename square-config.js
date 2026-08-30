@@ -1,5 +1,5 @@
-// Public frontend configuration only. NEVER put a Square access token in this file.
+// Public frontend configuration only.
+// NEVER put a Square access token, application secret, or service key in this file.
 window.MINI_SQUARE = {
-  // Example: 'https://YOUR_PROJECT.supabase.co/functions/v1/create-square-checkout'
-  checkoutEndpoint: ''
+  checkoutEndpoint: 'https://hkjgitxovfiamibgpoan.supabase.co/functions/v1/create-square-checkout'
 };
