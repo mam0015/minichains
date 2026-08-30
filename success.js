@@ -192,25 +192,86 @@ function renderPaymentState() {
   const cashCard = document.querySelector('#cashPaymentCard');
 
   paymentBadge.textContent = method === 'cash' ? 'CASH' : 'CARD / ONLINE';
+  cashCard.hidden = true;
 
-  if (method === 'cash' && !isPaid()) {
-    statusIcon.textContent = 'A$';
-    statusEyebrow.textContent = 'CASH SELECTED';
-    statusTitle.textContent = 'Cash payment is due.';
-    statusLead.innerHTML =
-      `Collect <strong>${money(order.total)}</strong> in cash, then tap <strong>Cash received</strong>. After that, this page becomes the paid confirmation and the Spin & Win unlocks if the order has 3+ items.`;
-    cashCard.hidden = false;
-    document.querySelector('#cashDueAmount').textContent = money(order.total);
-  } else {
+  const paidCopy = () => {
     statusIcon.textContent = '✓';
     statusEyebrow.textContent = 'PAYMENT COMPLETE';
     statusTitle.textContent = 'You’re all paid.';
     statusLead.innerHTML =
       `Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.`;
-    cashCard.hidden = true;
+  };
+
+  if (method === 'cash') {
+    if (isPaid()) {
+      paidCopy();
+    } else {
+      statusIcon.textContent = 'A$';
+      statusEyebrow.textContent = 'CASH SELECTED';
+      statusTitle.textContent = 'Cash payment is due.';
+      statusLead.innerHTML =
+        `Collect <strong>${money(order.total)}</strong> in cash, then tap <strong>Cash received</strong>. After that, this page becomes the paid confirmation and the Spin & Win unlocks if the order has 3+ items.`;
+      cashCard.hidden = false;
+      document.querySelector('#cashDueAmount').textContent = money(order.total);
+    }
+  } else if (order.paymentStatus === 'unverified') {
+    // Card, and the server never confirmed it — never shown as paid.
+    statusIcon.textContent = '!';
+    statusEyebrow.textContent = 'UNABLE TO VERIFY YET';
+    statusTitle.textContent = 'We couldn’t confirm this automatically.';
+    statusLead.innerHTML =
+      `If you completed payment on Square, keep your <strong>order reference</strong> below and refresh this page in a minute, or show it to our team so we can check manually.`;
+  } else if (isPaid()) {
+    paidCopy();
+  } else {
+    // Card, redirected back from Square, waiting on order-status/the webhook.
+    statusIcon.textContent = '⏳';
+    statusEyebrow.textContent = 'CONFIRMING PAYMENT';
+    statusTitle.textContent = 'Confirming your payment…';
+    statusLead.innerHTML =
+      `We’re checking with Square that your payment went through. This usually takes just a few seconds.`;
   }
 
   renderOrderBreakdown();
+}
+
+async function verifyCardPaymentIfNeeded() {
+  if (order.id === 'MINI-PREVIEW') return;
+  if (order.paymentMethod !== 'card' || isPaid()) return;
+
+  const endpoint = window.MINI_SQUARE?.orderStatusEndpoint?.trim();
+  if (!endpoint) {
+    order.paymentStatus = 'unverified';
+    persistOrder();
+    renderPaymentState();
+    return;
+  }
+
+  const attempts = 8;
+  const intervalMs = 2500;
+
+  for (let i = 0; i < attempts; i++) {
+    try {
+      const res = await fetch(`${endpoint}?id=${encodeURIComponent(order.id)}`);
+      const data = await res.json().catch(() => null);
+      if (data?.found && data.status === 'paid') {
+        order.paymentStatus = 'paid';
+        order.paidAt = data.paidAt || new Date().toISOString();
+        persistOrder();
+        renderPaymentState();
+        renderWheelState();
+        return;
+      }
+      if (data && data.found === false) break; // no server record — will never resolve
+    } catch {
+      // network hiccup — just retry
+    }
+    if (i < attempts - 1) await new Promise(r => setTimeout(r, intervalMs));
+  }
+
+  order.paymentStatus = 'unverified';
+  persistOrder();
+  renderPaymentState();
 }
 
 const wheelSection = document.querySelector('#wheelSection');
@@ -449,5 +510,6 @@ document.querySelector('#copyCode')?.addEventListener('click', async () => {
 renderPaymentState();
 renderWheelState();
 renderSurveyCard();
+verifyCardPaymentIfNeeded();
 
 window.addEventListener('DOMContentLoaded',()=>{document.querySelector('#wheelSection')?.setAttribute('hidden','');});

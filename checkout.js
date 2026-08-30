@@ -357,22 +357,18 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
   if (paymentMethod === 'cash') {
     const order = saveLocalOrder({ method: 'cash', status: 'cash_due', demo: false });
     if (order) {
-      await submitSurvey(order.id, 'cash');
+      submitSurvey(order.id, 'cash'); // best-effort — never block the redirect on it
       location.href = `success.html?order=${encodeURIComponent(order.id)}`;
     }
     return;
   }
 
-  // Card/online goes through Square.
+  // Card/online goes through Square. No fake "paid" fallback: if the
+  // backend isn't configured, say so instead of pretending payment happened.
   const endpoint = window.MINI_SQUARE?.checkoutEndpoint?.trim();
 
   if (!endpoint) {
-    // Demo-only local order when Square backend is not connected yet.
-    const order = saveLocalOrder({ method: 'card', status: 'paid_demo', demo: true });
-    if (order) {
-      await submitSurvey(order.id, 'card');
-      location.href = `success.html?demo=1&order=${encodeURIComponent(order.id)}`;
-    }
+    toastMsg('Card payment isn’t available right now — please choose Cash, or try again shortly.');
     return;
   }
 
@@ -381,8 +377,7 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
   btn.textContent = 'Opening Square…';
 
   // Reserved now so the redirect Square sends the customer back to can find
-  // this exact order. Nothing is written to the cart/orders yet — that only
-  // happens once Square confirms it created the checkout, below.
+  // this exact order, and so the backend can insert it under this same id.
   const pendingId = makeOrderId();
 
   try {
@@ -391,6 +386,7 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         paymentMethod: 'card',
+        orderId: pendingId,
         items: rows.map(r => ({ id: r.id, qty: r.qty })),
         promoCode: activePromo?.code || null,
         survey: customerSurveyPayload(),
@@ -401,12 +397,12 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.url) throw new Error(data.error || 'Could not create Square checkout.');
 
-    // Square only redirects to redirectUrl once checkout completes, so it's
-    // reasonable to record this as paid now. That said, this is the redirect
-    // signal, not a server-verified webhook — see SQUARE_PRODUCTION_STEPS.md
-    // for the webhook step that makes this tamper-proof.
-    const order = saveLocalOrder({ method: 'card', status: 'paid', demo: false, id: pendingId });
-    if (order) await submitSurvey(order.id, 'card');
+    // Not "paid" — Square hasn't confirmed anything yet, this only records
+    // what was ordered so success.html has something to show while it polls
+    // the server (order-status, updated by the square-webhook function) for
+    // the real, verified state. The redirect alone is never treated as proof.
+    const order = saveLocalOrder({ method: 'card', status: 'pending', demo: false, id: data.orderId || pendingId });
+    if (order) submitSurvey(order.id, 'card'); // best-effort — never block the redirect on it
 
     location.href = data.url;
   } catch (err) {

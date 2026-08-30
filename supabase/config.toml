@@ -3,3 +3,9 @@ verify_jwt = false
 
 [functions.create-square-checkout]
 verify_jwt = false
+
+[functions.square-webhook]
+verify_jwt = false
+
+[functions.order-status]
+verify_jwt = false
