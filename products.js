@@ -20,10 +20,10 @@ window.MINI_PRODUCTS = [
   {
     id:'KEY-02', name:'Emoji Keychains', type:'keychain', size:'Small · music note, heart or smiley face',
     grams:3.0, printTime:'≈ 15 min', estimatedCost:0.11, price:2.00,
-    image:'assets/images/smiley.svg',
-    fallback:'assets/images/smiley.svg', imagePosition:'center',
+    image:'assets/images/emoji-keychains.jpg',
+    fallback:'assets/images/emoji-keychains.jpg', imagePosition:'center',
     colors:['pink'], tag:'Fun pick',
-    desc:'A music note, love heart or smiley face charm. In stock: 2, pink. [Placeholder image — needs the real MakerWorld link/photo.]',
+    desc:'A music note, love heart or smiley face charm. In stock: 2, pink.',
     credit:'', source:'', paymentLink:''
   },
   {
