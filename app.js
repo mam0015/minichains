@@ -6,7 +6,7 @@ const count = document.querySelector('#productCount');
 
 const PROMOS_KEY = 'mini-issued-promos-v2';
 const CART_KEY = 'mini-keychain-cart-v2';
-const CASH_DISCOUNT_PERCENT = 5;
+const CARD_SURCHARGE_PERCENT = 5;
 
 let sortMode = 'default';
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
@@ -27,7 +27,7 @@ function round2(v) {
 }
 
 function productCard(p) {
-  const cashPrice = Math.floor(p.price * (1 - CASH_DISCOUNT_PERCENT / 100));
+  const cardPrice = round2(p.price * (1 + CARD_SURCHARGE_PERCENT / 100));
   const tag = p.tag ? `<span class="tag">${p.tag}</span>` : '';
   return `
     <article class="product-card">
@@ -44,7 +44,7 @@ function productCard(p) {
           <span class="price">${money(p.price)}</span>
         </div>
         <div class="product-specs"><span>${p.size}</span><span>≈ ${p.grams} g PLA</span></div>
-        <div class="cash-line"><span>Cash price</span><strong>${money(cashPrice)}</strong><small>5% off</small></div>
+        <div class="cash-line"><span>Card price</span><strong>${money(cardPrice)}</strong><small>+5%</small></div>
         <div class="product-actions">
           <button class="add-btn" data-add="${p.id}">Add to bag</button>
           <button class="view-btn" data-view="${p.id}" aria-label="View product details">Details <span>↗</span></button>
@@ -142,7 +142,7 @@ function openQuick(id) {
   document.querySelector('#quickName').textContent = p.name;
   document.querySelector('#quickModel').textContent = `MODEL ${p.id}`;
   document.querySelector('#quickPrice').textContent = money(p.price);
-  document.querySelector('#quickCashPrice').textContent = money(Math.floor(p.price * (1 - CASH_DISCOUNT_PERCENT / 100)));
+  document.querySelector('#quickCashPrice').textContent = money(round2(p.price * (1 + CARD_SURCHARGE_PERCENT / 100)));
   document.querySelector('#quickSize').textContent = p.size;
   document.querySelector('#quickWeight').textContent = `≈ ${p.grams} g`;
   quick.showModal();
@@ -328,7 +328,7 @@ function renderEntrySpinResult(result, celebrate=true) {
     code.textContent = result.code;
   } else {
     title.textContent = 'NO PRIZE';
-    text.textContent = 'No prize this time. You can still shop the mini drop.';
+    text.textContent = 'No prize this time. You can still shop the MiniChains drop.';
     code.textContent = result.code;
   }
 

@@ -4,7 +4,7 @@ const money = v => `A$${Number(v || 0).toFixed(2)}`;
 const PROMOS_KEY = 'mini-issued-promos-v2';
 const ORDERS_KEY = 'mini-orders-v2';
 const CART_KEY = 'mini-keychain-cart-v2';
-const CASH_DISCOUNT_PERCENT = 5;
+const CARD_SURCHARGE_PERCENT = 5;
 
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
 let activePromo = null;
@@ -40,44 +40,41 @@ function promoPercent() {
   return activePromo?.type === 'discount' ? Number(activePromo.percent || 0) : 0;
 }
 
+// `p.price` is the cash (base) price. Card/online adds a 5% surcharge per
+// unit to cover the Square processing + payment-link cost.
+function cardUnitPrice(p) {
+  return round2(p.price * (1 + CARD_SURCHARGE_PERCENT / 100));
+}
+function unitPrice(p) {
+  return paymentMethod === 'card' ? cardUnitPrice(p) : p.price;
+}
+
 function cartTotals() {
   const rows = cartRows();
-  const sub = round2(rows.reduce((s, r) => s + r.p.price * r.qty, 0));
-  // Spin & Win % discount codes apply to Card/online only — cash already
-  // gets its own separate 5% + whole-dollar rounding discount below, and
-  // the two are never stacked. A free-item prize is unaffected by this:
-  // it has no percent value and is handled separately either way.
+  const cashSub = round2(rows.reduce((s, r) => s + r.p.price * r.qty, 0));
+  const cardSub = round2(rows.reduce((s, r) => s + cardUnitPrice(r.p) * r.qty, 0));
+  // Spin & Win % discount codes apply to Card/online only. A free-item
+  // prize is unaffected by this: it has no percent value and is handled
+  // separately either way.
   const promoPct = paymentMethod === 'card' ? promoPercent() : 0;
 
+  const sub = paymentMethod === 'card' ? cardSub : cashSub;
   let promoDiscount = 0;
-  let cashDiscount = 0;
-  let cashBase = sub;
-  let total = sub;
+  let total = cashSub;
 
   if (paymentMethod === 'card') {
-    // Card / online: listed price, then prize/promo discount only.
-    promoDiscount = round2(sub * (promoPct / 100));
-    total = round2(Math.max(0, sub - promoDiscount));
-  } else {
-    // Cash rule: each item's cash price is its own listed price minus 5%,
-    // rounded DOWN to a whole dollar, per unit — so a cash payment never
-    // needs coins. This is a per-item rule (not a basket-level discount),
-    // and promo % codes never apply to cash (see promoPct above).
-    cashBase = rows.reduce((s, r) => {
-      const unitCash = Math.max(0, Math.floor(r.p.price * (1 - CASH_DISCOUNT_PERCENT / 100)));
-      return s + unitCash * r.qty;
-    }, 0);
-    cashDiscount = round2(sub - cashBase);
-    total = cashBase;
+    promoDiscount = round2(cardSub * (promoPct / 100));
+    total = round2(Math.max(0, cardSub - promoDiscount));
   }
 
   return {
     sub,
+    cashSub,
+    cardSub,
     promoPct,
     promoDiscount,
-    cashDiscountPercent: paymentMethod === 'cash' ? CASH_DISCOUNT_PERCENT : 0,
-    cashDiscount,
-    cashBase,
+    cardSurchargePercent: paymentMethod === 'card' ? CARD_SURCHARGE_PERCENT : 0,
+    cardSurcharge: paymentMethod === 'card' ? round2(cardSub - cashSub) : 0,
     total: round2(total)
   };
 }
@@ -116,7 +113,7 @@ function renderCart() {
       <img src="${p.image}" onerror="this.onerror=null;this.src='${p.fallback || 'assets/images/smiley.svg'}'" alt="${p.name}">
       <div class="cart-item-main">
         <h4>${p.name}</h4>
-        <p>${money(p.price)} each</p>
+        <p>${money(unitPrice(p))} each</p>
 
         <div class="qty-control" aria-label="Quantity for ${p.name}">
           <button type="button" class="qty-btn" data-qty-minus="${p.id}" aria-label="Decrease ${p.name} quantity">−</button>
@@ -125,7 +122,7 @@ function renderCart() {
         </div>
       </div>
       <div class="cart-item-side">
-        <strong>${money(p.price * qty)}</strong>
+        <strong>${money(unitPrice(p) * qty)}</strong>
         <button class="remove-item" type="button" data-remove="${p.id}" aria-label="Remove ${p.name}">×</button>
       </div>
     </div>`).join('');
@@ -152,19 +149,17 @@ function renderCart() {
   }
 
   const cashRow = document.querySelector('#cartCashDiscountRow');
-  cashRow.hidden = paymentMethod !== 'cash';
-  document.querySelector('#cartCashDiscount').textContent = `−${money(t.cashDiscount)}`;
+  cashRow.hidden = paymentMethod !== 'card' || t.cardSurcharge <= 0;
+  document.querySelector('#cartCashDiscount').textContent = `+${money(t.cardSurcharge)}`;
 
   const roundingRow = document.querySelector('#cashRoundingRow');
-  const roundingAmount = paymentMethod === 'cash' ? round2(t.cashBase - t.total) : 0;
-  roundingRow.hidden = !(paymentMethod === 'cash' && roundingAmount > 0);
-  document.querySelector('#cashRounding').textContent = `−${money(roundingAmount)}`;
+  roundingRow.hidden = true;
 
   document.querySelector('#cartTotal').textContent = money(t.total);
   document.querySelector('#cartTotalLabel').textContent =
     paymentMethod === 'cash' ? 'Cash to collect' : 'Total';
 
-  document.querySelector('#cashSavingNote').hidden = paymentMethod !== 'cash';
+  document.querySelector('#cashSavingNote').hidden = paymentMethod !== 'card';
 
   document.querySelectorAll('[data-payment]').forEach(btn => {
     const active = btn.dataset.payment === paymentMethod;
@@ -183,12 +178,12 @@ function renderCart() {
     : qty ? `Add ${3 - qty} more item${3 - qty === 1 ? '' : 's'} to unlock one Spin & Win.` : '';
 
   if (paymentMethod === 'cash') {
-    const discountText = activePromo?.type === 'free'
-      ? 'Each cash item is 5% off, rounded down to a whole dollar so no coins are needed — plus your free item. Promo % codes don’t apply to cash.'
-      : 'Each cash item is 5% off its listed price, rounded down to a whole dollar — no coins needed.';
-    note.textContent = `${discountText} ${spinText}`;
+    const cashText = activePromo?.type === 'free'
+      ? 'Cash is the standard listed price — plus your free item. Promo % codes don’t apply to cash.'
+      : 'Cash is the standard listed price, no surcharge.';
+    note.textContent = `${cashText} ${spinText}`;
   } else {
-    note.textContent = `Card/online payment uses Square. ${spinText}`;
+    note.textContent = `Card/online payment uses Square, with a 5% surcharge per item to cover processing. ${spinText}`;
   }
 }
 
@@ -245,7 +240,7 @@ function applyPromoCode() {
     const p = products.find(x => x.id === promo.freeProductId);
     message.textContent = `Free prize applied: ${p?.name || 'keychain'}. Works with Cash or Card.`;
   } else {
-    message.textContent = `${promo.percent}% discount ready. Applies automatically if you pay by Card — Cash keeps its own 5% discount instead, the two don't stack.`;
+    message.textContent = `${promo.percent}% discount ready. Applies automatically if you pay by Card. Not available on Cash.`;
   }
 
   message.style.color = '#24804a';
@@ -331,9 +326,10 @@ function saveLocalOrder({ method, status, demo = false, id }) {
     promoPercent: t.promoPct,
     promoDiscount: t.promoDiscount,
     freePrizeProductId: activePromo?.type === 'free' ? activePromo.freeProductId : null,
-    cashDiscountPercent: t.cashDiscountPercent,
-    cashDiscount: t.cashDiscount,
-    cashBase: t.cashBase,
+    cardSurchargePercent: t.cardSurchargePercent,
+    cardSurcharge: t.cardSurcharge,
+    cashSub: t.cashSub,
+    cardSub: t.cardSub,
     total: t.total
   };
 

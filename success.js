@@ -27,18 +27,17 @@ if (!order) {
     paymentMethod: 'cash',
     paymentStatus: 'paid',
     items: [
-      { id:'KEY-01', qty:1, price:5.11 },
-      { id:'KEY-03', qty:1, price:4.09 },
-      { id:'KEY-04', qty:1, price:4.09 }
+      { id:'KEY-01', qty:1, price:2.00 },
+      { id:'KEY-03', qty:1, price:4.00 },
+      { id:'KEY-04', qty:1, price:2.00 }
     ],
-    subtotal: 13.29,
+    subtotal: 8.00,
     promoCode: null,
     promoPercent: 0,
     promoDiscount: 0,
-    cashDiscountPercent: 5,
-    cashDiscount: 3.29,
-    cashBase: 10.00,
-    total: 10.00
+    cardSurchargePercent: 0,
+    cardSurcharge: 0,
+    total: 8.00
   };
 }
 
@@ -161,9 +160,9 @@ function renderOrderBreakdown() {
     );
   }
 
-  if (order.paymentMethod === 'cash') {
+  if (order.paymentMethod === 'card' && Number(order.cardSurcharge || 0) > 0) {
     breakdown.push(
-      `<div class="discount-line"><span>Cash saving · 5% per item, rounded down</span><span>−${money(order.cashDiscount)}</span></div>`
+      `<div><span>Card surcharge · ${order.cardSurchargePercent || 5}%</span><span>+${money(order.cardSurcharge)}</span></div>`
     );
   }
 
@@ -199,7 +198,7 @@ function renderPaymentState() {
     statusEyebrow.textContent = 'PAYMENT COMPLETE';
     statusTitle.textContent = 'You’re all paid.';
     statusLead.innerHTML =
-      `Your order is ready for the mini team. <strong>Talk to us and show this page</strong> so we can give you your keychains.`;
+      `Your order is ready for the MiniChains team. <strong>Talk to us and show this page</strong> so we can give you your keychains.`;
   };
 
   if (method === 'cash') {
@@ -384,10 +383,8 @@ function reportPrizeToServer(prize) {
 }
 
 function rewardStackText(spin) {
-  if (order.paymentMethod !== 'cash' || spin.type !== 'discount') return '';
-  const cashPct = Number(order.cashDiscountPercent || 5);
-  const totalRewardPct = cashPct + Number(spin.percent || 0);
-  return ` You already received ${cashPct}% off for paying cash, and you also won a ${spin.percent}% one-time code for your next order. That is ${totalRewardPct}% in combined reward percentages across this order and your next one.`;
+  if (spin.type !== 'discount') return '';
+  return ' Use it on Card / Online payment — it does not apply to Cash.';
 }
 
 function showResult(spin) {
@@ -404,7 +401,7 @@ function showResult(spin) {
   if (spin.type === 'discount') {
     title.textContent = `You won ${spin.percent}% off.`;
     text.textContent =
-      `Your one-time code is ready for a future mini order.${rewardStackText(spin)}`;
+      `Your one-time code is ready for a future MiniChains order.${rewardStackText(spin)}`;
     document.querySelector('#promoCode').textContent = spin.code;
     codeBox.hidden = false;
     wheelCenterText.textContent = `${spin.percent}% OFF`;
@@ -423,10 +420,7 @@ function showResult(spin) {
     wheelCenterText.textContent = 'FREE!';
   } else {
     title.textContent = 'No prize this time.';
-    text.textContent =
-      order.paymentMethod === 'cash'
-        ? `No wheel prize this time, but your ${order.cashDiscountPercent || 5}% cash discount was already applied to this order.`
-        : 'No prize this time. Your order is still confirmed.';
+    text.textContent = 'No prize this time. Your order is still confirmed.';
     wheelCenterText.textContent = 'NEXT TIME';
   }
 

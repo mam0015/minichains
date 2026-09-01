@@ -4,14 +4,14 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#fff6fa" />
-  <meta name="description" content="mini — review your bag and checkout." />
-  <title>mini — Checkout</title>
+  <meta name="description" content="MiniChains — review your bag and checkout." />
+  <title>MiniChains — Checkout</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="index.html" aria-label="mini home"><img src="assets/images/mini-logo.png" alt="mini" /></a>
+    <a class="brand" href="index.html" aria-label="MiniChains home"><img src="assets/images/mini-logo.png" alt="MiniChains" /></a>
     <a class="back-shop" href="index.html#shop">← Continue shopping</a>
   </header>
 
@@ -57,7 +57,7 @@
             </button>
             <button class="payment-method" type="button" data-payment="cash" aria-pressed="false">
               <span class="payment-icon">A$</span>
-              <span><strong>Cash</strong><small>5% off automatically</small></span>
+              <span><strong>Cash</strong><small>Standard listed price</small></span>
             </button>
           </div>
         </div>
@@ -74,8 +74,8 @@
           </div>
 
           <div class="cart-discount cash-discount" id="cartCashDiscountRow" hidden>
-            <span>Cash discount · 5%</span>
-            <strong id="cartCashDiscount">−A$0.00</strong>
+            <span>Card surcharge · 5%</span>
+            <strong id="cartCashDiscount">+A$0.00</strong>
           </div>
           <div class="cash-rounding" id="cashRoundingRow" hidden>
             <span>Cash rounding</span>
@@ -89,7 +89,7 @@
         </div>
 
         <div class="cash-saving-note" id="cashSavingNote" hidden>
-          Cash selected: each item is 5% off its listed price, rounded down to a whole dollar per item — no coins needed.
+          Card / online selected: a 5% surcharge is added per item to cover Square's payment processing cost.
         </div>
 
         <section class="checkout-survey">
