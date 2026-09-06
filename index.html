@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#fff6fa" />
   <meta name="description" content="MiniChains — a small 3D printed keychain collection created for a school project." />
-  <title>minichains</title>
+  <title>MiniChains</title>
   <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -24,16 +24,16 @@
     <section class="hero-slider" aria-label="MiniChains keychain highlights">
       <div class="slides" id="heroSlides">
         <article class="hero-slide active" data-slide="0">
-          <div class="hero-copy"><p class="eyebrow">MINICHAINS DROP</p><h1>Tiny prints.<br><span>Big personality.</span></h1><p>A small collection of cute 3D-printed keychains, chosen from student feedback and made in limited batches.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Shop keychains <span>↗</span></a><a class="btn btn-ghost" href="#pay">How to pay</a></div><div class="mini-note"><strong>From A$2.00 cash</strong><span>·</span><span>18-piece school batch</span></div></div>
-          <div class="hero-art triple real-photo-stack"><img src="assets/images/panda-real.jpg" alt="Panda keychain"><img src="assets/images/eiffel-tower.jpg" alt="Eifel Tower keychain"><img src="assets/images/mini-cat.jpg" alt="Cute cat keychain"></div>
+          <div class="hero-copy"><p class="eyebrow">MINICHAINS DROP</p><h1>Tiny prints.<br><span>Big personality.</span></h1><p>A small collection of cute 3D-printed keychains, chosen from student feedback and made in limited batches.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Shop keychains <span>↗</span></a><a class="btn btn-ghost" href="#pay">How to pay</a></div><div class="mini-note"><strong>From A$2.00 cash</strong><span>·</span><span>16-piece school batch</span></div></div>
+          <div class="hero-art triple real-photo-stack"><img src="assets/images/panda-real.jpg" alt="Panda keychain"><img src="assets/images/cat-flat.jpg" alt="Cat keychain"><img src="assets/images/dog-keychain.jpg" alt="Dog keychain"></div>
         </article>
         <article class="hero-slide" data-slide="1">
-          <div class="hero-copy"><p class="eyebrow">CUTE PICKS</p><h1>Made small.<br><span>Made to keep.</span></h1><p>Simple, playful designs made to look good on keys, bags and pencil cases.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Browse the drop <span>↗</span></a></div><div class="mini-note"><strong>A$2.00–A$4.00 cash</strong><span>·</span><span>Small-batch 3D prints</span></div></div>
-          <div class="hero-art double real-photo-pair"><img src="assets/images/daisy-real.jpg" alt="Flower keychain"><img src="assets/images/dog-owl.jpg" alt="Dog and owl keychain"></div>
+          <div class="hero-copy"><p class="eyebrow">CUTE PICKS</p><h1>Made small.<br><span>Made to keep.</span></h1><p>Simple, playful designs made to look good on keys, bags and pencil cases.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">Browse the drop <span>↗</span></a></div><div class="mini-note"><strong>A$2.00–A$5.00 cash</strong><span>·</span><span>Small-batch 3D prints</span></div></div>
+          <div class="hero-art double real-photo-pair"><img src="assets/images/daisy-real.jpg" alt="Flower keychain"><img src="assets/images/soccer-real.jpg" alt="Soccer ball keychain"></div>
         </article>
         <article class="hero-slide" data-slide="2">
-          <div class="hero-copy"><p class="eyebrow">MORE PERSONALITY</p><h1>Pick the one<br><span>that feels like you.</span></h1><p>From a Paris souvenir to a surprise animal pick, the collection is intentionally small so every design feels different.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">See all nine <span>↗</span></a></div><div class="mini-note"><strong>A$2.00–A$4.00 cash</strong><span>·</span><span>Limited school-project drop</span></div></div>
-          <div class="hero-art double real-photo-pair"><img src="assets/images/spiderman.jpg" alt="Spiderman keychain"><img src="assets/images/soccer-real.jpg" alt="Soccer ball keychain"></div>
+          <div class="hero-copy"><p class="eyebrow">MORE PERSONALITY</p><h1>Pick the one<br><span>that feels like you.</span></h1><p>From flat silhouette charms to a chunky panda, the collection is intentionally small so every design feels different.</p><div class="hero-actions"><a class="btn btn-primary" href="#shop">See the full range <span>↗</span></a></div><div class="mini-note"><strong>A$2.00–A$5.00 cash</strong><span>·</span><span>Limited school-project drop</span></div></div>
+          <div class="hero-art single real-photo-single"><img src="assets/images/spiderman.jpg" alt="Spiderman keychain"></div>
         </article>
       </div>
       <div class="slider-controls"><button id="prevSlide" aria-label="Previous slide">←</button><div class="dots" id="heroDots"><button class="active" data-slide-to="0" aria-label="Slide 1"></button><button data-slide-to="1" aria-label="Slide 2"></button><button data-slide-to="2" aria-label="Slide 3"></button></div><button id="nextSlide" aria-label="Next slide">→</button></div>
@@ -52,7 +52,26 @@
 
     <section class="shop-section" id="shop">
       <div class="section-head"><div><p class="eyebrow">KEYCHAINS</p><h2>Choose your favourite.</h2></div><p class="section-note">A small collection, made to be easy to browse.</p></div>
-      <div class="shop-toolbar"><div class="filters"><button class="active" data-sort="default">All 9</button><button data-sort="price-low">Lowest price</button><button data-sort="smallest">Least filament</button></div><span id="productCount" class="product-count">9 designs</span></div>
+
+      <div class="category-tabs" id="categoryTabs" role="tablist" aria-label="Product category">
+        <button class="active" data-category="all" role="tab" aria-selected="true">All</button>
+        <button data-category="in-stock" role="tab" aria-selected="false">In Stock</button>
+        <button data-category="limited" role="tab" aria-selected="false">Limited Edition</button>
+        <button data-category="coming-soon" role="tab" aria-selected="false" id="comingSoonTab" hidden>Coming Soon</button>
+        <button data-category="auction" role="tab" aria-selected="false" id="auctionTab" hidden>Daily Auction</button>
+      </div>
+
+      <div class="shop-toolbar">
+        <div class="shop-search"><input id="shopSearch" type="search" placeholder="Search keychains…" aria-label="Search keychains"><span class="shop-search-icon" aria-hidden="true">⌕</span></div>
+        <div class="filters">
+          <button class="active" data-sort="default">Default</button>
+          <button data-sort="price-low">Price: Low to High</button>
+          <button data-sort="price-high">Price: High to Low</button>
+          <button data-sort="newest">Newest</button>
+        </div>
+        <span id="productCount" class="product-count">designs</span>
+      </div>
+      <div class="empty-results" id="emptyResults" hidden>No keychains match that search/filter.</div>
       <div class="product-grid" id="productGrid" aria-live="polite"></div>
     </section>
 
@@ -62,7 +81,7 @@
     </section>
   </main>
 
-  <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="MiniChains"></a><p>3D printed keychains · School project · 2026</p><a href="#top">Back to top ↑</a></footer>
+  <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="MiniChains"></a><p>3D printed keychains · School project · 2026</p><a href="#" data-review-terms>Terms &amp; Conditions</a><a href="#top">Back to top ↑</a></footer>
 
   <div class="spin-launch" id="spinLaunch" aria-hidden="true">
     <div class="spin-launch-backdrop"></div>
@@ -73,8 +92,8 @@
       <div class="spin-launch-copy">
         <p class="eyebrow">SPIN & WIN</p>
         <h2 id="spinLaunchTitle">Try your luck.</h2>
-        <p>You might win a free keychain or a one-time discount code.</p>
-        <p class="launch-terms">Discount codes apply to <strong>Card / Online</strong> payment only. Cash already gets its own 5% discount, so wheel discount codes aren't added on top of it — but a free keychain win works with either payment method.</p>
+        <p>You might win a one-time discount code.</p>
+        <p class="launch-terms"><strong>IMPORTANT: Spin Wheel discounts can only be applied to CARD payments.</strong> Cash already gets its own listed price — wheel discount codes don't apply to cash orders.</p>
       </div>
 
       <div class="launch-wheel-stage">
@@ -84,11 +103,10 @@
           <span class="launch-label l-empty-1">EMPTY</span>
           <span class="launch-label l-five">5% OFF</span>
           <span class="launch-label l-empty-2">EMPTY</span>
-          <span class="launch-label l-free">FREE<br>KEYCHAIN</span>
-          <span class="launch-label l-empty-3">EMPTY</span>
           <span class="launch-label l-ten">10% OFF</span>
-          <span class="launch-label l-empty-4">EMPTY</span>
+          <span class="launch-label l-empty-3">EMPTY</span>
           <span class="launch-label l-twenty">20% OFF</span>
+          <span class="launch-label l-empty-4">EMPTY</span>
           <span class="launch-label l-empty-5">EMPTY</span>
 
           <button class="launch-spin-button" id="launchSpinBtn" type="button">SPIN</button>
@@ -116,7 +134,45 @@
 
 
   <!-- Cart/checkout is a dedicated page now: checkout.html -->
-<dialog class="quick-view" id="quickView">
+<dialog class="quick-view auction-bid-modal" id="auctionBidModal">
+    <button class="modal-close" id="auctionBidClose" aria-label="Close">×</button>
+    <div class="quick-image"><img id="auctionBidImage" src="" alt=""></div>
+    <div class="quick-copy">
+      <p class="eyebrow">DAILY AUCTION</p>
+      <h2 id="auctionBidTitle"></h2>
+      <div class="auction-bid-current">
+        <div><span>Current bid</span><strong id="auctionBidCurrent"></strong></div>
+        <div><span>Minimum next bid</span><strong id="auctionBidMin"></strong></div>
+      </div>
+      <p class="auction-bid-note"><strong>Placing a bid is free.</strong> No payment is required unless you win. Highest valid bid when the auction closes wins.</p>
+
+      <form id="auctionBidForm" class="auction-bid-form">
+        <div class="auction-bid-row">
+          <label>First name<input id="bidFirstName" required maxlength="40"></label>
+          <label>Last name<input id="bidLastName" required maxlength="40"></label>
+        </div>
+        <label>Year level<input id="bidYearLevel" required maxlength="20" placeholder="e.g. Year 11"></label>
+        <div class="auction-bid-row">
+          <label>Contact method
+            <select id="bidContactMethod">
+              <option value="email">Email</option>
+              <option value="phone">Phone</option>
+            </select>
+          </label>
+          <label id="bidContactValueLabel">Email<input id="bidContactValue" required maxlength="100"></label>
+        </div>
+        <label>Your bid (A$)<input id="bidAmount" type="number" step="0.01" min="0" required></label>
+        <small class="auction-bid-error" id="auctionBidError" hidden></small>
+        <button class="btn btn-primary full" id="auctionBidSubmit" type="submit">Place bid</button>
+      </form>
+      <div class="auction-bid-done" id="auctionBidDone" hidden>
+        <span class="survey-tick" aria-hidden="true">✓</span>
+        <p>Bid placed! If you're outbid or don't win, that's completely fine — no payment was taken. We'll be in touch if you win.</p>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog class="quick-view" id="quickView">
     <button class="modal-close" id="quickClose" aria-label="Close">×</button>
     <div class="quick-image"><img id="quickImage" src="" alt=""></div>
     <div class="quick-copy">
@@ -131,6 +187,13 @@
         <div class="detail-cell"><span>PLA USED</span><strong id="quickWeight"></strong></div>
       </div>
       <button class="btn btn-primary full" id="quickAdd">Add to bag</button>
+
+      <div class="restock-box" id="restockBox" hidden>
+        <p class="restock-lead">This item is currently sold out. Want us to make another one?</p>
+        <textarea id="restockNote" maxlength="300" rows="2" placeholder="Optional note (e.g. a colour you'd want)"></textarea>
+        <button class="btn btn-ghost full" id="restockBtn" type="button">Let us know you're interested</button>
+        <p class="restock-done" id="restockDone" hidden>Thanks — noted! We use this to decide what to print next.</p>
+      </div>
     </div>
   </dialog>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -143,7 +206,34 @@
     <a id="mobileCartOpen" href="checkout.html">View bag</a>
   </div>
 
-  <script src="products.js"></script><script src="square-config.js"></script><script src="feedback-config.js"></script>
+  <div class="terms-modal" id="termsModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="termsTitle">
+    <div class="terms-backdrop"></div>
+    <section class="terms-card">
+      <p class="eyebrow">BEFORE YOU SHOP</p>
+      <h2 id="termsTitle">MiniChains Terms &amp; Conditions</h2>
+      <div class="terms-body">
+        <p><strong>Payments.</strong> Card/online payments are processed securely through Square. Square may collect the information it needs to process your payment and provide a receipt — MiniChains never sees or stores your card number. Cash is collected in person and only ever confirmed by a MiniChains team member.</p>
+        <p><strong>Pricing.</strong> The price shown on each product is the cash price. Card/online payment adds a 5% surcharge to cover Square's processing cost. Adding an item to your bag does not guarantee stock — final availability is confirmed at checkout.</p>
+        <p><strong>Promotions &amp; loyalty.</strong> Spin &amp; Win codes and MiniChains Rewards discounts are one-time, personal, and non-transferable — they're tied to the device/account that earned them and can't legitimately be shared or resold. MiniChains Rewards requires a paid purchase on three different calendar days; the free item on the third visit is chosen at random by MiniChains, not the customer, from currently available stock.</p>
+        <p><strong>Change of mind.</strong> MiniChains doesn't normally offer a refund simply because you changed your mind, picked the wrong design, or no longer want an item. If MiniChains agrees to a change-of-mind exchange, it's for equal value — you pay the difference for a pricier item, and MiniChains isn't required to refund the difference if you choose something cheaper.</p>
+        <p><strong>Faulty items.</strong> The above doesn't affect your rights under Australian Consumer Law for a genuine manufacturing or quality problem — contact us and, depending on the situation, a replacement, repair or refund may apply. 3D-printed items can naturally have small layer lines and minor cosmetic variation; that alone isn't a fault, but a genuine major defect is not excused by it.</p>
+        <p><strong>Daily Auction.</strong> Placing a bid is free — there is no payment or obligation just for bidding, and a bid does not mean you've won. The highest valid bid when MiniChains's server closes the auction normally wins; MiniChains's server clock decides the closing time, not your device. Invalid, manipulated, or late bids may be rejected. The winner will be contacted or shown their winning status and is responsible for completing payment within the stated window; if they don't, MiniChains may cancel that win and may offer the item to another valid bidder, at MiniChains's discretion — a second bidder is never charged automatically. No bidder's name or contact details are ever shown publicly. An auction item remains subject to the winner actually completing payment.</p>
+        <p>Nothing in these Terms excludes rights that cannot legally be excluded under Australian Consumer Law.</p>
+      </div>
+      <div class="terms-actions" id="termsActions">
+        <button class="btn btn-ghost" id="termsDecline" type="button">Decline</button>
+        <button class="btn btn-primary" id="termsAccept" type="button">Accept &amp; continue</button>
+      </div>
+      <div class="terms-declined-state" id="termsDeclinedState" hidden>
+        <p class="terms-decline-note">TERMS NOT ACCEPTED — MiniChains can't process purchases unless the Terms &amp; Conditions are accepted. You can review and accept any time from the footer link.</p>
+        <button class="btn btn-ghost full" id="termsReviewAgain" type="button">Review Terms</button>
+        <button class="btn btn-primary full" id="termsContinueBrowsing" type="button">Continue browsing</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="products.js"></script><script src="square-config.js"></script><script src="feedback-config.js"></script><script src="terms.js"></script><script src="analytics.js"></script>
   <script src="app.js"></script>
+  <script src="auction.js"></script>
 </body>
 </html>

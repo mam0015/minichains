@@ -38,7 +38,7 @@
       <div>
         <p class="eyebrow">CASH PAYMENT</p>
         <h2>Collect this amount in cash.</h2>
-        <p>The 5% cash discount has already been applied automatically. Any existing promo code is stacked with it.</p>
+        <p>This is the standard listed price — no card surcharge. A free-item promo code still applies to cash; percent-off codes and MiniChains Rewards discounts are card only.</p>
       </div>
       <div class="cash-amount-box">
         <span>AMOUNT TO COLLECT</span>
@@ -46,7 +46,16 @@
         <small>Rounded down to the nearest whole dollar.</small>
       </div>
       <button class="btn btn-primary" id="confirmCashBtn">Cash received</button>
-      <small class="cash-confirm-note">Tap this only after the cash has actually been handed over. This school-project version stores the confirmation on this device.</small>
+      <small class="cash-confirm-note">Staff only — tap this only after the cash has actually been handed over. You'll be asked for the staff PIN.</small>
+
+      <div class="staff-pin-box" id="staffPinBox" hidden>
+        <label for="staffPinInput">Staff PIN</label>
+        <div class="staff-pin-row">
+          <input id="staffPinInput" type="password" inputmode="numeric" autocomplete="off" placeholder="····">
+          <button class="btn btn-primary" id="staffPinSubmit" type="button">Confirm</button>
+        </div>
+        <small class="staff-pin-error" id="staffPinError" hidden>Incorrect PIN — try again.</small>
+      </div>
     </section>
 
     <section class="order-card">
@@ -59,7 +68,15 @@
         <small>Free from Spin & Win — this item was chosen completely at random by the site, not requested by the customer.</small>
       </div>
 
+      <div class="receipt-prize" id="receiptLoyaltyFree" hidden>
+        <span>MINICHAINS REWARDS · VISIT 3</span>
+        <strong id="receiptLoyaltyFreeName"></strong>
+        <small>Free mystery keychain — chosen completely at random by the site.</small>
+      </div>
+
       <div class="order-breakdown" id="orderBreakdown"></div>
+
+      <div class="rewards-order-note" id="rewardsOrderNote" hidden></div>
 
     </section>
 

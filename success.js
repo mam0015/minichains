@@ -27,7 +27,7 @@ if (!order) {
     paymentMethod: 'cash',
     paymentStatus: 'paid',
     items: [
-      { id:'KEY-01', qty:1, price:2.00 },
+      { id:'KEY-06', qty:1, price:2.00 },
       { id:'KEY-03', qty:1, price:4.00 },
       { id:'KEY-04', qty:1, price:2.00 }
     ],
@@ -70,6 +70,31 @@ if (freePrizeId) {
     box.hidden = false;
     document.querySelector('#receiptPrizeName').textContent = p.name;
   }
+}
+
+const loyaltyFreeId = order.loyaltyFreeProductId || null;
+if (loyaltyFreeId) {
+  const p = products.find(x => x.id === loyaltyFreeId);
+  const box = document.querySelector('#receiptLoyaltyFree');
+  if (box && p) {
+    box.hidden = false;
+    document.querySelector('#receiptLoyaltyFreeName').textContent = p.name;
+  }
+}
+
+const rewardsNote = document.querySelector('#rewardsOrderNote');
+if (order.rewardsUsername && order.loyaltyRewardType) {
+  rewardsNote.hidden = false;
+  const visit = order.loyaltyVisitNumber;
+  rewardsNote.textContent =
+    order.loyaltyRewardType === 'discount10'
+      ? `🎉 MiniChains Rewards — Visit ${visit}/3 for ${order.rewardsUsername}: 10% off applied.`
+    : order.loyaltyRewardType === 'free_keychain'
+      ? `🎁 MiniChains Rewards — Visit ${visit}/3 for ${order.rewardsUsername}: free mystery keychain earned. Cycle complete — next purchase starts a new cycle.`
+    : order.loyaltyRewardType === 'visit1'
+      ? `MiniChains Rewards — Visit ${visit}/3 for ${order.rewardsUsername}. Come back another day for 10% off.`
+      : '';
+  if (!rewardsNote.textContent) rewardsNote.hidden = true;
 }
 
 function findFeedback() {
@@ -157,6 +182,12 @@ function renderOrderBreakdown() {
   if (Number(order.promoPercent || 0) > 0) {
     breakdown.push(
       `<div class="discount-line"><span>Promo discount · ${order.promoPercent}%${order.promoCode ? ` · ${order.promoCode}` : ''}</span><span>−${money(order.promoDiscount)}</span></div>`
+    );
+  }
+
+  if (Number(order.loyaltyDiscountPercent || 0) > 0) {
+    breakdown.push(
+      `<div class="discount-line"><span>🎉 MiniChains Rewards · ${order.loyaltyDiscountPercent}%</span><span>−${money(order.loyaltyDiscountAmount)}</span></div>`
     );
   }
 
@@ -280,19 +311,18 @@ const wheelCenterText = document.querySelector('#wheelCenterText');
 const spinStatus = document.querySelector('#spinStatus');
 const result = document.querySelector('#prizeResult');
 
-// Kept in sync with app.js's entrySegments (same 5-empty-slice layout,
-// same total odds) even though this wheel's markup isn't wired into
-// success.html yet — see the note left for the user about that.
+// Kept in sync with app.js's entrySegments (free-keychain prize removed,
+// same total odds otherwise) even though this wheel's markup isn't wired
+// into success.html yet — see the note left for the user about that.
 const segments = [
-  { key:'empty-a', label:'Empty', type:'empty', weight:13, visualIndex:0 },
+  { key:'empty-a', label:'Empty', type:'empty', weight:15, visualIndex:0 },
   { key:'off-5', label:'5% off', type:'discount', percent:5, weight:12, visualIndex:1 },
-  { key:'empty-b', label:'Empty', type:'empty', weight:13, visualIndex:2 },
-  { key:'free', label:'Free keychain', type:'free', weight:10, visualIndex:3 },
-  { key:'empty-c', label:'Empty', type:'empty', weight:13, visualIndex:4 },
-  { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, visualIndex:5 },
-  { key:'empty-d', label:'Empty', type:'empty', weight:13, visualIndex:6 },
-  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:7 },
-  { key:'empty-e', label:'Empty', type:'empty', weight:13, visualIndex:8 }
+  { key:'empty-b', label:'Empty', type:'empty', weight:15, visualIndex:2 },
+  { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, visualIndex:3 },
+  { key:'empty-c', label:'Empty', type:'empty', weight:15, visualIndex:4 },
+  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:5 },
+  { key:'empty-d', label:'Empty', type:'empty', weight:15, visualIndex:6 },
+  { key:'empty-e', label:'Empty', type:'empty', weight:15, visualIndex:7 }
 ];
 
 function cryptoFloat() {
@@ -467,9 +497,44 @@ function renderWheelState() {
   }
 }
 
-const confirmCashBtn = document.querySelector('#confirmCashBtn');
-confirmCashBtn.addEventListener('click', () => {
-  if (order.paymentMethod !== 'cash' || isPaid()) return;
+// This tap IS the confirmation that cash was actually handed over (see the
+// on-page note) — there's no external processor to verify a cash sale the
+// way Square's webhook verifies a card one. So this is also the one place
+// cash stock gets decremented, mirroring square-webhook's card-side timing:
+// only once the sale is actually confirmed, never earlier. If the stock
+// call fails for any reason, the cash has still physically changed hands —
+// the local paid confirmation must never be blocked or undone by a
+// bookkeeping hiccup, so failures here are logged only.
+async function confirmCashStock(staffToken) {
+  if (order.demo || order.id === 'MINI-PREVIEW') return;
+  const endpoint = window.MINI_SQUARE?.confirmCashOrderEndpoint?.trim();
+  if (!endpoint) return;
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: order.items.map(it => ({ id: it.id, qty: it.qty })), staffToken, orderId: order.id, total: order.total })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) console.warn('confirm-cash-order:', data.error || res.status);
+  } catch (err) {
+    console.warn('confirm-cash-order failed; stock not decremented for this sale.', err);
+  }
+}
+
+// A customer's own device must never be able to mark its own cash order
+// paid — that's the whole point of "show us this page" as proof. The PIN
+// gate below is the real boundary: nothing here (marking paid locally,
+// unlocking the spin wheel, decrementing stock) happens until a valid staff
+// session exists, either already stored or just obtained.
+function getValidStaffToken() {
+  const token = localStorage.getItem('mini-staff-token');
+  const expiresAt = Number(localStorage.getItem('mini-staff-token-expires') || 0);
+  return (token && Date.now() < expiresAt) ? token : null;
+}
+
+async function completeCashConfirmation(staffToken) {
+  confirmCashBtn.disabled = true;
 
   order.paymentStatus = 'paid';
   order.paidAt = new Date().toISOString();
@@ -479,6 +544,78 @@ confirmCashBtn.addEventListener('click', () => {
   renderWheelState();
   toast('Cash marked as received');
   document.querySelector('#statusCard').scrollIntoView({ behavior:'smooth', block:'start' });
+
+  await confirmCashStock(staffToken);
+}
+
+const confirmCashBtn = document.querySelector('#confirmCashBtn');
+confirmCashBtn.addEventListener('click', () => {
+  if (order.paymentMethod !== 'cash' || isPaid()) return;
+
+  const token = getValidStaffToken();
+  if (token) {
+    completeCashConfirmation(token);
+    return;
+  }
+  document.querySelector('#staffPinBox').hidden = false;
+  document.querySelector('#staffPinInput').focus();
+});
+
+document.querySelector('#staffPinSubmit').addEventListener('click', async () => {
+  const pinInput = document.querySelector('#staffPinInput');
+  const submitBtn = document.querySelector('#staffPinSubmit');
+  const errorEl = document.querySelector('#staffPinError');
+  const pin = pinInput.value.trim();
+
+  errorEl.hidden = true;
+  if (!pin) return;
+
+  const endpoint = window.MINI_SQUARE?.staffLoginEndpoint?.trim();
+  if (!endpoint) {
+    errorEl.textContent = 'Staff login isn’t available right now.';
+    errorEl.hidden = false;
+    return;
+  }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Checking…';
+
+  try {
+    const res = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pin })
+    });
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok || !data.token) {
+      errorEl.textContent = 'Incorrect PIN — try again.';
+      errorEl.hidden = false;
+      pinInput.value = '';
+      pinInput.focus();
+      return;
+    }
+
+    localStorage.setItem('mini-staff-token', data.token);
+    localStorage.setItem('mini-staff-token-expires', String(Date.parse(data.expiresAt) || 0));
+    document.querySelector('#staffPinBox').hidden = true;
+    pinInput.value = '';
+
+    await completeCashConfirmation(data.token);
+  } catch {
+    errorEl.textContent = 'Network error — try again.';
+    errorEl.hidden = false;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Confirm';
+  }
+});
+
+document.querySelector('#staffPinInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    document.querySelector('#staffPinSubmit').click();
+  }
 });
 
 spinBtn?.addEventListener('click', () => {
