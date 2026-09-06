@@ -16,9 +16,6 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 
 const ALLOWED_PERCENTS = new Set([5, 10, 20]);
-const ALLOWED_PRODUCT_IDS = new Set([
-  "KEY-01", "KEY-02", "KEY-03", "KEY-04",
-]);
 
 function isAllowedOrigin(origin: string | null) {
   return (
@@ -81,18 +78,6 @@ Deno.serve(async (req) => {
   let percent = 0;
   let freeProductId: string | null = null;
 
-  if (type === "discount") {
-    percent = Number(body.percent);
-    if (!ALLOWED_PERCENTS.has(percent)) {
-      return json({ error: "Invalid discount percent." }, 400, origin);
-    }
-  } else {
-    freeProductId = String(body.freeProductId || "");
-    if (!ALLOWED_PRODUCT_IDS.has(freeProductId)) {
-      return json({ error: "Invalid product id." }, 400, origin);
-    }
-  }
-
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
   if (!supabaseUrl || !serviceRoleKey) {
@@ -103,6 +88,31 @@ Deno.serve(async (req) => {
   const admin = createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false },
   });
+
+  if (type === "discount") {
+    percent = Number(body.percent);
+    if (!ALLOWED_PERCENTS.has(percent)) {
+      return json({ error: "Invalid discount percent." }, 400, origin);
+    }
+  } else {
+    freeProductId = String(body.freeProductId || "");
+    // mini_products is the single authoritative product list — validated
+    // live instead of against a hardcoded id set that would otherwise be a
+    // 4th hand-maintained copy of the catalog.
+    const { data: product, error: productErr } = await admin
+      .from("mini_products")
+      .select("id")
+      .eq("id", freeProductId)
+      .eq("active", true)
+      .maybeSingle();
+    if (productErr) {
+      console.error("mini_products lookup failed", productErr);
+      return json({ error: "Could not verify product." }, 500, origin);
+    }
+    if (!product) {
+      return json({ error: "Invalid product id." }, 400, origin);
+    }
+  }
 
   // A conflict here just means this code was already recorded (e.g. a
   // retried request) — not an error worth surfacing to the caller.

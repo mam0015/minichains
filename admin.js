@@ -133,16 +133,37 @@ async function loadView(view) {
       ${data.soldOutProducts.length ? `<h3>Currently sold out</h3><ul class="admin-list">${data.soldOutProducts.map(p => `<li>${esc(p.name)}</li>`).join('')}</ul>` : ''}
     `;
   } else if (view === 'products') {
-    content.innerHTML = table(
-      ['Product', 'Price', 'On hand', 'Available', 'Status'],
-      data.products.map(p => [
-        esc(p.name) + (p.limited_edition ? ' <span class="admin-tag">LTD</span>' : ''),
-        money(p.base_price_cents / 100),
-        p.stock_on_hand,
-        p.stock_available,
-        p.active ? (p.stock_available > 0 ? 'Active' : '<span class="admin-warn">Sold out</span>') : '<span class="admin-muted">Inactive</span>',
-      ])
-    );
+    // "On hand" is directly editable here — this is the one place a
+    // physical, in-person sale (or a restock) gets reflected: type the new
+    // total count and hit Save. "Available" stays read-only since it's
+    // computed live (on hand minus anything currently reserved by an
+    // in-progress card checkout), not something to hand-edit directly.
+    const rows = data.products.map(p => [
+      esc(p.name) + (p.limited_edition ? ' <span class="admin-tag">LTD</span>' : ''),
+      money(p.base_price_cents / 100),
+      `<div class="admin-stock-edit"><input type="number" min="0" step="1" value="${p.stock_on_hand}" data-stock-input="${p.id}"><button class="btn btn-ghost" data-stock-save="${p.id}">Save</button></div>`,
+      p.stock_available,
+      p.active ? (p.stock_available > 0 ? 'Active' : '<span class="admin-warn">Sold out</span>') : '<span class="admin-muted">Inactive</span>',
+    ]);
+    content.innerHTML = table(['Product', 'Price', 'On hand', 'Available', 'Status'], rows);
+
+    content.querySelectorAll('[data-stock-save]').forEach(btn => btn.addEventListener('click', async () => {
+      const productId = btn.dataset.stockSave;
+      const input = content.querySelector(`[data-stock-input="${productId}"]`);
+      const stockOnHand = Number(input.value);
+      if (!Number.isInteger(stockOnHand) || stockOnHand < 0) { alert('Enter a whole number, 0 or more.'); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Saving…';
+      const result = await callAdminAction({ action: 'update_stock', productId, stockOnHand });
+      if (result.error) {
+        alert(result.error);
+        btn.disabled = false;
+        btn.textContent = 'Save';
+        return;
+      }
+      loadView('products');
+    }));
   } else if (view === 'orders') {
     content.innerHTML = table(
       ['Order', 'Method', 'Status', 'Items', 'Total', 'Placed'],

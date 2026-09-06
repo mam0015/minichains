@@ -17,7 +17,7 @@
 window.MINI_PRODUCTS = [
   {
     id:'music-note', name:'Music Note Mini Keychain', type:'keychain', size:'Small · single note charm',
-    grams:2.5, printTime:'≈ 15 min', estimatedCost:0.10, price:2.00, stock:0,
+    grams:2.5, printTime:'≈ 15 min', estimatedCost:0.10, price:3.00, stock:0,
     image:'assets/images/music-note.jpg',
     fallback:'assets/images/music-note.jpg', imagePosition:'center',
     colors:['black'], tag:'Entry pick',
@@ -27,7 +27,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'daisy', name:'Daisy Keychain', type:'keychain', size:'Small · flat flower charm',
-    grams:3.0, printTime:'≈ 17 min', estimatedCost:0.11, price:2.00, stock:0,
+    grams:3.0, printTime:'≈ 17 min', estimatedCost:0.11, price:3.00, stock:0,
     image:'assets/images/daisy-new.jpg',
     fallback:'assets/images/daisy-new.jpg', imagePosition:'center',
     colors:['white'], tag:'Lowest cost',
@@ -37,7 +37,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'paw', name:'Paw Keychain', type:'keychain', size:'Small · flat charm',
-    grams:3.2, printTime:'≈ 17 min', estimatedCost:0.11, price:2.00, stock:0,
+    grams:3.2, printTime:'≈ 17 min', estimatedCost:0.11, price:3.00, stock:0,
     image:'assets/images/paw.jpg',
     fallback:'assets/images/paw.jpg', imagePosition:'center',
     colors:['white'], tag:'Entry pick',
@@ -97,7 +97,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'panda', name:'Panda Holding a Heart Keychain', type:'keychain', size:'Medium · flat charm',
-    grams:5.2, printTime:'≈ 17 min', estimatedCost:0.95, price:4.00, stock:3,
+    grams:5.2, printTime:'≈ 17 min', estimatedCost:0.95, price:3.00, stock:3,
     image:'assets/images/panda-real.jpg',
     fallback:'assets/images/panda-real.jpg', imagePosition:'center',
     colors:['white','black'], tag:'Premium pick',
@@ -106,13 +106,13 @@ window.MINI_PRODUCTS = [
     loyaltyRewardEligible:true
   },
   {
-    id:'minecraft-block', name:'Minecraft Block Keychain', type:'keychain', size:'Medium · block format',
-    grams:6.5, printTime:'≈ 35 min', estimatedCost:0.45, price:4.00, stock:0,
-    image:'assets/images/minecraft-block.jpg',
-    fallback:'assets/images/minecraft-block.jpg', imagePosition:'center',
-    colors:['white','black'], tag:'Premium pick',
-    desc:'A cube/block-format charm with a longer print and higher perceived physical value than a flat charm.',
-    credit:'Vismond', source:'https://makerworld.com/en/models/1486318-minecraft-block-keychain', paymentLink:'',
+    id:'minecraft-block', name:'Minecraft Creeper Keychain', type:'keychain', size:'Medium · block format',
+    grams:6.5, printTime:'≈ 35 min', estimatedCost:0.45, price:3.00, stock:0,
+    image:'assets/images/minecraft-creeper.jpg',
+    fallback:'assets/images/minecraft-creeper.jpg', imagePosition:'center',
+    colors:['green','black'], tag:'Premium pick',
+    desc:'A cube-format Creeper charm — a longer print and higher perceived physical value than a flat charm.',
+    credit:'Misakov', source:'https://makerworld.com/en/models/1340033-minecraft-creeper', paymentLink:'',
     loyaltyRewardEligible:true
   },
   {
@@ -126,7 +126,7 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'maltese-dog', name:'Little Maltese Dog Keychain Edition', type:'keychain', size:'Medium · figure-style',
-    grams:7.0, printTime:'≈ 35 min', estimatedCost:0.60, price:5.00, stock:0,
+    grams:7.0, printTime:'≈ 35 min', estimatedCost:0.60, price:4.00, stock:0,
     image:'assets/images/maltese-dog.jpg',
     fallback:'assets/images/maltese-dog.jpg', imagePosition:'center',
     colors:['white'], tag:'Limited Edition',
@@ -136,12 +136,22 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'jordan', name:'Jordan Keychain', type:'keychain', size:'Small · flat logo charm',
-    grams:4.5, printTime:'≈ 45 min', estimatedCost:0.30, price:5.00, stock:0,
+    grams:4.5, printTime:'≈ 45 min', estimatedCost:0.30, price:3.00, stock:0,
     image:'assets/images/jordan.jpg',
     fallback:'assets/images/jordan.jpg', imagePosition:'center',
-    colors:['black','white'], tag:'Limited Edition',
-    desc:'The Jumpman logo silhouette. Limited Edition — one of the strongest perceived-value designs in the range.',
+    colors:['black','white'], tag:'Fan favorite',
+    desc:'The Jumpman logo silhouette — one of the strongest perceived-value designs in the range.',
     credit:'MORTI$', source:'https://makerworld.com/en/models/919000-jordan-keychain', paymentLink:'',
+    loyaltyRewardEligible:true
+  },
+  {
+    id:'nike-shox', name:'Nike Shox Keychain', type:'keychain', size:'Small · figure-style shoe',
+    grams:8.0, printTime:'≈ 45 min', estimatedCost:0.65, price:5.00, stock:1,
+    image:'assets/images/nike-shox.jpg',
+    fallback:'assets/images/nike-shox.jpg', imagePosition:'center',
+    colors:['white'], tag:'Limited Edition',
+    desc:'A detailed Nike Shox-style sneaker charm — Limited Edition, the most detailed design in the range.',
+    credit:'FORMASTAMPA', source:'https://makerworld.com/en/models/2562091-nike-shox-se-left-foot', paymentLink:'',
     loyaltyRewardEligible:true, limitedEdition:true
   }
 ];

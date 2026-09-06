@@ -122,22 +122,33 @@
           </div>
           <p>Your feedback helps us understand what students actually like.</p>
 
-          <label>
-            <span>First name</span>
-            <input id="surveyFirstName" maxlength="40" placeholder="First name">
-          </label>
+          <form id="checkoutSurveyForm">
+            <label>
+              <span>First name</span>
+              <input id="surveyFirstName" maxlength="40" placeholder="First name">
+            </label>
 
-          <label>
-            <span>Your level</span>
-            <input id="surveyLevel" maxlength="30" placeholder="e.g. Year 11">
-          </label>
+            <label>
+              <span>Your level</span>
+              <input id="surveyLevel" maxlength="30" placeholder="e.g. Year 11">
+            </label>
 
-          <label>
-            <span>Your comment</span>
-            <textarea id="surveyComment" maxlength="500" rows="3" placeholder="What did you think?"></textarea>
-          </label>
+            <label>
+              <span>Your comment</span>
+              <textarea id="surveyComment" maxlength="500" rows="3" placeholder="What did you think?"></textarea>
+            </label>
 
-          <small id="surveyMessage">Optional. You can checkout without filling this in.</small>
+            <small id="surveyMessage">Optional. You can checkout without filling this in.</small>
+            <button class="btn btn-primary full" type="submit" id="surveySubmitBtn">Submit feedback</button>
+          </form>
+
+          <div class="survey-done" id="surveyDone" hidden>
+            <span class="survey-tick" aria-hidden="true">✓</span>
+            <div>
+              <strong>Thanks for your feedback!</strong>
+              <small id="surveyDoneMeta"></small>
+            </div>
+          </div>
         </section>
 
         <button class="btn btn-primary full" id="checkoutBtn">Pay securely with Square</button>
@@ -160,7 +171,7 @@
         <p><strong>Promotions &amp; loyalty.</strong> Spin &amp; Win codes and MiniChains Rewards discounts are one-time, personal, and non-transferable — they're tied to the device/account that earned them and can't legitimately be shared or resold. MiniChains Rewards requires a paid purchase on three different calendar days; the free item on the third visit is chosen at random by MiniChains, not the customer, from currently available stock.</p>
         <p><strong>Change of mind.</strong> MiniChains doesn't normally offer a refund simply because you changed your mind, picked the wrong design, or no longer want an item. If MiniChains agrees to a change-of-mind exchange, it's for equal value — you pay the difference for a pricier item, and MiniChains isn't required to refund the difference if you choose something cheaper.</p>
         <p><strong>Faulty items.</strong> The above doesn't affect your rights under Australian Consumer Law for a genuine manufacturing or quality problem — contact us and, depending on the situation, a replacement, repair or refund may apply. 3D-printed items can naturally have small layer lines and minor cosmetic variation; that alone isn't a fault, but a genuine major defect is not excused by it.</p>
-        <p><strong>Daily Auction.</strong> Placing a bid is free — there is no payment or obligation just for bidding, and a bid does not mean you've won. The highest valid bid when MiniChains's server closes the auction normally wins; MiniChains's server clock decides the closing time, not your device. Invalid, manipulated, or late bids may be rejected. The winner will be contacted or shown their winning status and is responsible for completing payment within the stated window; if they don't, MiniChains may cancel that win and may offer the item to another valid bidder, at MiniChains's discretion — a second bidder is never charged automatically. No bidder's name or contact details are ever shown publicly. An auction item remains subject to the winner actually completing payment.</p>
+        <p id="termsAuctionClause" hidden><strong>Daily Auction.</strong> Placing a bid is free — there is no payment or obligation just for bidding, and a bid does not mean you've won. The highest valid bid when MiniChains's server closes the auction normally wins; MiniChains's server clock decides the closing time, not your device. Invalid, manipulated, or late bids may be rejected. The winner will be contacted or shown their winning status and is responsible for completing payment within the stated window; if they don't, MiniChains may cancel that win and may offer the item to another valid bidder, at MiniChains's discretion — a second bidder is never charged automatically. No bidder's name or contact details are ever shown publicly. An auction item remains subject to the winner actually completing payment.</p>
         <p>Nothing in these Terms excludes rights that cannot legally be excluded under Australian Consumer Law.</p>
       </div>
       <div class="terms-actions" id="termsActions">

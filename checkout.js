@@ -475,15 +475,32 @@ function customerSurveyPayload() {
   };
 }
 
-async function submitSurvey(orderId, method) {
+// Independently submittable — filling this in doesn't require actually
+// completing checkout, so it has its own visible Submit button and "done"
+// state (same pattern as the post-purchase survey on success.html) rather
+// than silently piggy-backing on whatever the customer does next.
+function showCheckoutSurveySubmitted(feedback) {
+  document.querySelector('#checkoutSurveyForm').hidden = true;
+  const done = document.querySelector('#surveyDone');
+  done.hidden = false;
+  const bits = [feedback.firstName || 'Anonymous'];
+  if (feedback.level) bits.push(feedback.level);
+  if (feedback.comment) bits.push(`“${feedback.comment}”`);
+  document.querySelector('#surveyDoneMeta').textContent = bits.join(' · ');
+}
+
+async function submitCheckoutSurveyForm(e) {
+  e.preventDefault();
   const payload = customerSurveyPayload();
-  const hasAny = payload.firstName || payload.level || payload.comment;
-  if (!hasAny) return;
+  if (!payload.firstName && !payload.level && !payload.comment) {
+    toastMsg('Fill in at least one field, or just skip it.');
+    return;
+  }
 
   const record = {
     id: `FB-${Date.now().toString(36).toUpperCase()}`,
-    orderId,
-    paymentMethod: method,
+    orderId: null,
+    paymentMethod: paymentMethod,
     ...payload,
     createdAt: new Date().toISOString()
   };
@@ -492,19 +509,26 @@ async function submitSurvey(orderId, method) {
   local.push(record);
   write('mini-feedback-v1', local);
 
-  const endpoint = window.MINI_FEEDBACK?.endpoint?.trim();
-  if (!endpoint) return;
+  const btn = document.querySelector('#surveySubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
 
-  try {
-    await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(record)
-    });
-  } catch (err) {
-    console.warn('Feedback endpoint failed; local copy kept.', err);
+  const endpoint = window.MINI_FEEDBACK?.endpoint?.trim();
+  if (endpoint) {
+    try {
+      await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(record)
+      });
+    } catch (err) {
+      console.warn('Feedback endpoint failed; local copy kept.', err);
+    }
   }
+
+  showCheckoutSurveySubmitted(record);
 }
+document.querySelector('#checkoutSurveyForm')?.addEventListener('submit', submitCheckoutSurveyForm);
 
 function makeOrderId() {
   const a = new Uint32Array(2);
@@ -599,7 +623,6 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
 
     const order = saveLocalOrder({ method: 'cash', status: 'cash_due', demo: false });
     if (order) {
-      submitSurvey(order.id, 'cash'); // best-effort — never block the redirect on it
       location.href = `success.html?order=${encodeURIComponent(order.id)}`;
     }
     return;
@@ -655,8 +678,7 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
     // Loyalty visit counts specifically only ever advance from
     // square-webhook once payment is confirmed — data.loyalty here is just
     // what THIS checkout would be worth, for display.
-    const order = saveLocalOrder({ method: 'card', status: 'pending', demo: false, id: data.orderId || pendingId, loyalty: data.loyalty });
-    if (order) submitSurvey(order.id, 'card'); // best-effort — never block the redirect on it
+    saveLocalOrder({ method: 'card', status: 'pending', demo: false, id: data.orderId || pendingId, loyalty: data.loyalty });
 
     location.href = data.url;
   } catch (err) {

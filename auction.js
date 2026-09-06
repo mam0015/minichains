@@ -3,6 +3,11 @@
 // server confirms this exact browser is the auction's winning bidder.
 // The countdown shown here is cosmetic — auction-bid re-validates timing
 // server-side on every bid, using its own clock, not this one.
+//
+// Temporarily disabled for launch (customer-facing only) — backend,
+// database and admin auction code are untouched. Flip this back to true
+// once Auction is ready to go live; nothing else needs to change here.
+const AUCTION_ENABLED = false;
 const money2 = v => `A$${Number(v || 0).toFixed(2)}`;
 
 let auctions = [];
@@ -10,6 +15,7 @@ let activeBidAuction = null;
 let countdownTimer = null;
 
 async function refreshAuctions() {
+  if (!AUCTION_ENABLED) return;
   const endpoint = window.MINI_SQUARE?.auctionStatusEndpoint?.trim();
   if (!endpoint) return;
   try {
