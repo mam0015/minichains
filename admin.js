@@ -139,13 +139,14 @@ async function loadView(view) {
     // computed live (on hand minus anything currently reserved by an
     // in-progress card checkout), not something to hand-edit directly.
     const rows = data.products.map(p => [
+      `<img class="admin-thumb" src="${esc(p.image || '')}" alt="" loading="lazy" width="40" height="40">`,
       esc(p.name) + (p.limited_edition ? ' <span class="admin-tag">LTD</span>' : ''),
       money(p.base_price_cents / 100),
       `<div class="admin-stock-edit"><input type="number" min="0" step="1" value="${p.stock_on_hand}" data-stock-input="${p.id}"><button class="btn btn-ghost" data-stock-save="${p.id}">Save</button></div>`,
       p.stock_available,
       p.active ? (p.stock_available > 0 ? 'Active' : '<span class="admin-warn">Sold out</span>') : '<span class="admin-muted">Inactive</span>',
     ]);
-    content.innerHTML = table(['Product', 'Price', 'On hand', 'Available', 'Status'], rows);
+    content.innerHTML = table(['', 'Product', 'Price', 'On hand', 'Available', 'Status'], rows);
 
     content.querySelectorAll('[data-stock-save]').forEach(btn => btn.addEventListener('click', async () => {
       const productId = btn.dataset.stockSave;

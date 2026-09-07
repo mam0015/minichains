@@ -18,8 +18,8 @@ window.MINI_PRODUCTS = [
   {
     id:'music-note', name:'Music Note Mini Keychain', type:'keychain', size:'Small · single note charm',
     grams:2.5, printTime:'≈ 15 min', estimatedCost:0.10, price:3.00, stock:0,
-    image:'assets/images/music-note.jpg',
-    fallback:'assets/images/music-note.jpg', imagePosition:'center',
+    image:'assets/images/music-note-real.jpg',
+    fallback:'assets/images/music-note-real.jpg', imagePosition:'center',
     colors:['black'], tag:'Entry pick',
     desc:'A small beamed music-note charm. Simple and low-material — our lowest-cost pick.',
     credit:'kevin.goetz', source:'https://makerworld.com/en/models/1356704', paymentLink:'',
@@ -48,8 +48,8 @@ window.MINI_PRODUCTS = [
   {
     id:'basketball', name:'Basket Ball Keychain', type:'keychain', size:'Small · flat charm',
     grams:4.0, printTime:'≈ 23 min', estimatedCost:0.20, price:3.00, stock:0,
-    image:'assets/images/basketball.jpg',
-    fallback:'assets/images/basketball.jpg', imagePosition:'center',
+    image:'assets/images/basketball-real.jpg',
+    fallback:'assets/images/basketball-real.jpg', imagePosition:'center',
     colors:['white','black'], tag:'Sport pick',
     desc:'A flat basketball charm — sport-themed with stronger visual appeal than the basic entry charms.',
     credit:'fikuss30', source:'https://makerworld.com/en/models/124469-basket-ball-keychain', paymentLink:'',
@@ -88,8 +88,8 @@ window.MINI_PRODUCTS = [
   {
     id:'cute-happy-cat', name:'Cute Happy Cat Keychain', type:'keychain', size:'Small · flat charm',
     grams:3.8, printTime:'≈ 24 min', estimatedCost:0.19, price:3.00, stock:0,
-    image:'assets/images/cute-happy-cat.jpg',
-    fallback:'assets/images/cute-happy-cat.jpg', imagePosition:'center',
+    image:'assets/images/cute-happy-cat-real.jpg',
+    fallback:'assets/images/cute-happy-cat-real.jpg', imagePosition:'center',
     colors:['white','black'], tag:'Cute pick',
     desc:'A cute-category charm with stronger perceived value than the most basic flat designs.',
     credit:'FC2M3D', source:'https://makerworld.com/en/models/2298763-cute-happy-cat-keychain', paymentLink:'',

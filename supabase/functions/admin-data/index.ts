@@ -91,7 +91,7 @@ Deno.serve(async (req) => {
   if (view === "products") {
     const { data, error } = await admin
       .from("mini_products_live")
-      .select("id, name, base_price_cents, stock_on_hand, stock_available, active, limited_edition, display_order")
+      .select("id, name, image, base_price_cents, stock_on_hand, stock_available, active, limited_edition, display_order")
       .order("display_order", { ascending: true });
     if (error) { console.error(error); return json({ error: "Could not load products." }, 500, origin); }
     return json({ products: data || [] }, 200, origin);

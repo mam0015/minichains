@@ -30,6 +30,7 @@
 .admin-table th{text-align:left;color:var(--muted);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 .admin-table td{padding:10px;border-bottom:1px solid var(--line);vertical-align:top}
 .admin-tag{background:var(--pink);color:#fff;font-size:9px;font-weight:900;padding:2px 6px;border-radius:999px;margin-left:6px}
+.admin-thumb{width:40px;max-width:40px;height:40px;border-radius:8px;object-fit:cover;display:block;background:var(--soft)}
 .admin-stock-edit{display:flex;gap:6px;align-items:center}
 .admin-stock-edit input{width:64px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
 .admin-stock-edit button{padding:6px 12px;font-size:12px;border-radius:8px}
