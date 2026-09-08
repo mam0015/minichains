@@ -6,7 +6,6 @@ const money = v => `A$${Number(v || 0).toFixed(2)}`;
 const grid = document.querySelector('#productGrid');
 const count = document.querySelector('#productCount');
 
-const PROMOS_KEY = 'mini-issued-promos-v2';
 const CART_KEY = 'mini-keychain-cart-v2';
 const CARD_SURCHARGE_PERCENT = 5;
 
@@ -59,9 +58,8 @@ async function refreshStockStatus() {
     // Offline or not deployed yet — bundled numbers in products.js keep working as a fallback.
   }
 }
-// The homepage never changes payment method or applies promos — those live
-// on the checkout page. Card-price totals here are just a badge/bar preview.
-const activePromo = null;
+// The homepage never changes payment method — that lives on the checkout
+// page. Card-price totals here are just a badge/bar preview.
 const paymentMethod = 'card';
 
 const read = (k, fallback) => {
@@ -219,15 +217,10 @@ function cartRows() {
   return cart.map(r => ({ ...r, p: products.find(p => p.id === r.id) })).filter(r => r.p);
 }
 
-function promoPercent() {
-  return activePromo?.type === 'discount' ? Number(activePromo.percent || 0) : 0;
-}
-
 function cartTotals() {
   const rows = cartRows();
   const sub = round2(rows.reduce((s, r) => s + currentPrice(r.p) * r.qty, 0));
-  const promoDiscount = round2(sub * (promoPercent() / 100));
-  return { sub, total: round2(Math.max(0, sub - promoDiscount)) };
+  return { sub, total: sub };
 }
 
 function updateCartBadge() {
@@ -375,195 +368,3 @@ renderProducts();
 updateCartBadge();
 restartSlider();
 refreshStockStatus();
-
-
-/* =========================================================
-   FIRST-LOAD SPIN & WIN
-   ========================================================= */
-const SPIN_OPENED_KEY = 'mini-entry-spin-opened-v1';
-const SPIN_RESULT_KEY = 'mini-entry-spin-result-v1';
-
-// Free-keychain prize removed from the wheel. Its 10 weight was returned to
-// "empty" rather than to the discount tiers, so the odds of winning a
-// discount stay exactly what they were (12+8+5=25); only the free-item
-// chance is gone, redistributed evenly across the 5 empty slices (75/5=15).
-const entrySegments = [
-  { key:'empty-a', type:'empty', weight:15, visualIndex:0 },
-  { key:'off-5', type:'discount', percent:5, weight:12, visualIndex:1 },
-  { key:'empty-b', type:'empty', weight:15, visualIndex:2 },
-  { key:'off-10', type:'discount', percent:10, weight:8, visualIndex:3 },
-  { key:'empty-c', type:'empty', weight:15, visualIndex:4 },
-  { key:'off-20', type:'discount', percent:20, weight:5, visualIndex:5 },
-  { key:'empty-d', type:'empty', weight:15, visualIndex:6 },
-  { key:'empty-e', type:'empty', weight:15, visualIndex:7 }
-];
-
-function spinTargetRotation(seg) {
-  const visualSlice = 360 / entrySegments.length;
-  const centerDeg = seg.visualIndex * visualSlice + visualSlice / 2;
-  return 360 * 8 + (360 - centerDeg);
-}
-
-function launchConfetti() {
-  const layer = document.querySelector('#confettiLayer');
-  if (!layer) return;
-  layer.innerHTML = '';
-  const chars = ['✦','●','◆','★','♥'];
-  for (let i=0;i<70;i++) {
-    const span = document.createElement('span');
-    span.textContent = chars[Math.floor(Math.random()*chars.length)];
-    span.style.left = `${Math.random()*100}%`;
-    span.style.animationDelay = `${Math.random()*.8}s`;
-    span.style.animationDuration = `${1.7 + Math.random()*1.4}s`;
-    span.style.fontSize = `${10 + Math.random()*14}px`;
-    layer.appendChild(span);
-  }
-}
-
-function openEntrySpin() {
-  const modal = document.querySelector('#spinLaunch');
-  if (!modal) return;
-  modal.classList.add('show');
-  modal.setAttribute('aria-hidden','false');
-  document.body.classList.add('locked');
-  localStorage.setItem(SPIN_OPENED_KEY, '1');
-
-  const existing = read(SPIN_RESULT_KEY, null);
-  if (existing) renderEntrySpinResult(existing, false);
-}
-
-function closeEntrySpin() {
-  const modal = document.querySelector('#spinLaunch');
-  modal?.classList.remove('show');
-  modal?.setAttribute('aria-hidden','true');
-  document.body.classList.remove('locked');
-}
-
-function renderEntrySpinResult(result, celebrate=true) {
-  const box = document.querySelector('#launchResult');
-  const title = document.querySelector('#launchResultTitle');
-  const text = document.querySelector('#launchResultText');
-  const code = document.querySelector('#launchPrizeCode');
-  const spinBtn = document.querySelector('#launchSpinBtn');
-
-  box.hidden = false;
-  spinBtn.disabled = true;
-  spinBtn.textContent = 'DONE';
-
-  if (result.type === 'discount') {
-    title.textContent = `${result.percent}% OFF`;
-    text.textContent = 'Use this one-time code at checkout. Applies to Card / Online payment only — cash is already the standard listed price.';
-    code.textContent = result.code;
-  } else if (result.type === 'free') {
-    const p = products.find(x => x.id === result.freeProductId);
-    title.textContent = 'FREE KEYCHAIN';
-    text.textContent = `You won ${p?.name || 'a free keychain'}, chosen completely at random. Enter the code at checkout and it will appear on your order — works with Cash or Card.`;
-    code.textContent = result.code;
-  } else {
-    title.textContent = 'NO PRIZE';
-    text.textContent = 'No prize this time. You can still shop the MiniChains drop.';
-    code.textContent = result.code;
-  }
-
-  if (celebrate && result.type !== 'empty') launchConfetti();
-}
-
-document.querySelector('#spinAgainCard')?.addEventListener('click', openEntrySpin);
-document.querySelector('#spinLaunchClose')?.addEventListener('click', closeEntrySpin);
-document.querySelector('#launchContinue')?.addEventListener('click', closeEntrySpin);
-
-document.querySelector('#launchCopyCode')?.addEventListener('click', async () => {
-  const code = document.querySelector('#launchPrizeCode').textContent.trim();
-  if (!code) return;
-  try {
-    await navigator.clipboard.writeText(code);
-    toastMsg('Prize code copied');
-  } catch {
-    toastMsg(code);
-  }
-});
-
-document.querySelector('#launchSpinBtn')?.addEventListener('click', async () => {
-  const existing = read(SPIN_RESULT_KEY, null);
-  if (existing) {
-    renderEntrySpinResult(existing, false);
-    return;
-  }
-
-  const btn = document.querySelector('#launchSpinBtn');
-  const endpoint = window.MINI_SQUARE?.spinWheelEndpoint?.trim();
-  if (!endpoint) {
-    toastMsg('Spin & Win isn’t available right now — please try again shortly.');
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = '...';
-
-  // The server picks the outcome and is the only thing that ever writes a
-  // real, redeemable code — this call can't be skipped or spoofed into a
-  // better prize the way a purely client-side random pick could.
-  let data;
-  try {
-    const res = await fetch(endpoint, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ visitorId: getVisitorId() })
-    });
-    data = await res.json().catch(() => null);
-    if (!res.ok || !data || !data.type) throw new Error(data?.error || 'Spin failed.');
-  } catch (err) {
-    toastMsg(err.message || 'Could not spin right now — please try again.');
-    btn.disabled = false;
-    btn.textContent = 'SPIN';
-    return;
-  }
-
-  // The wheel only animates to a segment that visually matches the
-  // server's outcome — which exact one doesn't matter when several are
-  // interchangeable (the 5 empty slices all mean the same "no prize").
-  const matches = entrySegments.filter(s =>
-    s.type === data.type && (data.type !== 'discount' || s.percent === data.percent));
-  const seg = matches[Math.floor(Math.random() * matches.length)] || entrySegments[0];
-  document.querySelector('#launchWheel').style.transform = `rotate(${spinTargetRotation(seg)}deg)`;
-
-  const result = {
-    type: data.type,
-    percent: data.percent || 0,
-    code: data.code,
-    createdAt: new Date().toISOString()
-  };
-
-  if (result.type === 'discount' && result.code) {
-    const promos = read(PROMOS_KEY, []);
-    promos.push({
-      code: result.code, percent: result.percent, type: 'discount',
-      source: 'entry-spin', used: false, createdAt: result.createdAt
-    });
-    write(PROMOS_KEY, promos);
-  }
-
-  write(SPIN_RESULT_KEY, result);
-
-  setTimeout(() => {
-    renderEntrySpinResult(result, true);
-  }, 5300);
-});
-
-// Show the spin when the site first opens — but only once Terms have been
-// accepted (per the Terms gate: declining blocks purchases and the reward
-// wheel alike). If Terms haven't been resolved yet, wait for the gate's
-// own "responded" event instead of guessing with a timeout.
-window.addEventListener('load', () => {
-  const hasResult = read(SPIN_RESULT_KEY, null);
-  const opened = localStorage.getItem(SPIN_OPENED_KEY);
-  if (opened || hasResult) return;
-
-  if (typeof hasAcceptedTerms === 'function' && hasAcceptedTerms()) {
-    setTimeout(openEntrySpin, 450);
-  } else {
-    document.addEventListener('minichains:terms-responded', (e) => {
-      if (e.detail.accepted) setTimeout(openEntrySpin, 300);
-    }, { once: true });
-  }
-});

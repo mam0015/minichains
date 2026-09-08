@@ -138,15 +138,21 @@ async function loadView(view) {
     // total count and hit Save. "Available" stays read-only since it's
     // computed live (on hand minus anything currently reserved by an
     // in-progress card checkout), not something to hand-edit directly.
-    const rows = data.products.map(p => [
-      `<img class="admin-thumb" src="${esc(p.image || '')}" alt="" loading="lazy" width="40" height="40">`,
-      esc(p.name) + (p.limited_edition ? ' <span class="admin-tag">LTD</span>' : ''),
-      money(p.base_price_cents / 100),
-      `<div class="admin-stock-edit"><input type="number" min="0" step="1" value="${p.stock_on_hand}" data-stock-input="${p.id}"><button class="btn btn-ghost" data-stock-save="${p.id}">Save</button></div>`,
-      p.stock_available,
-      p.active ? (p.stock_available > 0 ? 'Active' : '<span class="admin-warn">Sold out</span>') : '<span class="admin-muted">Inactive</span>',
-    ]);
-    content.innerHTML = table(['', 'Product', 'Price', 'On hand', 'Available', 'Status'], rows);
+    // Cards, not a table — on a phone (the device staff actually use mid-sale)
+    // a wide table means side-scrolling just to reach the Save button. Each
+    // card stacks its own fields instead, so the whole row is always visible.
+    content.innerHTML = data.products.length ? `<div class="admin-inv-list">${data.products.map(p => {
+      const status = p.active ? (p.stock_available > 0 ? '<span class="admin-ok">Active</span>' : '<span class="admin-warn">Sold out</span>') : '<span class="admin-muted">Inactive</span>';
+      return `
+      <div class="admin-inv-card">
+        <img class="admin-thumb" src="${esc(p.image || '')}" alt="" loading="lazy" width="48" height="48">
+        <div class="admin-inv-main">
+          <div class="admin-inv-title">${esc(p.name)}${p.limited_edition ? ' <span class="admin-tag">LTD</span>' : ''}</div>
+          <div class="admin-inv-meta"><span>${money(p.base_price_cents / 100)}</span><span>${p.stock_available} available</span>${status}</div>
+          <div class="admin-stock-edit"><input type="number" min="0" step="1" value="${p.stock_on_hand}" data-stock-input="${p.id}" aria-label="On hand for ${esc(p.name)}"><button class="btn btn-ghost" data-stock-save="${p.id}">Save</button></div>
+        </div>
+      </div>`;
+    }).join('')}</div>` : '<p class="admin-empty">Nothing here yet.</p>';
 
     content.querySelectorAll('[data-stock-save]').forEach(btn => btn.addEventListener('click', async () => {
       const productId = btn.dataset.stockSave;

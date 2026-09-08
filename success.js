@@ -6,8 +6,6 @@ const orderId = params.get('order') || localStorage.getItem('mini-last-order-id'
 const isDemo = params.get('demo') === '1';
 
 const ORDERS_KEY = 'mini-orders-v2';
-const SPINS_KEY = 'mini-spins-v2';
-const PROMOS_KEY = 'mini-issued-promos-v2';
 
 const read = (k, fallback) => {
   try { return JSON.parse(localStorage.getItem(k) || JSON.stringify(fallback)); }
@@ -32,9 +30,6 @@ if (!order) {
       { id:'KEY-04', qty:1, price:2.00 }
     ],
     subtotal: 8.00,
-    promoCode: null,
-    promoPercent: 0,
-    promoDiscount: 0,
     cardSurchargePercent: 0,
     cardSurcharge: 0,
     total: 8.00
@@ -61,16 +56,6 @@ const detailRows = order.items
   .filter(x => x.product);
 
 const itemQty = detailRows.reduce((sum, r) => sum + Number(r.qty || 0), 0);
-
-const freePrizeId = order.freePrizeProductId || null;
-if (freePrizeId) {
-  const p = products.find(x => x.id === freePrizeId);
-  const box = document.querySelector('#receiptPrize');
-  if (box && p) {
-    box.hidden = false;
-    document.querySelector('#receiptPrizeName').textContent = p.name;
-  }
-}
 
 const loyaltyFreeId = order.loyaltyFreeProductId || null;
 if (loyaltyFreeId) {
@@ -179,12 +164,6 @@ function renderOrderBreakdown() {
   const breakdown = [];
   breakdown.push(`<div><span>Subtotal</span><span>${money(order.subtotal)}</span></div>`);
 
-  if (Number(order.promoPercent || 0) > 0) {
-    breakdown.push(
-      `<div class="discount-line"><span>Promo discount · ${order.promoPercent}%${order.promoCode ? ` · ${order.promoCode}` : ''}</span><span>−${money(order.promoDiscount)}</span></div>`
-    );
-  }
-
   if (Number(order.loyaltyDiscountPercent || 0) > 0) {
     breakdown.push(
       `<div class="discount-line"><span>🎉 MiniChains Rewards · ${order.loyaltyDiscountPercent}%</span><span>−${money(order.loyaltyDiscountAmount)}</span></div>`
@@ -240,7 +219,7 @@ function renderPaymentState() {
       statusEyebrow.textContent = 'CASH SELECTED';
       statusTitle.textContent = 'Cash payment is due.';
       statusLead.innerHTML =
-        `Collect <strong>${money(order.total)}</strong> in cash, then tap <strong>Cash received</strong>. After that, this page becomes the paid confirmation and the Spin & Win unlocks if the order has 3+ items.`;
+        `Collect <strong>${money(order.total)}</strong> in cash, then tap <strong>Cash received</strong>. After that, this page becomes the paid confirmation.`;
       cashCard.hidden = false;
       document.querySelector('#cashDueAmount').textContent = money(order.total);
     }
@@ -289,7 +268,6 @@ async function verifyCardPaymentIfNeeded() {
         order.paidAt = data.paidAt || new Date().toISOString();
         persistOrder();
         renderPaymentState();
-        renderWheelState();
         return;
       }
       if (data && data.found === false) break; // no server record — will never resolve
@@ -304,197 +282,12 @@ async function verifyCardPaymentIfNeeded() {
   renderPaymentState();
 }
 
-const wheelSection = document.querySelector('#wheelSection');
-const spinBtn = document.querySelector('#spinBtn');
-const wheel = document.querySelector('#prizeWheel');
-const wheelCenterText = document.querySelector('#wheelCenterText');
-const spinStatus = document.querySelector('#spinStatus');
-const result = document.querySelector('#prizeResult');
-
-// Kept in sync with app.js's entrySegments (free-keychain prize removed,
-// same total odds otherwise) even though this wheel's markup isn't wired
-// into success.html yet — see the note left for the user about that.
-const segments = [
-  { key:'empty-a', label:'Empty', type:'empty', weight:15, visualIndex:0 },
-  { key:'off-5', label:'5% off', type:'discount', percent:5, weight:12, visualIndex:1 },
-  { key:'empty-b', label:'Empty', type:'empty', weight:15, visualIndex:2 },
-  { key:'off-10', label:'10% off', type:'discount', percent:10, weight:8, visualIndex:3 },
-  { key:'empty-c', label:'Empty', type:'empty', weight:15, visualIndex:4 },
-  { key:'off-20', label:'20% off', type:'discount', percent:20, weight:5, visualIndex:5 },
-  { key:'empty-d', label:'Empty', type:'empty', weight:15, visualIndex:6 },
-  { key:'empty-e', label:'Empty', type:'empty', weight:15, visualIndex:7 }
-];
-
-function cryptoFloat() {
-  const a = new Uint32Array(1);
-  crypto.getRandomValues(a);
-  return a[0] / 4294967296;
-}
-
-function randomCode(percent) {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const a = new Uint32Array(6);
-  crypto.getRandomValues(a);
-  const tail = [...a].map(n => chars[n % chars.length]).join('');
-  return `MINI${percent}-${tail}`;
-}
-
-function randomProduct() {
-  const a = new Uint32Array(1);
-  crypto.getRandomValues(a);
-  return products[a[0] % products.length];
-}
-
-function chooseSegment() {
-  const totalWeight = segments.reduce((sum, s) => sum + s.weight, 0);
-  let n = cryptoFloat() * totalWeight;
-
-  for (const seg of segments) {
-    if (n < seg.weight) return seg;
-    n -= seg.weight;
-  }
-  return segments[0];
-}
-
-function targetRotation(seg) {
-  const visualSlice = 360 / segments.length;
-  const centerDeg = (seg.visualIndex * visualSlice) + (visualSlice / 2);
-  return 360 * 7 + (360 - centerDeg);
-}
-
 function toast(msg) {
   const t = document.querySelector('#toast');
   t.textContent = msg;
   t.classList.add('show');
   clearTimeout(window.__t);
   window.__t = setTimeout(() => t.classList.remove('show'), 1600);
-}
-
-function saveSpin(spin) {
-  const spins = read(SPINS_KEY, []).filter(s => s.orderId !== order.id);
-  spins.push(spin);
-  write(SPINS_KEY, spins);
-}
-
-function getSpin() {
-  return read(SPINS_KEY, []).find(s => s.orderId === order.id);
-}
-
-function issuePromo(percent, orderId) {
-  const code = randomCode(percent);
-  const promos = read(PROMOS_KEY, []);
-  promos.push({
-    code,
-    percent,
-    orderId,
-    used: false,
-    createdAt: new Date().toISOString()
-  });
-  write(PROMOS_KEY, promos);
-  reportPrizeToServer({ code, type: 'discount', percent });
-  return code;
-}
-
-// Same server-side record as app.js's entry spin — see reportPrizeToServer
-// there for why this matters for card redemption.
-function reportPrizeToServer(prize) {
-  const endpoint = window.MINI_SQUARE?.recordPrizeEndpoint?.trim();
-  if (!endpoint) return;
-  fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      code: prize.code,
-      type: prize.type,
-      percent: prize.percent || 0,
-      freeProductId: prize.freeProductId || null
-    })
-  }).catch(() => {});
-}
-
-function rewardStackText(spin) {
-  if (spin.type !== 'discount') return '';
-  return ' Use it on Card / Online payment — it does not apply to Cash.';
-}
-
-function showResult(spin) {
-  result.hidden = false;
-
-  const title = document.querySelector('#resultTitle');
-  const text = document.querySelector('#resultText');
-  const codeBox = document.querySelector('#promoCodeBox');
-  const freeBox = document.querySelector('#freeItemBox');
-
-  codeBox.hidden = true;
-  freeBox.hidden = true;
-
-  if (spin.type === 'discount') {
-    title.textContent = `You won ${spin.percent}% off.`;
-    text.textContent =
-      `Your one-time code is ready for a future MiniChains order.${rewardStackText(spin)}`;
-    document.querySelector('#promoCode').textContent = spin.code;
-    codeBox.hidden = false;
-    wheelCenterText.textContent = `${spin.percent}% OFF`;
-  } else if (spin.type === 'free') {
-    const p = products.find(x => x.id === spin.freeProductId) || products[0];
-    title.textContent = 'You won a free keychain.';
-    text.textContent = `Your random free item is ${p.name}. Show this result to us when you collect your order.`;
-    const im = document.querySelector('#freeItemImage');
-    im.src = p.image;
-    im.onerror = () => {
-      im.onerror = null;
-      im.src = p.fallback || 'assets/images/smiley.svg';
-    };
-    document.querySelector('#freeItemName').textContent = p.name;
-    freeBox.hidden = false;
-    wheelCenterText.textContent = 'FREE!';
-  } else {
-    title.textContent = 'No prize this time.';
-    text.textContent = 'No prize this time. Your order is still confirmed.';
-    wheelCenterText.textContent = 'NEXT TIME';
-  }
-
-  spinBtn.disabled = true;
-  spinBtn.textContent = 'Spin already used';
-  spinStatus.textContent = 'This order has already used its spin.';
-}
-
-function renderWheelState() {
-  if (!wheelSection) return;
-  wheelSection.classList.remove('locked-wheel');
-
-  if (!isPaid()) {
-    wheelSection.classList.add('locked-wheel');
-    document.querySelector('#wheelTitle').textContent = 'Spin unlocks after payment.';
-    document.querySelector('#wheelIntro').textContent =
-      order.paymentMethod === 'cash'
-        ? 'Receive the cash and confirm it above. If this order has 3 or more items, the wheel will unlock immediately.'
-        : 'Payment must be confirmed before the wheel can be used.';
-    return;
-  }
-
-  if (itemQty < 3) {
-    wheelSection.classList.add('locked-wheel');
-    document.querySelector('#wheelTitle').textContent = 'Spin not unlocked on this order.';
-    document.querySelector('#wheelIntro').textContent =
-      `This order has ${itemQty} item${itemQty === 1 ? '' : 's'}. Buy 3 or more items in one paid order to unlock one spin.`;
-    return;
-  }
-
-  document.querySelector('#wheelTitle').textContent = 'Your spin is unlocked.';
-  document.querySelector('#wheelIntro').textContent =
-    'You might win a free keychain.';
-
-  const existing = getSpin();
-  if (existing) {
-    const seg = segments.find(s => s.key === existing.segmentKey) || segments[0];
-    wheel.style.transform = `rotate(${targetRotation(seg)}deg)`;
-    showResult(existing);
-  } else {
-    spinBtn.disabled = false;
-    spinBtn.textContent = 'Spin the wheel';
-    spinStatus.textContent = 'Tap SPIN and see what you get.';
-  }
 }
 
 // This tap IS the confirmation that cash was actually handed over (see the
@@ -525,8 +318,8 @@ async function confirmCashStock(staffToken) {
 // A customer's own device must never be able to mark its own cash order
 // paid — that's the whole point of "show us this page" as proof. The PIN
 // gate below is the real boundary: nothing here (marking paid locally,
-// unlocking the spin wheel, decrementing stock) happens until a valid staff
-// session exists, either already stored or just obtained.
+// decrementing stock) happens until a valid staff session exists, either
+// already stored or just obtained.
 function getValidStaffToken() {
   const token = localStorage.getItem('mini-staff-token');
   const expiresAt = Number(localStorage.getItem('mini-staff-token-expires') || 0);
@@ -541,7 +334,6 @@ async function completeCashConfirmation(staffToken) {
   persistOrder();
 
   renderPaymentState();
-  renderWheelState();
   toast('Cash marked as received');
   document.querySelector('#statusCard').scrollIntoView({ behavior:'smooth', block:'start' });
 
@@ -618,65 +410,6 @@ document.querySelector('#staffPinInput').addEventListener('keydown', e => {
   }
 });
 
-spinBtn?.addEventListener('click', () => {
-  if (!isPaid() || itemQty < 3 || getSpin()) return;
-
-  spinBtn.disabled = true;
-  spinBtn.textContent = 'Spinning…';
-  spinStatus.textContent = 'Random draw in progress…';
-
-  const seg = chooseSegment();
-  const spin = {
-    orderId: order.id,
-    segmentKey: seg.key,
-    type: seg.type,
-    createdAt: new Date().toISOString()
-  };
-
-  if (seg.type === 'discount') {
-    spin.percent = seg.percent;
-    spin.code = issuePromo(seg.percent, order.id);
-  }
-  if (seg.type === 'free') {
-    spin.freeProductId = randomProduct().id;
-    spin.code = randomCode('FREE');
-    const promos = read(PROMOS_KEY, []);
-    promos.push({
-      code: spin.code,
-      percent: 0,
-      type: 'free',
-      freeProductId: spin.freeProductId,
-      orderId: order.id,
-      used: false,
-      createdAt: new Date().toISOString()
-    });
-    write(PROMOS_KEY, promos);
-    reportPrizeToServer({ code: spin.code, type: 'free', freeProductId: spin.freeProductId });
-  }
-
-  saveSpin(spin);
-  wheel.style.transform = `rotate(${targetRotation(seg)}deg)`;
-
-  setTimeout(() => {
-    showResult(spin);
-    result.scrollIntoView({ behavior:'smooth', block:'center' });
-  }, 5350);
-});
-
-document.querySelector('#copyCode')?.addEventListener('click', async () => {
-  const code = document.querySelector('#promoCode').textContent;
-  if (!code) return;
-  try {
-    await navigator.clipboard.writeText(code);
-    toast('Code copied');
-  } catch {
-    toast(code);
-  }
-});
-
 renderPaymentState();
-renderWheelState();
 renderSurveyCard();
 verifyCardPaymentIfNeeded();
-
-window.addEventListener('DOMContentLoaded',()=>{document.querySelector('#wheelSection')?.setAttribute('hidden','');});

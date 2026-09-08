@@ -46,7 +46,6 @@
       <div class="payment-guide-grid">
         <article class="pay-card card-pay"><div class="pay-icon">▣</div><div><span>Card / Online</span><strong>+5%</strong><small>Secure online checkout through Square, plus a 5% processing surcharge.</small></div></article>
         <article class="pay-card cash-pay"><div class="pay-icon">A$</div><div><span>Cash</span><strong>Listed price</strong><small>Cash is charged at the standard listed price — no surcharge, no coins needed.</small></div></article>
-        <button type="button" class="pay-card spin-pay" id="spinAgainCard"><div class="pay-icon">✦</div><div><span>Spin &amp; win</span><strong>Missed it?</strong><small>It pops up once when you first open MiniChains — tap this card to see it again.</small></div></button>
       </div>
     </section>
 
@@ -82,56 +81,6 @@
   </main>
 
   <footer><a class="footer-brand" href="#top"><img src="assets/images/mini-logo.png" alt="MiniChains"></a><p>3D printed keychains · School project · 2026</p><a href="#" data-review-terms>Terms &amp; Conditions</a><a href="#top">Back to top ↑</a></footer>
-
-  <div class="spin-launch" id="spinLaunch" aria-hidden="true">
-    <div class="spin-launch-backdrop"></div>
-
-    <section class="spin-launch-card" role="dialog" aria-modal="true" aria-labelledby="spinLaunchTitle">
-      <button class="spin-launch-close" id="spinLaunchClose" type="button" aria-label="Close">×</button>
-
-      <div class="spin-launch-copy">
-        <p class="eyebrow">SPIN & WIN</p>
-        <h2 id="spinLaunchTitle">Try your luck.</h2>
-        <p>You might win a one-time discount code.</p>
-        <p class="launch-terms"><strong>IMPORTANT: Spin Wheel discounts can only be applied to CARD payments.</strong> Cash already gets its own listed price — wheel discount codes don't apply to cash orders.</p>
-      </div>
-
-      <div class="launch-wheel-stage">
-        <div class="launch-wheel-pointer"></div>
-
-        <div class="launch-wheel" id="launchWheel">
-          <span class="launch-label l-empty-1">EMPTY</span>
-          <span class="launch-label l-five">5% OFF</span>
-          <span class="launch-label l-empty-2">EMPTY</span>
-          <span class="launch-label l-ten">10% OFF</span>
-          <span class="launch-label l-empty-3">EMPTY</span>
-          <span class="launch-label l-twenty">20% OFF</span>
-          <span class="launch-label l-empty-4">EMPTY</span>
-          <span class="launch-label l-empty-5">EMPTY</span>
-
-          <button class="launch-spin-button" id="launchSpinBtn" type="button">SPIN</button>
-        </div>
-      </div>
-
-      <div class="launch-result" id="launchResult" hidden>
-        <p class="eyebrow">YOUR PRIZE</p>
-        <h3 id="launchResultTitle"></h3>
-        <p id="launchResultText"></p>
-
-        <div class="launch-code-row">
-          <code id="launchPrizeCode"></code>
-          <button id="launchCopyCode" type="button">Copy code</button>
-        </div>
-
-        <button class="btn btn-primary full" id="launchContinue" type="button">Start shopping</button>
-      </div>
-
-      <small class="spin-launch-foot">One spin per device for this school-project version.</small>
-    </section>
-
-    <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
-  </div>
-
 
   <!-- Cart/checkout is a dedicated page now: checkout.html -->
 <dialog class="quick-view auction-bid-modal" id="auctionBidModal">
@@ -214,7 +163,7 @@
       <div class="terms-body">
         <p><strong>Payments.</strong> Card/online payments are processed securely through Square. Square may collect the information it needs to process your payment and provide a receipt — MiniChains never sees or stores your card number. Cash is collected in person and only ever confirmed by a MiniChains team member.</p>
         <p><strong>Pricing.</strong> The price shown on each product is the cash price. Card/online payment adds a 5% surcharge to cover Square's processing cost. Adding an item to your bag does not guarantee stock — final availability is confirmed at checkout.</p>
-        <p><strong>Promotions &amp; loyalty.</strong> Spin &amp; Win codes and MiniChains Rewards discounts are one-time, personal, and non-transferable — they're tied to the device/account that earned them and can't legitimately be shared or resold. MiniChains Rewards requires a paid purchase on three different calendar days; the free item on the third visit is chosen at random by MiniChains, not the customer, from currently available stock.</p>
+        <p><strong>Loyalty.</strong> MiniChains Rewards discounts are one-time, personal, and non-transferable — they're tied to the device/account that earned them and can't legitimately be shared or resold. MiniChains Rewards requires a paid purchase on three different calendar days; the free item on the third visit is chosen at random by MiniChains, not the customer, from currently available stock.</p>
         <p><strong>Change of mind.</strong> MiniChains doesn't normally offer a refund simply because you changed your mind, picked the wrong design, or no longer want an item. If MiniChains agrees to a change-of-mind exchange, it's for equal value — you pay the difference for a pricier item, and MiniChains isn't required to refund the difference if you choose something cheaper.</p>
         <p><strong>Faulty items.</strong> The above doesn't affect your rights under Australian Consumer Law for a genuine manufacturing or quality problem — contact us and, depending on the situation, a replacement, repair or refund may apply. 3D-printed items can naturally have small layer lines and minor cosmetic variation; that alone isn't a fault, but a genuine major defect is not excused by it.</p>
         <p id="termsAuctionClause" hidden><strong>Daily Auction.</strong> Placing a bid is free — there is no payment or obligation just for bidding, and a bid does not mean you've won. The highest valid bid when MiniChains's server closes the auction normally wins; MiniChains's server clock decides the closing time, not your device. Invalid, manipulated, or late bids may be rejected. The winner will be contacted or shown their winning status and is responsible for completing payment within the stated window; if they don't, MiniChains may cancel that win and may offer the item to another valid bidder, at MiniChains's discretion — a second bidder is never charged automatically. No bidder's name or contact details are ever shown publicly. An auction item remains subject to the winner actually completing payment.</p>

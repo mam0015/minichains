@@ -34,6 +34,14 @@
 .admin-stock-edit{display:flex;gap:6px;align-items:center}
 .admin-stock-edit input{width:64px;border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-size:13px}
 .admin-stock-edit button{padding:6px 12px;font-size:12px;border-radius:8px}
+.admin-inv-list{display:grid;gap:10px}
+.admin-inv-card{display:flex;gap:12px;padding:12px;border:1px solid var(--line);border-radius:14px}
+.admin-inv-card .admin-thumb{width:48px;max-width:48px;height:48px;flex:none}
+.admin-inv-main{flex:1;min-width:0;display:grid;gap:6px}
+.admin-inv-title{font-weight:800;font-size:14px}
+.admin-inv-meta{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted)}
+.admin-inv-card .admin-stock-edit input{width:72px;min-height:38px;font-size:14px}
+.admin-inv-card .admin-stock-edit button{min-height:38px}
 .admin-ok{color:#24804a;font-weight:800}
 .admin-warn{color:#a33;font-weight:800}
 .admin-muted{color:var(--muted)}

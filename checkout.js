@@ -3,13 +3,11 @@
 const products = (window.MINI_PRODUCTS || []).filter(p => p.active !== false);
 const money = v => `A$${Number(v || 0).toFixed(2)}`;
 
-const PROMOS_KEY = 'mini-issued-promos-v2';
 const ORDERS_KEY = 'mini-orders-v2';
 const CART_KEY = 'mini-keychain-cart-v2';
 const CARD_SURCHARGE_PERCENT = 5;
 
 let cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
-let activePromo = null;
 let paymentMethod = 'card';
 let loyaltyStatus = null; // last result from loyalty-status for the current username input
 let loyaltyChecking = false;
@@ -75,10 +73,6 @@ function cartRows() {
   return cart.map(r => ({ ...r, p: products.find(p => p.id === r.id) })).filter(r => r.p);
 }
 
-function promoPercent() {
-  return activePromo?.type === 'discount' ? Number(activePromo.percent || 0) : 0;
-}
-
 // currentPrice(p) is the cash (base) price — live from the server when
 // available, else the bundled products.js fallback. Card/online adds a 5%
 // surcharge per unit to cover the Square processing + payment-link cost.
@@ -108,29 +102,21 @@ function cartTotals() {
   const rows = cartRows();
   const cashSub = round2(rows.reduce((s, r) => s + currentPrice(r.p) * r.qty, 0));
   const cardSub = round2(rows.reduce((s, r) => s + cardUnitPrice(r.p) * r.qty, 0));
-  // Spin & Win % discount codes apply to Card/online only. A free-item
-  // prize is unaffected by this: it has no percent value and is handled
-  // separately either way.
-  const promoPct = paymentMethod === 'card' ? promoPercent() : 0;
   const loyaltyPct = loyaltyDiscountPct();
 
   const sub = paymentMethod === 'card' ? cardSub : cashSub;
-  let promoDiscount = 0;
   let loyaltyDiscount = 0;
   let total = cashSub;
 
   if (paymentMethod === 'card') {
-    promoDiscount = round2(cardSub * (promoPct / 100));
     loyaltyDiscount = round2(cardSub * (loyaltyPct / 100));
-    total = round2(Math.max(0, cardSub - promoDiscount - loyaltyDiscount));
+    total = round2(Math.max(0, cardSub - loyaltyDiscount));
   }
 
   return {
     sub,
     cashSub,
     cardSub,
-    promoPct,
-    promoDiscount,
     loyaltyPct,
     loyaltyDiscount,
     loyaltyFreeKeychain: loyaltyRewardType() === 'free_keychain',
@@ -207,25 +193,6 @@ function renderCart() {
 
   document.querySelector('#cartSubtotal').textContent = money(t.sub);
 
-  const promoRow = document.querySelector('#cartPromoDiscountRow');
-  if (activePromo && t.promoDiscount > 0) {
-    promoRow.hidden = false;
-    document.querySelector('#cartPromoDiscountLabel').textContent = `Promo discount · ${t.promoPct}%`;
-    document.querySelector('#cartPromoDiscount').textContent = `−${money(t.promoDiscount)}`;
-  } else {
-    promoRow.hidden = true;
-  }
-
-  const freePrizeRow = document.querySelector('#cartFreePrizeRow');
-  if (activePromo?.type === 'free') {
-    const p = products.find(x => x.id === activePromo.freeProductId);
-    freePrizeRow.hidden = false;
-    document.querySelector('#cartFreePrizeLabel').textContent = `Free prize · ${p?.name || 'Keychain'}`;
-    document.querySelector('#cartFreePrize').textContent = 'A$0.00';
-  } else {
-    freePrizeRow.hidden = true;
-  }
-
   const loyaltyRow = document.querySelector('#cartLoyaltyDiscountRow');
   loyaltyRow.hidden = !(t.loyaltyPct > 0 && t.loyaltyDiscount > 0);
   document.querySelector('#cartLoyaltyDiscount').textContent = `−${money(t.loyaltyDiscount)}`;
@@ -257,17 +224,11 @@ function renderCart() {
     paymentMethod === 'cash' ? `Create cash order · ${money(t.total)}` : `Pay securely with Square · ${money(t.total)}`;
 
   const note = document.querySelector('#checkoutNote');
-  const spinText = qty >= 3
-    ? 'This order unlocks one Spin & Win after payment is confirmed.'
-    : qty ? `Add ${3 - qty} more item${3 - qty === 1 ? '' : 's'} to unlock one Spin & Win.` : '';
 
   if (paymentMethod === 'cash') {
-    const cashText = activePromo?.type === 'free'
-      ? 'Cash is the standard listed price — plus your free item. Promo % codes don’t apply to cash.'
-      : 'Cash is the standard listed price, no surcharge.';
-    note.textContent = `${cashText} ${spinText}`;
+    note.textContent = 'Cash is the standard listed price, no surcharge.';
   } else {
-    note.textContent = `Card/online payment uses Square, with a 5% surcharge per item to cover processing. ${spinText}`;
+    note.textContent = 'Card/online payment uses Square, with a 5% surcharge per item to cover processing.';
   }
 
   renderRewardsUI();
@@ -290,53 +251,6 @@ document.querySelectorAll('[data-payment]').forEach(btn => {
   });
 });
 
-function applyPromoCode() {
-  const input = document.querySelector('#promoInput');
-  const message = document.querySelector('#promoMessage');
-  const code = input.value.trim().toUpperCase();
-  const promo = read(PROMOS_KEY, []).find(p => p.code.toUpperCase() === code);
-
-  if (!promo) {
-    activePromo = null;
-    message.textContent = 'Code not found on this device.';
-    message.style.color = '#a33';
-    renderCart();
-    return;
-  }
-
-  if (promo.used) {
-    activePromo = null;
-    message.textContent = 'This one-time code has already been used.';
-    message.style.color = '#a33';
-    renderCart();
-    return;
-  }
-
-  if (promo.type === 'empty') {
-    activePromo = null;
-    message.textContent = 'This spin code has no prize value.';
-    message.style.color = '#756871';
-    renderCart();
-    return;
-  }
-
-  activePromo = promo;
-
-  if (promo.type === 'free') {
-    const p = products.find(x => x.id === promo.freeProductId);
-    message.textContent = `Free prize applied: ${p?.name || 'keychain'}. Works with Cash or Card.`;
-  } else {
-    message.textContent = `${promo.percent}% discount ready. Applies automatically if you pay by Card. Not available on Cash.`;
-  }
-
-  message.style.color = '#24804a';
-  renderCart();
-}
-
-document.querySelector('#applyPromo').addEventListener('click', applyPromoCode);
-document.querySelector('#promoInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') { e.preventDefault(); applyPromoCode(); }
-});
 
 // ---------- MiniChains Rewards ----------
 const USERNAME_RE = /^[a-zA-Z0-9]{3,20}$/;
@@ -536,16 +450,6 @@ function makeOrderId() {
   return `MINI-${Date.now().toString(36).slice(-5).toUpperCase()}-${(a[0] ^ a[1]).toString(36).slice(-4).toUpperCase()}`;
 }
 
-function markPromoUsed(orderId) {
-  if (!activePromo) return;
-  const promos = read(PROMOS_KEY, []).map(p =>
-    p.code === activePromo.code
-      ? { ...p, used: true, usedAt: new Date().toISOString(), usedForOrder: orderId }
-      : p
-  );
-  write(PROMOS_KEY, promos);
-}
-
 function saveLocalOrder({ method, status, demo = false, id, loyalty = null }) {
   const rows = cartRows();
   if (!rows.length) return null;
@@ -561,10 +465,6 @@ function saveLocalOrder({ method, status, demo = false, id, loyalty = null }) {
     paymentStatus: status,
     items: rows.map(r => ({ id: r.id, qty: r.qty, price: currentPrice(r.p) })),
     subtotal: t.sub,
-    promoCode: activePromo?.code || null,
-    promoPercent: t.promoPct,
-    promoDiscount: t.promoDiscount,
-    freePrizeProductId: activePromo?.type === 'free' ? activePromo.freeProductId : null,
     cardSurchargePercent: t.cardSurchargePercent,
     cardSurcharge: t.cardSurcharge,
     cashSub: t.cashSub,
@@ -587,11 +487,8 @@ function saveLocalOrder({ method, status, demo = false, id, loyalty = null }) {
   write(ORDERS_KEY, orders);
   localStorage.setItem('mini-last-order-id', id);
 
-  markPromoUsed(id);
-
   cart = [];
   saveCart();
-  activePromo = null;
   return order;
 }
 
@@ -653,7 +550,6 @@ document.querySelector('#checkoutBtn').addEventListener('click', async () => {
         paymentMethod: 'card',
         orderId: pendingId,
         items: rows.map(r => ({ id: r.id, qty: r.qty })),
-        promoCode: activePromo?.code || null,
         rewardsUsername: document.querySelector('#rewardsUsernameInput').value.trim() || null,
         rewardsSecret: getLoyaltySecret(normalizeUsernameClient(document.querySelector('#rewardsUsernameInput').value.trim())),
         survey: customerSurveyPayload(),

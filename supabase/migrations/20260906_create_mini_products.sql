@@ -55,7 +55,8 @@ values
 
   ('maltese-dog', 'Little Maltese Dog Keychain Edition', 'A detailed figure-style dog design — Limited Edition, more production complexity than the flat charms.', 'Medium · figure-style', '≈ 35 min', 400, 'assets/images/maltese-dog.jpg', 'assets/images/maltese-dog.jpg', 'Wolhart', 'https://makerworld.com/en/models/1309033-little-maltese-dog-keychain-edition', true, true, 0, 12),
   ('jordan', 'Jordan Keychain', 'The Jumpman logo silhouette — one of the strongest perceived-value designs in the range.', 'Small · flat logo charm', '≈ 45 min', 300, 'assets/images/jordan.jpg', 'assets/images/jordan.jpg', 'MORTI$', 'https://makerworld.com/en/models/919000-jordan-keychain', true, false, 0, 13),
-  ('nike-shox', 'Nike Shox Keychain', 'A detailed Nike Shox-style sneaker charm — Limited Edition, the most detailed design in the range.', 'Small · figure-style shoe', '≈ 45 min', 500, 'assets/images/nike-shox.jpg', 'assets/images/nike-shox.jpg', 'FORMASTAMPA', 'https://makerworld.com/en/models/2562091-nike-shox-se-left-foot', true, true, 0, 14)
+  ('nike-shox', 'Nike Shox Keychain', 'A detailed Nike Shox-style sneaker charm — Limited Edition, the most detailed design in the range.', 'Small · figure-style shoe', '≈ 45 min', 400, 'assets/images/nike-shox.jpg', 'assets/images/nike-shox.jpg', 'FORMASTAMPA', 'https://makerworld.com/en/models/2562091-nike-shox-se-left-foot', true, true, 0, 14),
+  ('cat-heart-2sided', 'Cat Holding Heart Keychain', 'A sparkly cat charm holding a heart, detailed on both sides.', 'Small · flat charm, double-sided', '≈ 22 min', 300, 'assets/images/cat-heart-2sided.jpg', 'assets/images/cat-heart-2sided.jpg', 'nikitau3dp', 'https://makerworld.com/en/models/3121277-cat-holding-heart-2-sided-keychain', true, false, 0, 15)
 on conflict (id) do update set
   name = excluded.name,
   description = excluded.description,

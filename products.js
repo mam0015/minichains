@@ -146,12 +146,22 @@ window.MINI_PRODUCTS = [
   },
   {
     id:'nike-shox', name:'Nike Shox Keychain', type:'keychain', size:'Small · figure-style shoe',
-    grams:8.0, printTime:'≈ 45 min', estimatedCost:0.65, price:5.00, stock:1,
+    grams:8.0, printTime:'≈ 45 min', estimatedCost:0.65, price:4.00, stock:1,
     image:'assets/images/nike-shox.jpg',
     fallback:'assets/images/nike-shox.jpg', imagePosition:'center',
     colors:['white'], tag:'Limited Edition',
     desc:'A detailed Nike Shox-style sneaker charm — Limited Edition, the most detailed design in the range.',
     credit:'FORMASTAMPA', source:'https://makerworld.com/en/models/2562091-nike-shox-se-left-foot', paymentLink:'',
     loyaltyRewardEligible:true, limitedEdition:true
+  },
+  {
+    id:'cat-heart-2sided', name:'Cat Holding Heart Keychain', type:'keychain', size:'Small · flat charm, double-sided',
+    grams:4.0, printTime:'≈ 22 min', estimatedCost:0.20, price:3.00, stock:0,
+    image:'assets/images/cat-heart-2sided.jpg',
+    fallback:'assets/images/cat-heart-2sided.jpg', imagePosition:'center',
+    colors:['white'], tag:'New',
+    desc:'A sparkly cat charm holding a heart, detailed on both sides.',
+    credit:'nikitau3dp', source:'https://makerworld.com/en/models/3121277-cat-holding-heart-2-sided-keychain', paymentLink:'',
+    loyaltyRewardEligible:true
   }
 ];
